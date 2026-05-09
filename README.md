@@ -29,5 +29,7 @@ https://nodejs.org/en/download
 
 NOTE: you may need to restart your IDE after installing Node.js
 
-If an error pops up after completing the steps above, type this command in:
+For VScode:
+If an error pops up after completing the steps above, type this command into the terminal:
+
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
