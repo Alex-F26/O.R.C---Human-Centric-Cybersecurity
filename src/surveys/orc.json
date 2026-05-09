@@ -1,0 +1,29 @@
+{
+  "title": "O.R.C",
+  "description": "Oatmeal Raisin Cookie",
+  "pages": [
+    {
+      "name": "page1",
+      "elements": [
+        {
+          "type": "text",
+          "name": "name",
+          "title": "Question1?",
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "satisfaction",
+          "title": "Question2?",
+          "choices": ["choice1", "choice2", "choice3", "choice4"]
+        },
+        {
+          "type": "comment",
+          "name": "feedback",
+          "title": "Feedback?"
+        }
+      ]
+    }
+  ],
+  "completedHtml": "<h3>Survey Complete</h3>"
+}
