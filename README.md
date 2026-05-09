@@ -26,6 +26,7 @@ Ensure that your Node.js is up to date, if not, follow this link to install the 
 https://nodejs.org/en/download
 
 (When prompted, check the box to install all necessary tools)
+
 NOTE: you may need to restart your IDE after installing Node.js
 
 If an error pops up after completing the steps above, type this command in:
