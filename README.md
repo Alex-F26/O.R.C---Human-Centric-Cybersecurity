@@ -18,3 +18,6 @@ If you are developing a production application, we recommend using TypeScript wi
 ## Dependencies
 
 Use 'npm install survey-react-ui survey-core' in your IDE to install the dependencies.
+
+If an error pops up, type this command in:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
