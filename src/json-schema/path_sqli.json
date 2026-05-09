@@ -1,0 +1,133 @@
+{
+  "pages": [
+    {
+      "name": "sqli_1",
+      "title": "Path A — SQL Injection | Step 1: ???",
+      "visibleIf": "{chosen_path} = 'sqli'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_context",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_fingerprint",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "manual_quote",   "text": "reeee [costs 1 min]" },
+            { "value": "sqlmap_detect",  "text": "reeee [costs 2 min]" },
+            { "value": "burp_intercept", "text": "reeee [costs 3 min]" },
+            { "value": "source_view",    "text": "reeee [costs 1 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sqli_2",
+      "title": "Path A — SQL Injection | Step 2: ???",
+      "visibleIf": "{chosen_path} = 'sqli'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_error",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_exploit",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "auth_bypass",  "text": "reeee [costs 1 min]" },
+            { "value": "union_select", "text": "reeee [costs 3 min]" },
+            { "value": "sqlmap_full",  "text": "reeee [costs 4 min]" },
+            { "value": "blind_sqli",   "text": "reeee [costs 5 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sqli_3",
+      "title": "Path A — SQL Injection | Step 3: ???",
+      "visibleIf": "{chosen_path} = 'sqli'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_dump",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_account",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "admin",            "text": "reeee [costs 2 min]" },
+            { "value": "jsmith",           "text": "reeee [costs 2 min]" },
+            { "value": "svc_transfer_xk9", "text": "reeee [costs 0 min]" },
+            { "value": "root",             "text": "reeee [costs 5 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sqli_branch_dead",
+      "title": "Path A — SQL Injection | THIS IS YOUR BRANCH STRUCTURE",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'admin' or {sqli_account} = 'root')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_dead_end",
+          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_dead_end_choice",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_svc",   "text": "reeee [costs 3 min]" },
+            { "value": "switch_path", "text": "reeee [costs 5 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sqli_4",
+      "title": "Path A — SQL Injection | Step 4: ???",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_account} = 'jsmith' or {sqli_dead_end_choice} = 'retry_svc')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_login_success",
+          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_final",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "immediate_transfer", "text": "reeee [costs 1 min]" },
+            { "value": "recon_more",         "text": "reeee [costs 3 min]" },
+            { "value": "cover_tracks",       "text": "reeee [costs 4 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sqli_fail",
+      "title": "Path A — SQL Injection | failed",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_final} = 'immediate_transfer' or {sqli_final} = 'recon_more' or {sqli_final} = 'cover_tracks')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_win",
+          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+        }
+      ]
+    }
+  ]
+}

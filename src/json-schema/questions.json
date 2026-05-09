@@ -1,0 +1,67 @@
+{
+  "pages": [
+    {
+      "name": "questions_1",
+      "title": "q1",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_context",
+          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+        },
+        {
+          "type": "comment",
+          "name": "csrf_recon",
+          "title": "literally why",
+          "isRequired": true,
+          "choices": [
+            { "value": "burp_csrf",     "text": "why not?" }
+        
+          ]
+        }
+      ]
+    },
+    {
+      "name": "questions_2",
+      "title": "q2",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_context",
+          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+        },
+        {
+          "type": "comment",
+          "name": "csrf_recon",
+          "title": "literally why",
+          "isRequired": true,
+          "choices": [
+            { "value": "burp_csrf",     "text": "why not?" }
+            
+          ]
+        }
+      ]
+    },
+    {
+      "name": "questions_3",
+      "title": "q3",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_context",
+          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+        },
+        {
+          "type": "comment",
+          "name": "csrf_recon",
+          "title": "literally why",
+          "isRequired": true,
+          "choices": [
+            { "value": "burp_csrf",     "text": "why not?" }
+            
+          ]
+        }
+      ]
+    }
+  ]
+}

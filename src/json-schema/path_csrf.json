@@ -1,0 +1,133 @@
+{
+  "pages": [
+    {
+      "name": "csrf_1",
+      "title": "Path C — CSRF Attack | Step 1: ???",
+      "visibleIf": "{chosen_path} = 'csrf'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_context",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_recon",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "burp_csrf",     "text": "reeee [costs 2 min]" },
+            { "value": "manual_review", "text": "reeee [costs 1 min]" },
+            { "value": "check_cookies", "text": "reeee [costs 1 min]" },
+            { "value": "owasp_zap",     "text": "reeee [costs 3 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "csrf_2",
+      "title": "Path C — CSRF Attack | Step 2: ???",
+      "visibleIf": "{chosen_path} = 'csrf'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_confirmed",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_payload",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "auto_form",      "text": "reeee [costs 1 min]" },
+            { "value": "img_tag",        "text": "reeee [costs 2 min]" },
+            { "value": "fetch_api",      "text": "reeee [costs 2 min]" },
+            { "value": "xmlhttprequest", "text": "reeee [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "csrf_branch_img",
+      "title": "Path C — CSRF Attack | THIS IS YOUR BRANCH STRUCTURE",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_img_fail",
+          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_img_choice",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "fix_form",  "text": "reeee [costs 2 min]" },
+            { "value": "fix_fetch", "text": "reeee [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "csrf_3",
+      "title": "Path C — CSRF Attack | Step 3: ???",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'fetch_api' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_img_choice} = 'fix_fetch')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_payload_ready",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_delivery",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "phish_cfo",        "text": "reeee [costs 2 min]" },
+            { "value": "phish_ops",        "text": "reeee [costs 2 min]" },
+            { "value": "internal_post",    "text": "reeee [costs 3 min]" },
+            { "value": "wait_and_monitor", "text": "reeee [costs 5 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "csrf_4",
+      "title": "Path C — CSRF Attack | Step 4: ???",
+      "visibleIf": "{chosen_path} = 'csrf'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_triggered",
+          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_final",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "second_csrf",    "text": "reeee [costs 2 min]" },
+            { "value": "session_hijack", "text": "reeee [costs 3 min]" },
+            { "value": "wait_auto",      "text": "reeee [costs 5 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "csrf_success",
+      "title": "Path C — CSRF Attack | SUCCESS",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'session_hijack' or {csrf_final} = 'wait_auto')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_win",
+          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+        }
+      ]
+    }
+  ]
+}

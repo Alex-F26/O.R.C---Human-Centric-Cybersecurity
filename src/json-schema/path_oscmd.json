@@ -1,0 +1,133 @@
+{
+  "pages": [
+    {
+      "name": "oscmd_1",
+      "title": "Path B — OS Command Injection | Step 1: ???",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_context",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_discover",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "semicolon_id",  "text": "reeee [costs 1 min]" },
+            { "value": "burp_scan",     "text": "reeee [costs 3 min]" },
+            { "value": "pipe_whoami",   "text": "reeee [costs 1 min]" },
+            { "value": "commix_auto",   "text": "reeee [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oscmd_2",
+      "title": "Path B — OS Command Injection | Step 2: ???",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_confirmed",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_shell",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "bash_reverse",   "text": "reeee [costs 2 min]" },
+            { "value": "python_reverse", "text": "reeee [costs 2 min]" },
+            { "value": "nc_mkfifo",      "text": "reeee [costs 3 min]" },
+            { "value": "web_shell",      "text": "reeee [costs 4 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oscmd_3",
+      "title": "Path B — OS Command Injection | Step 3: ???",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_shell_ok",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_privesc",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "read_config", "text": "reeee [costs 1 min]" },
+            { "value": "suid_abuse",  "text": "reeee [costs 3 min]" },
+            { "value": "sudo_check",  "text": "reeee [costs 1 min]" },
+            { "value": "cron_hijack", "text": "reeee [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oscmd_branch_suid",
+      "title": "Path B — OS Command Injection | THIS IS YOUR BRANCH STRUCTURE",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_privesc} = 'suid_abuse'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_suid_result",
+          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_suid_choice",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "fall_config", "text": "reeee [costs 2 min]" },
+            { "value": "fall_cron",   "text": "reeee [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oscmd_4",
+      "title": "Path B — OS Command Injection | Step 4: ???",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_privesc} = 'read_config' or {oscmd_privesc} = 'sudo_check' or {oscmd_privesc} = 'cron_hijack' or {oscmd_suid_choice} = 'fall_config' or {oscmd_suid_choice} = 'fall_cron')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_db_creds",
+          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_final",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "insert_transfer", "text": "reeee [costs 1 min]" },
+            { "value": "steal_session",   "text": "reeee [costs 2 min]" },
+            { "value": "update_balance",  "text": "reeee [costs 3 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oscmd_fail",
+      "title": "Path B — OS Command Injection | failed",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_final} = 'insert_transfer' or {oscmd_final} = 'steal_session' or {oscmd_final} = 'update_balance')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_win",
+          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+        }
+      ]
+    }
+  ]
+}

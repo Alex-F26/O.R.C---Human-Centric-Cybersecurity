@@ -1,0 +1,133 @@
+{
+  "pages": [
+    {
+      "name": "xss_1",
+      "title": "Path D — XSS Attack | Step 1: ???",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_context",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_discover",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "basic_alert",   "text": "reeee[costs 1 min]" },
+            { "value": "dom_inspect",   "text": "reeee[costs 2 min]" },
+            { "value": "burp_xss",      "text": "reeee[costs 3 min]" },
+            { "value": "event_handler", "text": "reeee[costs 1 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_2",
+      "title": "Path D — XSS Attack | Step 2: ???",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_confirmed",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_payload",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "cookie_steal", "text": "reeee[costs 1 min]" },
+            { "value": "keylogger",    "text": "reeee[costs 4 min]" },
+            { "value": "beef_hook",    "text": "reeee[costs 3 min]" },
+            { "value": "localstorage", "text": "reeee[costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_branch_keylogger",
+      "title": "Path D — XSS Attack | THIS IS YOUR BRANCH STRUCTURE",
+      "visibleIf": "{chosen_path} = 'xss' and {xss_payload} = 'keylogger'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_keylogger_result",
+          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_keylogger_choice",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "switch_cookie",  "text": "reeee[costs 2 min]" },
+            { "value": "switch_storage", "text": "reeee[costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_3",
+      "title": "Path D — XSS Attack | Step 3: ???",
+      "visibleIf": "{chosen_path} = 'xss' and ({xss_payload} = 'cookie_steal' or {xss_payload} = 'beef_hook' or {xss_payload} = 'localstorage' or {xss_keylogger_choice} = 'switch_cookie' or {xss_keylogger_choice} = 'switch_storage')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_exfil_setup",
+          "html": "<div class='orc-context'><strong>context</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_trigger",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "urgent_title",  "text": "reeee[costs 1 min]" },
+            { "value": "email_notify",  "text": "reeee[costs 2 min]" },
+            { "value": "mass_ticket",   "text": "reeee[costs 3 min, raises noise]" },
+            { "value": "wait_organic",  "text": "reeee[costs 4 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_4",
+      "title": "Path D — XSS Attack | Step 4: ???",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_token_received",
+          "html": "<div class='orc-context orc-success'><strong>context</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_final",
+          "title": "question?",
+          "isRequired": true,
+          "choices": [
+            { "value": "cookie_inject", "text": "reeee[costs 1 min]" },
+            { "value": "curl_api",      "text": "reeee[costs 2 min]" },
+            { "value": "burp_replay",   "text": "reeee[costs 2 min]" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_fail",
+      "title": "Path D — XSS Attack | failed",
+      "visibleIf": "{chosen_path} = 'xss' and ({xss_final} = 'cookie_inject' or {xss_final} = 'curl_api' or {xss_final} = 'burp_replay')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_win",
+          "html": "<div class='orc-context orc-win'><strong>context</em></div>"
+        }
+      ]
+    }
+  ]
+}
