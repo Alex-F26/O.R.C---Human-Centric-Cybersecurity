@@ -1,131 +1,552 @@
 {
   "pages": [
     {
-      "name": "xss_1",
-      "title": "Path D — XSS Attack | Step 1: ???",
+      "name": "xss_intro",
+      "title": "Path C — Cross-Site Scripting | Mission Brief",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
-          "name": "xss_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
-        },
+          "name": "xss_brief",
+          "html": "<div class='orc-context'>The internal portal at <code>192.168.1.55</code> has a forum-like section where employees post announcements and IT tickets. If any user input is reflected back onto the page without sanitization, you may be able to inject a script that runs in other users' browsers — including privileged ones.</div>"
+        }
+      ]
+    },
+    {
+      "name": "xss_q1",
+      "title": "Path C — Cross-Site Scripting | Step 1",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
         {
           "type": "radiogroup",
-          "name": "xss_discover",
-          "title": "question?",
+          "name": "xss_q1",
+          "title": "Alright, you're staring at a forum page. There are posts, a comment section, and a search bar. You haven't touched anything yet. What do you do first?",
           "isRequired": true,
           "choices": [
-            { "value": "basic_alert",   "text": "reeee[costs 1 min]" },
-            { "value": "dom_inspect",   "text": "reeee[costs 2 min]" },
-            { "value": "burp_xss",      "text": "reeee[costs 3 min]" },
-            { "value": "event_handler", "text": "reeee[costs 1 min]" }
+            {
+              "value": "nmap_scan",
+              "text": "Fire up Nmap against the server — see what else is open on this box [Run Nmap] [costs 8 min]"
+            },
+            {
+              "value": "run_sqlmap",
+              "text": "Point sqlmap at the URL and let it do its thing [Run sqlmap] [costs 22 min]"
+            },
+            {
+              "value": "search_cves",
+              "text": "Look up the forum software online and see if there are any known exploits for it [Search CVEs] [costs 18 min]"
+            },
+            {
+              "value": "browse_manually",
+              "text": "Just browse around — read some posts, click everything, note every input field that reflects your data back [Manual Recon] [costs 5 min]"
+            }
           ]
         }
       ]
     },
     {
-      "name": "xss_2",
-      "title": "Path D — XSS Attack | Step 2: ???",
+      "name": "xss_q2",
+      "title": "Path C — Cross-Site Scripting | Step 1 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss' and {xss_q1} = 'browse_manually'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q2",
+          "title": "The search bar is spitting your input right back onto the page in the URL and in the results heading. What do you do with that?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "log_surface",
+              "text": "Note it as a second potential XSS surface and keep browsing [Log Surface] [+3 min bonus]"
+            },
+            {
+              "value": "pivot_sqlmap",
+              "text": "Forget the search bar — pull up sqlmap on the login form and pivot to SQL injection [Run sqlmap] [costs 14 min]"
+            },
+            {
+              "value": "ignore_search",
+              "text": "Ignore it — search bars always echo your query back, nothing unusual [Continue] [costs 5 min]"
+            },
+            {
+              "value": "fingerprint_stack",
+              "text": "Use the URL structure to fingerprint the backend framework [Fingerprint Stack] [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q3",
+      "title": "Path C — Cross-Site Scripting | Step 2",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q3",
+          "title": "You find a comment box under each post. You drop a comment and it shows up instantly without the page reloading. Before you start throwing payloads at it, what's the smart move?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "inject_script",
+              "text": "Go straight for it — post a script tag payload and see what happens [Inject <script>alert(document.cookie)</script>] [costs 15 min]"
+            },
+            {
+              "value": "burp_intercept",
+              "text": "Intercept the POST request and look at what headers come back from the server [Burp Suite Intercept] [costs 5 min]"
+            },
+            {
+              "value": "benign_test",
+              "text": "Post something harmless then right-click → view source to see how the app handles your input in the HTML [Inject <b>test</b> → View Source] [costs 1 min]"
+            },
+            {
+              "value": "fuzz_length",
+              "text": "Paste a huge block of text to probe the character limit [Fuzz Input Length] [costs 7 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q4",
+      "title": "Path C — Cross-Site Scripting | Step 2 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q4",
+          "title": "Your harmless tag came back bold on the page. Tags are going through raw. What now?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "fire_payload",
+              "text": "That's enough — fire the real payload now [Inject Cookie Stealer] [costs 12 min]"
+            },
+            {
+              "value": "test_search",
+              "text": "Run the same test in the search bar to compare [Test Search Input] [costs 4 min]"
+            },
+            {
+              "value": "test_event_handler",
+              "text": "Test an event handler next — confirm JavaScript actually runs before escalating [Inject <img src=x onerror=alert(1)>] [costs 1 min]"
+            },
+            {
+              "value": "document_finding",
+              "text": "Write it up and move on [Document Finding] [costs 9 min]"
+            },
+            {
+              "value": "pivot_os_injection",
+              "text": "This is taking too long — fuzz the login form for OS injection instead [Fuzz Login → OS Injection] [costs 22 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q5",
+      "title": "Path C — Cross-Site Scripting | Step 3",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q5",
+          "title": "The comment box looks promising. You also noticed the forum shows a username next to every comment, and there's a profile page at /user/profile with an editable bio field. What do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "focus_comment",
+              "text": "Stick with the comment box — it's already showing signs [Focus Comment Box] [costs 8 min]"
+            },
+            {
+              "value": "map_surfaces",
+              "text": "Map every place user input shows up — comment body, username display, bio field — before testing any of them [Map All Input Surfaces] [costs 2 min]"
+            },
+            {
+              "value": "stress_test",
+              "text": "Make a bunch of test accounts and spam the comment section [Stress Test Server] [costs 20 min]"
+            },
+            {
+              "value": "enumerate_dirs",
+              "text": "Check robots.txt and sitemap.xml first — there might be admin pages [Enumerate Directories] [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q6",
+      "title": "Path C — Cross-Site Scripting | Step 4",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q6",
+          "title": "It must've been XSS... What now?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "run_dirb",
+              "text": "Investigate the website links and directories [Run Dirb] [costs 8 min]"
+            },
+            {
+              "value": "pivot_sqli",
+              "text": "You triggered a SQL error through the image tag [Pivot to SQL Injection] [costs 1 min]"
+            },
+            {
+              "value": "change_xss_query",
+              "text": "Let's redirect it to one of our webpages [Change XSS Query] [costs 0 min]"
+            },
+            {
+              "value": "retry_payload",
+              "text": "The broken image means the payload got blocked — try a different tag [Retry Different Payload] [costs 12 min]"
+            },
+            {
+              "value": "pivot_csrf",
+              "text": "XSS feels like a dead end — jump to CSRF and look for state-changing requests instead [Jump to CSRF] [costs 20 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q7",
+      "title": "Path C — Cross-Site Scripting | Step 4 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss' and {xss_q6} = 'change_xss_query'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q7",
+          "title": "Cookies are showing HttpOnly. What's your next move?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "proceed_exfil",
+              "text": "Carry on — HttpOnly is just a display label, your script still has full access [Proceed with Cookie Exfil] [costs 10 min]"
+            },
+            {
+              "value": "decode_cookie",
+              "text": "Try to decrypt the cookie value before using it [Attempt Cookie Decode] [costs 8 min]"
+            },
+            {
+              "value": "build_phish_form",
+              "text": "Ditch the cookie exfil plan — build a fake login form to grab credentials directly [Build Phishing Form] [+4 min bonus]"
+            },
+            {
+              "value": "continue_exfil",
+              "text": "Proceed as planned — HttpOnly only blocks external domains, you're on the same domain [Continue Exfil] [costs 9 min]"
+            },
+            {
+              "value": "pivot_csrf_httponly",
+              "text": "HttpOnly kills the XSS plan entirely — pivot to CSRF instead [Jump to CSRF] [costs 15 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q8",
+      "title": "Path C — Cross-Site Scripting | Step 5",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q8",
+          "title": "You log out, sign into a second test account, and go back to the same post. The broken image is still there and the alert fires again for this new account too. What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "build_reflected_link",
+              "text": "Craft a malicious link with the payload in the URL and send it to a target [Build Reflected XSS Link] [costs 8 min]"
+            },
+            {
+              "value": "inspect_dom",
+              "text": "Look for the payload being processed client-side in browser dev tools [Inspect DOM] [costs 10 min]"
+            },
+            {
+              "value": "hunt_second_order",
+              "text": "Search the rest of the app for where else this payload might surface [Hunt Second-Order Trigger] [costs 5 min]"
+            },
+            {
+              "value": "escalate_stored",
+              "text": "Confirm it's stored XSS — the payload is in their database firing for every visitor. Start building the real payload [Escalate to Stored XSS] [costs 0 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q9",
+      "title": "Path C — Cross-Site Scripting | Step 6",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q9",
+          "title": "The forum has four channels: General Discussion, IT Support, Finance Team, and HR Announcements. You want as many people hitting your payload as possible. Where do you plant it?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "finance_channel",
+              "text": "Finance Team — high value targets, quality over quantity [Post to Finance Channel] [costs 6 min]"
+            },
+            {
+              "value": "general_discussion",
+              "text": "General Discussion — busiest channel, more eyeballs means more credentials [Post to General Discussion] [costs 1 min]"
+            },
+            {
+              "value": "it_support",
+              "text": "IT Support — IT staff are the most security-aware, low yield [Post to IT Support] [costs 4 min]"
+            },
+            {
+              "value": "all_channels",
+              "text": "All of them at once — blanket coverage, maximum reach [Post to All Channels] [costs 14 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q10",
+      "title": "Path C — Cross-Site Scripting | Step 6 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss' and {xss_q9} = 'general_discussion'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q10",
+          "title": "There's a pinned welcome post at the top of General Discussion. Every new hire gets sent here on day one. Where do you drop the payload?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "skip_pinned",
+              "text": "Skip it — pinned posts are probably locked for comments [Skip Pinned Post] [costs 5 min]"
+            },
+            {
+              "value": "post_elsewhere",
+              "text": "Avoid it — pinned posts get moderated heavily, too risky [Post Elsewhere] [costs 3 min]"
+            },
+            {
+              "value": "inject_welcome",
+              "text": "Right there in the welcome post — every new hire triggers it automatically [Inject Welcome Post] [+3 min bonus]"
+            },
+            {
+              "value": "enumerate_links",
+              "text": "Check the post for other links and surfaces first [Enumerate Post Links] [costs 4 min]"
+            },
+            {
+              "value": "pivot_os",
+              "text": "This forum approach is too slow — go after the server directly [Pivot to OS Injection] [costs 25 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q11",
+      "title": "Path C — Cross-Site Scripting | Step 7",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q11",
+          "title": "Okay, time to get real. You need credentials. You've confirmed XSS, cookies are off the table thanks to HttpOnly. What's your payload?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "location_redirect",
+              "text": "Redirect everyone to an external fake login page you control [document.location Redirect] [costs 16 min]"
+            },
+            {
+              "value": "inject_phish_form",
+              "text": "Inject a fake session-expired login form directly into the page — silent credential capture, page restores after submit [Inject Phishing Form] [costs 1 min]"
+            },
+            {
+              "value": "inject_keylogger",
+              "text": "Drop a keylogger that ships everything typed on the page to your listener [Inject Keylogger] [costs 7 min]"
+            },
+            {
+              "value": "beef_hook",
+              "text": "Hook the browser and handle it interactively from your end [BeEF Hook] [costs 10 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q12",
+      "title": "Path C — Cross-Site Scripting | Step 7 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q12",
+          "title": "Your listener just caught user=jsmith&pass=Winter2024!. The user has no idea. What do you do with this?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "validate_forum",
+              "text": "Test it against the forum login to confirm it's valid [Validate on Forum] [costs 6 min]"
+            },
+            {
+              "value": "analyze_format",
+              "text": "Check if the password format looks like a corporate pattern other accounts might follow [Analyze Credential Format] [costs 0 min]"
+            },
+            {
+              "value": "test_vpn",
+              "text": "Try it against the VPN portal immediately [Test on VPN] [costs 12 min]"
+            },
+            {
+              "value": "queue_harvest",
+              "text": "Add it to the harvest list and wait for more before acting [Queue for Later] [costs 4 min]"
+            },
+            {
+              "value": "pivot_csrf_cred",
+              "text": "One credential isn't enough — pivot to CSRF to target the finance approval workflow [Jump to CSRF] [costs 18 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q13",
+      "title": "Path C — Cross-Site Scripting | Step 8",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q13",
+          "title": "Forty-eight hours later you've got 23 sets of credentials sitting in your listener. Before you start trying anything, what do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "stuff_vpn",
+              "text": "Hammer the VPN portal with all 23 right now [Credential Stuff VPN] [costs 20 min]"
+            },
+            {
+              "value": "validate_forum_all",
+              "text": "Test them against the forum login first to confirm they're valid [Validate on Forum] [costs 7 min]"
+            },
+            {
+              "value": "analyze_list",
+              "text": "Go through the list — flag usernames suggesting IT or admin roles, note password patterns, prioritize before touching anything [Analyze Credential List] [costs 2 min]"
+            },
+            {
+              "value": "sort_reuse",
+              "text": "Sort by duplicate passwords first — reuse indicates low security awareness [Sort by Password Reuse] [costs 4 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q14",
+      "title": "Path C — Cross-Site Scripting | Step 9",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q14",
+          "title": "Three accounts jumped out: jsmith in Finance, it.admin01 in IT, and hr.director in HR. You want into something privileged. Where do you start?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "test_vpn_all",
+              "text": "Try all three against the VPN — broad network access if it works [Test Credentials on VPN] [costs 5 min]"
+            },
+            {
+              "value": "check_forum_perms",
+              "text": "Head back to the forum to check if any of these accounts have elevated board permissions [Check Forum Permissions] [costs 25 min]"
+            },
+            {
+              "value": "try_it_admin",
+              "text": "Try it.admin01 on the email portal — IT inboxes are goldmines for resets and internal access [Test it.admin01 on Email Portal] [costs 1 min]"
+            },
+            {
+              "value": "try_hr_director",
+              "text": "Go for hr.director on the HR self-service portal — employee records and payroll are high value [Test hr.director on HR Portal] [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q15",
+      "title": "Path C — Cross-Site Scripting | Step 9 Follow-up",
+      "visibleIf": "{chosen_path} = 'xss' and {xss_q14} = 'try_it_admin'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q15",
+          "title": "You start testing your accounts against the VPN portal, email login, and HR self-service. One by one they bounce back — wrong password, account locked, invalid credentials. The rest of the 23 don't do much better. A few forum logins work but nothing with real access. You've been at this a while. What do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "redeploy_payload",
+              "text": "Go back and plant a second payload — bigger harvest, another shot at it [Re-deploy XSS Payload] [costs 28 min]"
+            },
+            {
+              "value": "bruteforce_vpn",
+              "text": "Start brute-forcing the VPN with the harvested usernames and a common password list [Brute Force VPN] [costs 35 min]"
+            },
+            {
+              "value": "expand_testing",
+              "text": "Try the credentials against every other service you can find — wiki, ticketing, dev portals [Expand Credential Testing] [costs 12 min]"
+            }
+            
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q16",
+      "title": "Path C — Cross-Site Scripting | Step 10",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "xss_q16",
+          "title": "None of the 23 credentials cracked a privileged account. The XSS is real, the harvest worked, but this isn't the path to full compromise. What do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "xss_payload2",
+              "text": "Go back and plant a second payload — bigger harvest, another shot at it [Re-deploy XSS Payload] [costs 2 min]"
+            },
+            {
+              "value": "bruteforce_2",
+              "text": "Start brute-forcing the VPN with the harvested usernames and a common password list [Brute Force VPN] [costs 5 min]"
+            },
+            {
+              "value": "keep_stuffing",
+              "text": "Keep testing credentials against every service you can find [Continue Credential Stuffing] [costs 5 min]"
+            },
+            {
+              "value": "document_pivot_csrf",
+              "text": "Document the findings — stored XSS confirmed, 23 credentials harvested, no privilege escalation achieved — then pivot to a more promising vector [Document Findings] [costs 0 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_result",
+      "title": "Path C — Cross-Site Scripting | Dead End",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
-          "name": "xss_confirmed",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "name": "xss_fail_context",
+          "html": "<div class='orc-context orc-fail'><strong>Dead End.</strong><br><br>The XSS path was real — stored XSS confirmed in the comment section, 23 credentials harvested, every accessible service tested. But this vector doesn't reach a privileged account. There's no win condition here. Where do you go from here?</div>"
         },
         {
           "type": "radiogroup",
-          "name": "xss_payload",
-          "title": "question?",
+          "name": "xss_pivot",
+          "title": "Pick your next path.",
           "isRequired": true,
           "choices": [
-            { "value": "cookie_steal", "text": "reeee[costs 1 min]" },
-            { "value": "keylogger",    "text": "reeee[costs 4 min]" },
-            { "value": "beef_hook",    "text": "reeee[costs 3 min]" },
-            { "value": "localstorage", "text": "reeee[costs 2 min]" }
+            
+            {
+              "value": "close_path",
+              "text": "Document the XSS vulnerability and credential harvest as standalone findings and close out the path [Document & Close Path]"
+            }
           ]
-        }
-      ]
-    },
-    {
-      "name": "xss_branch_keylogger",
-      "title": "Path D — XSS Attack | THIS IS YOUR BRANCH STRUCTURE",
-      "visibleIf": "{chosen_path} = 'xss' and {xss_payload} = 'keylogger'",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_keylogger_result",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_keylogger_choice",
-          "title": "question?",
-          "isRequired": true,
-          "choices": [
-            { "value": "switch_cookie",  "text": "reeee[costs 2 min]" },
-            { "value": "switch_storage", "text": "reeee[costs 2 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_3",
-      "title": "Path D — XSS Attack | Step 3: ???",
-      "visibleIf": "{chosen_path} = 'xss' and ({xss_payload} = 'cookie_steal' or {xss_payload} = 'beef_hook' or {xss_payload} = 'localstorage' or {xss_keylogger_choice} = 'switch_cookie' or {xss_keylogger_choice} = 'switch_storage')",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_exfil_setup",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_trigger",
-          "title": "question?",
-          "isRequired": true,
-          "choices": [
-            { "value": "urgent_title",  "text": "reeee[costs 1 min]" },
-            { "value": "email_notify",  "text": "reeee[costs 2 min]" },
-            { "value": "mass_ticket",   "text": "reeee[costs 3 min, raises noise]" },
-            { "value": "wait_organic",  "text": "reeee[costs 4 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_4",
-      "title": "Path D — XSS Attack | Step 4: ???",
-      "visibleIf": "{chosen_path} = 'xss'",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_token_received",
-          "html": "<div class='orc-context orc-success'><strong>context</div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_final",
-          "title": "question?",
-          "isRequired": true,
-          "choices": [
-            { "value": "cookie_inject", "text": "reeee[costs 1 min]" },
-            { "value": "curl_api",      "text": "reeee[costs 2 min]" },
-            { "value": "burp_replay",   "text": "reeee[costs 2 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_fail",
-      "title": "Path D — XSS Attack | failed",
-      "visibleIf": "{chosen_path} = 'xss' and ({xss_final} = 'cookie_inject' or {xss_final} = 'curl_api' or {xss_final} = 'burp_replay')",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_win",
-          "html": "<div class='orc-context orc-win'><strong>context</em></div>"
         }
       ]
     }
