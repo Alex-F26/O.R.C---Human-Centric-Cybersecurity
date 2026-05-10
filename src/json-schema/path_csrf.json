@@ -2,130 +2,130 @@
   "pages": [
     {
       "name": "csrf_1",
-      "title": "Path C — CSRF Attack | Step 1: ???",
+      "title": "Path C — CSRF Attack | Step 1: Map the Target",
       "visibleIf": "{chosen_path} = 'csrf'",
       "elements": [
         {
           "type": "html",
           "name": "csrf_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The internal transfer portal at <code>192.168.1.55</code> lets authenticated employees initiate and approve transfers. If the portal doesn't properly verify that requests originate from legitimate user actions, you may be able to trick an authenticated user into submitting one on your behalf.</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_recon",
-          "title": "question?",
+          "title": "How do you investigate whether the portal is vulnerable?",
           "isRequired": true,
           "choices": [
-            { "value": "burp_csrf",     "text": "reeee [costs 2 min]" },
-            { "value": "manual_review", "text": "reeee [costs 1 min]" },
-            { "value": "check_cookies", "text": "reeee [costs 1 min]" },
-            { "value": "owasp_zap",     "text": "reeee [costs 3 min]" }
+            { "value": "burp_csrf",     "text": "Intercept a legitimate transfer request and inspect every field it contains [costs 2 min]" },
+            { "value": "manual_review", "text": "Browse the portal manually and look at how forms are structured [costs 1 min]" },
+            { "value": "check_cookies", "text": "Examine the session cookies — check how they're scoped and whether they'd travel cross-origin [costs 1 min]" },
+            { "value": "owasp_zap",     "text": "Run an automated scanner to flag missing protections [costs 3 min]" }
           ]
         }
       ]
     },
     {
       "name": "csrf_2",
-      "title": "Path C — CSRF Attack | Step 2: ???",
+      "title": "Path C — CSRF Attack | Step 2: Build the Payload",
       "visibleIf": "{chosen_path} = 'csrf'",
       "elements": [
         {
           "type": "html",
           "name": "csrf_confirmed",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The transfer form has no unpredictable token — the request contains only the amount and destination account. The session cookie is not scoped to restrict cross-origin use. The portal will accept a forged request as long as it comes from an authenticated session. Now you need to craft something that triggers it.</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_payload",
-          "title": "question?",
+          "title": "How do you build the forged request?",
           "isRequired": true,
           "choices": [
-            { "value": "auto_form",      "text": "reeee [costs 1 min]" },
-            { "value": "img_tag",        "text": "reeee [costs 2 min]" },
-            { "value": "fetch_api",      "text": "reeee [costs 2 min]" },
-            { "value": "xmlhttprequest", "text": "reeee [costs 2 min]" }
+            { "value": "auto_form",      "text": "Build a hidden form that submits automatically the moment a victim loads your page [costs 1 min]" },
+            { "value": "img_tag",        "text": "Embed the request inside an image tag — quick and easy to hide [costs 2 min]" },
+            { "value": "fetch_api",      "text": "Use a script to fire the request programmatically in the background [costs 2 min]" },
+            { "value": "xmlhttprequest", "text": "Use an older async request method for broader browser compatibility [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "csrf_branch_img",
-      "title": "Path C — CSRF Attack | THIS IS YOUR BRANCH STRUCTURE",
+      "title": "Path C — CSRF Attack | Dead End",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag'",
       "elements": [
         {
           "type": "html",
           "name": "csrf_img_fail",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-error'>The transfer endpoint only accepts POST requests — the image tag approach only works with GET. The payload fires but the server rejects it. You've lost time. You'll need to switch to something that can send a proper POST.</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_img_choice",
-          "title": "question?",
+          "title": "What do you switch to?",
           "isRequired": true,
           "choices": [
-            { "value": "fix_form",  "text": "reeee [costs 2 min]" },
-            { "value": "fix_fetch", "text": "reeee [costs 2 min]" }
+            { "value": "fix_form",  "text": "Rebuild it as a hidden auto-submitting form [costs 2 min]" },
+            { "value": "fix_fetch", "text": "Rebuild it as a background script request [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "csrf_3",
-      "title": "Path C — CSRF Attack | Step 3: ???",
+      "title": "Path C — CSRF Attack | Step 3: Deliver the Payload",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'fetch_api' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_img_choice} = 'fix_fetch')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_payload_ready",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>Your payload page is ready. When any authenticated employee loads it, a transfer will fire from their session without them knowing. Now you need to get the right person to open it.</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_delivery",
-          "title": "question?",
+          "title": "How do you get an authenticated user to trigger it?",
           "isRequired": true,
           "choices": [
-            { "value": "phish_cfo",        "text": "reeee [costs 2 min]" },
-            { "value": "phish_ops",        "text": "reeee [costs 2 min]" },
-            { "value": "internal_post",    "text": "reeee [costs 3 min]" },
-            { "value": "wait_and_monitor", "text": "reeee [costs 5 min]" }
+            { "value": "phish_cfo",        "text": "Send a targeted message to the CFO with a convincing pretext to click the link [costs 2 min]" },
+            { "value": "phish_ops",        "text": "Target someone in finance operations — they're likely logged into the portal constantly [costs 2 min]" },
+            { "value": "internal_post",    "text": "Post the link to an internal message board where employees are active [costs 3 min]" },
+            { "value": "wait_and_monitor", "text": "Leave the payload hosted and wait for organic traffic from someone already logged in [costs 5 min]" }
           ]
         }
       ]
     },
     {
       "name": "csrf_4",
-      "title": "Path C — CSRF Attack | Step 4: ???",
+      "title": "Path C — CSRF Attack | Step 4: Follow Through",
       "visibleIf": "{chosen_path} = 'csrf'",
       "elements": [
         {
           "type": "html",
           "name": "csrf_triggered",
-          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-success'>The payload fired. A transfer request was submitted from an authenticated employee session — they have no idea it happened. The amount went through. But one transfer may not be enough, and the window is closing. What do you do next?</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_final",
-          "title": "question?",
+          "title": "What is your next move?",
           "isRequired": true,
           "choices": [
-            { "value": "second_csrf",    "text": "reeee [costs 2 min]" },
-            { "value": "session_hijack", "text": "reeee [costs 3 min]" },
-            { "value": "wait_auto",      "text": "reeee [costs 5 min]" }
+            { "value": "second_csrf",    "text": "Target a second employee to trigger another transfer before anyone notices [costs 2 min]" },
+            { "value": "session_hijack", "text": "Pivot — try to capture the session token and take over the account directly [costs 3 min]" },
+            { "value": "wait_auto",      "text": "Leave the payload running and collect whatever fires organically [costs 5 min]" }
           ]
         }
       ]
     },
     {
       "name": "csrf_success",
-      "title": "Path C — CSRF Attack | SUCCESS",
+      "title": "Path C — CSRF Attack | Complete",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'session_hijack' or {csrf_final} = 'wait_auto')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_win",
-          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-win'><strong>// TRANSFER COMPLETE</strong><br/><br/>An authenticated employee unknowingly submitted the transfer on your behalf. They never saw it happen.<br/><br/>Path C finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

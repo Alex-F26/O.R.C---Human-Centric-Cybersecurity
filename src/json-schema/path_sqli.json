@@ -2,130 +2,130 @@
   "pages": [
     {
       "name": "sqli_1",
-      "title": "Path A — SQL Injection | Step 1: ???",
+      "title": "Path A — SQL Injection | Step 1: Fingerprint the Target",
       "visibleIf": "{chosen_path} = 'sqli'",
       "elements": [
         {
           "type": "html",
           "name": "sqli_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The internal web portal at <code>192.168.1.55</code> has a login form and an account lookup page. You suspect the inputs might not be handled safely on the backend. You need to confirm whether there's an injection point before committing time to this path.</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_fingerprint",
-          "title": "question?",
+          "title": "How do you probe the target for SQL injection?",
           "isRequired": true,
           "choices": [
-            { "value": "manual_quote",   "text": "reeee [costs 1 min]" },
-            { "value": "sqlmap_detect",  "text": "reeee [costs 2 min]" },
-            { "value": "burp_intercept", "text": "reeee [costs 3 min]" },
-            { "value": "source_view",    "text": "reeee [costs 1 min]" }
+            { "value": "manual_quote",   "text": "Manually send unexpected input to a parameter and observe how the server responds [costs 1 min]" },
+            { "value": "sqlmap_detect",  "text": "Run an automated detection scan against the login form [costs 2 min]" },
+            { "value": "burp_intercept", "text": "Intercept requests and review each parameter by hand [costs 3 min]" },
+            { "value": "source_view",    "text": "View the page source to look for hidden fields or hints about how queries are formed [costs 1 min]" }
           ]
         }
       ]
     },
     {
       "name": "sqli_2",
-      "title": "Path A — SQL Injection | Step 2: ???",
+      "title": "Path A — SQL Injection | Step 2: Exploit the Injection",
       "visibleIf": "{chosen_path} = 'sqli'",
       "elements": [
         {
           "type": "html",
           "name": "sqli_error",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The server is returning unexpected error output when you tamper with input — database internals are leaking into the response. Injection is confirmed. Now you need to turn that into something useful.</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_exploit",
-          "title": "question?",
+          "title": "What's your exploitation approach?",
           "isRequired": true,
           "choices": [
-            { "value": "auth_bypass",  "text": "reeee [costs 1 min]" },
-            { "value": "union_select", "text": "reeee [costs 3 min]" },
-            { "value": "sqlmap_full",  "text": "reeee [costs 4 min]" },
-            { "value": "blind_sqli",   "text": "reeee [costs 5 min]" }
+            { "value": "auth_bypass",  "text": "Inject a payload into the login form to authenticate without valid credentials [costs 1 min]" },
+            { "value": "union_select", "text": "Chain a secondary query to pull data from tables directly into the page response [costs 3 min]" },
+            { "value": "sqlmap_full",  "text": "Run a full automated dump of the entire database [costs 4 min]" },
+            { "value": "blind_sqli",   "text": "Use conditional server behavior to infer data one piece at a time [costs 5 min]" }
           ]
         }
       ]
     },
     {
       "name": "sqli_3",
-      "title": "Path A — SQL Injection | Step 3: ???",
+      "title": "Path A — SQL Injection | Step 3: Choose Your Target Account",
       "visibleIf": "{chosen_path} = 'sqli'",
       "elements": [
         {
           "type": "html",
           "name": "sqli_dump",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>You've pulled the user table. It contains usernames, hashed passwords, and role fields. You spot several accounts:<ul><li><code>admin</code> — role: admin</li><li><code>jsmith</code> — role: employee</li><li><code>svc_transfer_xk9</code> — role: transfer_approver</li><li><code>root</code> — role: superuser</li></ul>Which do you go after?</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_account",
-          "title": "question?",
+          "title": "Which account do you target?",
           "isRequired": true,
           "choices": [
-            { "value": "admin",            "text": "reeee [costs 2 min]" },
-            { "value": "jsmith",           "text": "reeee [costs 2 min]" },
-            { "value": "svc_transfer_xk9", "text": "reeee [costs 0 min]" },
-            { "value": "root",             "text": "reeee [costs 5 min]" }
+            { "value": "admin",            "text": "admin — sounds like the most powerful account [costs 2 min]" },
+            { "value": "jsmith",           "text": "jsmith — a real employee, low-profile, might have portal access [costs 2 min]" },
+            { "value": "svc_transfer_xk9", "text": "svc_transfer_xk9 — unusual name, but 'transfer_approver' is exactly what you need [costs 0 min]" },
+            { "value": "root",             "text": "root — if you can get in here, you own everything [costs 5 min]" }
           ]
         }
       ]
     },
     {
       "name": "sqli_branch_dead",
-      "title": "Path A — SQL Injection | THIS IS YOUR BRANCH STRUCTURE",
+      "title": "Path A — SQL Injection | Dead End",
       "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'admin' or {sqli_account} = 'root')",
       "elements": [
         {
           "type": "html",
           "name": "sqli_dead_end",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-error'>These accounts are honeypots — they have no real transfer privileges and their activity is monitored. Accessing them triggered an alert. You've burned time and drawn attention. The real target was the service account all along.</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_dead_end_choice",
-          "title": "question?",
+          "title": "What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_svc",   "text": "reeee [costs 3 min]" },
-            { "value": "switch_path", "text": "reeee [costs 5 min]" }
+            { "value": "retry_svc",   "text": "Go back and target svc_transfer_xk9 instead [costs 3 min]" },
+            { "value": "switch_path", "text": "Cut your losses and switch to a different attack path entirely [costs 5 min]" }
           ]
         }
       ]
     },
     {
       "name": "sqli_4",
-      "title": "Path A — SQL Injection | Step 4: ???",
+      "title": "Path A — SQL Injection | Step 4: Execute the Transfer",
       "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_account} = 'jsmith' or {sqli_dead_end_choice} = 'retry_svc')",
       "elements": [
         {
           "type": "html",
           "name": "sqli_login_success",
-          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-success'>You're in. The <code>svc_transfer_xk9</code> service account has transfer approval privileges and an active portal session. The transfer approval dashboard is in front of you. The clock is ticking — what do you do?</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_final",
-          "title": "question?",
+          "title": "What is your next move?",
           "isRequired": true,
           "choices": [
-            { "value": "immediate_transfer", "text": "reeee [costs 1 min]" },
-            { "value": "recon_more",         "text": "reeee [costs 3 min]" },
-            { "value": "cover_tracks",       "text": "reeee [costs 4 min]" }
+            { "value": "immediate_transfer", "text": "Initiate the transfer immediately while the session is active [costs 1 min]" },
+            { "value": "recon_more",         "text": "Spend more time mapping the portal — there might be higher-value targets [costs 3 min]" },
+            { "value": "cover_tracks",       "text": "Clear logs and establish persistence before touching anything [costs 4 min]" }
           ]
         }
       ]
     },
     {
       "name": "sqli_fail",
-      "title": "Path A — SQL Injection | failed",
+      "title": "Path A — SQL Injection | Complete",
       "visibleIf": "{chosen_path} = 'sqli' and ({sqli_final} = 'immediate_transfer' or {sqli_final} = 'recon_more' or {sqli_final} = 'cover_tracks')",
       "elements": [
         {
           "type": "html",
           "name": "sqli_win",
-          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-win'><strong>// TRANSFER INITIATED</strong><br/><br/>The unauthorized transfer was approved through the <code>svc_transfer_xk9</code> service account. The injection chain is complete.<br/><br/>Path A finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

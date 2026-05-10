@@ -2,130 +2,130 @@
   "pages": [
     {
       "name": "xss_1",
-      "title": "Path D — XSS Attack | Step 1: ???",
+      "title": "Path D — XSS Attack | Step 1: Find an Injection Surface",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
           "name": "xss_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The internal portal at <code>192.168.1.55</code> has a forum-like section where employees post announcements and IT tickets. If any user input is reflected back onto the page without sanitization, you may be able to inject a script that runs in other users' browsers — including privileged ones.</div>"
         },
         {
           "type": "radiogroup",
           "name": "xss_discover",
-          "title": "question?",
+          "title": "How do you look for an injectable input surface?",
           "isRequired": true,
           "choices": [
-            { "value": "basic_alert",   "text": "reeee[costs 1 min]" },
-            { "value": "dom_inspect",   "text": "reeee[costs 2 min]" },
-            { "value": "burp_xss",      "text": "reeee[costs 3 min]" },
-            { "value": "event_handler", "text": "reeee[costs 1 min]" }
+            { "value": "basic_alert",   "text": "Post a simple test payload into a comment field and see if it executes in the page [costs 1 min]" },
+            { "value": "dom_inspect",   "text": "Use browser dev tools to trace how input flows into the DOM before testing anything [costs 2 min]" },
+            { "value": "burp_xss",      "text": "Run an automated XSS scanner across all input fields [costs 3 min]" },
+            { "value": "event_handler", "text": "Try injecting into an attribute context instead of a tag context [costs 1 min]" }
           ]
         }
       ]
     },
     {
       "name": "xss_2",
-      "title": "Path D — XSS Attack | Step 2: ???",
+      "title": "Path D — XSS Attack | Step 2: Choose Your Payload",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
           "name": "xss_confirmed",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>Script injection is confirmed — input you post into the comment section executes in the browser of anyone who views the page. This includes employees who are logged into the portal. Now you need to decide what you want that script to do.</div>"
         },
         {
           "type": "radiogroup",
           "name": "xss_payload",
-          "title": "question?",
+          "title": "What does your injected script do?",
           "isRequired": true,
           "choices": [
-            { "value": "cookie_steal", "text": "reeee[costs 1 min]" },
-            { "value": "keylogger",    "text": "reeee[costs 4 min]" },
-            { "value": "beef_hook",    "text": "reeee[costs 3 min]" },
-            { "value": "localstorage", "text": "reeee[costs 2 min]" }
+            { "value": "cookie_steal", "text": "Silently capture the victim's session cookie and send it to a listener you control [costs 1 min]" },
+            { "value": "keylogger",    "text": "Record everything the victim types on the page and exfiltrate it [costs 4 min]" },
+            { "value": "beef_hook",    "text": "Hook the victim's browser into a remote control framework [costs 3 min]" },
+            { "value": "localstorage", "text": "Read tokens or credentials stored in the browser's local storage [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "xss_branch_keylogger",
-      "title": "Path D — XSS Attack | THIS IS YOUR BRANCH STRUCTURE",
+      "title": "Path D — XSS Attack | Dead End",
       "visibleIf": "{chosen_path} = 'xss' and {xss_payload} = 'keylogger'",
       "elements": [
         {
           "type": "html",
           "name": "xss_keylogger_result",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-error'>The keylogger is recording input, but most of what comes through is noise — form field text, search queries, nothing that gives you portal access. Employees aren't re-entering their passwords on this page. You've spent time waiting for data that isn't coming. You need a different payload strategy.</div>"
         },
         {
           "type": "radiogroup",
           "name": "xss_keylogger_choice",
-          "title": "question?",
+          "title": "What do you switch to?",
           "isRequired": true,
           "choices": [
-            { "value": "switch_cookie",  "text": "reeee[costs 2 min]" },
-            { "value": "switch_storage", "text": "reeee[costs 2 min]" }
+            { "value": "switch_cookie",  "text": "Switch to capturing the session cookie instead [costs 2 min]" },
+            { "value": "switch_storage", "text": "Switch to reading tokens from browser storage [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "xss_3",
-      "title": "Path D — XSS Attack | Step 3: ???",
+      "title": "Path D — XSS Attack | Step 3: Get a Victim to Trigger It",
       "visibleIf": "{chosen_path} = 'xss' and ({xss_payload} = 'cookie_steal' or {xss_payload} = 'beef_hook' or {xss_payload} = 'localstorage' or {xss_keylogger_choice} = 'switch_cookie' or {xss_keylogger_choice} = 'switch_storage')",
       "elements": [
         {
           "type": "html",
           "name": "xss_exfil_setup",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>Your payload is embedded in a post on the internal forum. Anyone who views it while logged in will trigger it. But you need a <em>privileged</em> user to view it — not just any employee. How do you get the right person to open the page?</div>"
         },
         {
           "type": "radiogroup",
           "name": "xss_trigger",
-          "title": "question?",
+          "title": "How do you maximize your chances of hitting a privileged user?",
           "isRequired": true,
           "choices": [
-            { "value": "urgent_title",  "text": "reeee[costs 1 min]" },
-            { "value": "email_notify",  "text": "reeee[costs 2 min]" },
-            { "value": "mass_ticket",   "text": "reeee[costs 3 min, raises noise]" },
-            { "value": "wait_organic",  "text": "reeee[costs 4 min]" }
+            { "value": "urgent_title",  "text": "Title the post something urgent — IT outage, security alert — to draw immediate attention [costs 1 min]" },
+            { "value": "email_notify",  "text": "Use another access you have to send a notification email pointing to your post [costs 2 min]" },
+            { "value": "mass_ticket",   "text": "Flood the IT board with tickets that all link back to your payload post [costs 3 min, raises noise]" },
+            { "value": "wait_organic",  "text": "Post it and wait — privileged users will eventually browse the board on their own [costs 4 min]" }
           ]
         }
       ]
     },
     {
       "name": "xss_4",
-      "title": "Path D — XSS Attack | Step 4: ???",
+      "title": "Path D — XSS Attack | Step 4: Use What You Captured",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
           "name": "xss_token_received",
-          "html": "<div class='orc-context orc-success'><strong>context</div>"
+          "html": "<div class='orc-context orc-success'>A session token just hit your listener. Based on the timing, it belongs to someone who was active in the finance section of the portal seconds before it fired. You have a live, authenticated session. How do you use it?</div>"
         },
         {
           "type": "radiogroup",
           "name": "xss_final",
-          "title": "question?",
+          "title": "How do you use the captured session?",
           "isRequired": true,
           "choices": [
-            { "value": "cookie_inject", "text": "reeee[costs 1 min]" },
-            { "value": "curl_api",      "text": "reeee[costs 2 min]" },
-            { "value": "burp_replay",   "text": "reeee[costs 2 min]" }
+            { "value": "cookie_inject", "text": "Inject the token into your own browser and load the portal — take over the session directly [costs 1 min]" },
+            { "value": "curl_api",      "text": "Use the token to make authenticated API calls without touching the portal UI [costs 2 min]" },
+            { "value": "burp_replay",   "text": "Replay the token through an intercepting proxy to manually craft privileged requests [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "xss_fail",
-      "title": "Path D — XSS Attack | failed",
+      "title": "Path D — XSS Attack | Complete",
       "visibleIf": "{chosen_path} = 'xss' and ({xss_final} = 'cookie_inject' or {xss_final} = 'curl_api' or {xss_final} = 'burp_replay')",
       "elements": [
         {
           "type": "html",
           "name": "xss_win",
-          "html": "<div class='orc-context orc-win'><strong>context</em></div>"
+          "html": "<div class='orc-context orc-win'><strong>// SESSION HIJACKED</strong><br/><br/>You are now operating as an authenticated finance employee. The transfer portal is open in front of you — from their account.<br/><br/>Path D finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

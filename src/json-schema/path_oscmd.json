@@ -2,130 +2,130 @@
   "pages": [
     {
       "name": "oscmd_1",
-      "title": "Path B — OS Command Injection | Step 1: ???",
+      "title": "Path B — OS Command Injection | Step 1: Find the Injection Point",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>The web portal at <code>192.168.1.55</code> has a diagnostic endpoint — it appears to take user input and pass it directly to the server. This could be a way in. You need to confirm whether it's vulnerable before committing to this path.</div>"
         },
         {
           "type": "radiogroup",
           "name": "oscmd_discover",
-          "title": "question?",
+          "title": "How do you test the diagnostic endpoint?",
           "isRequired": true,
           "choices": [
-            { "value": "semicolon_id",  "text": "reeee [costs 1 min]" },
-            { "value": "burp_scan",     "text": "reeee [costs 3 min]" },
-            { "value": "pipe_whoami",   "text": "reeee [costs 1 min]" },
-            { "value": "commix_auto",   "text": "reeee [costs 2 min]" }
+            { "value": "semicolon_id",  "text": "Send a quick manual test with an unexpected character and watch how the server responds [costs 1 min]" },
+            { "value": "burp_scan",     "text": "Run an automated scanner against the endpoint [costs 3 min]" },
+            { "value": "pipe_whoami",   "text": "Try a different separator and see if anything unexpected leaks into the response [costs 1 min]" },
+            { "value": "commix_auto",   "text": "Use a dedicated detection tool to auto-probe the endpoint [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "oscmd_2",
-      "title": "Path B — OS Command Injection | Step 2: ???",
+      "title": "Path B — OS Command Injection | Step 2: Establish Access",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_confirmed",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>Injection is confirmed — the server is processing your input unsafely and output is leaking back. You have a foothold, but it's fragile. You need to upgrade to something stable so you can move around freely.</div>"
         },
         {
           "type": "radiogroup",
           "name": "oscmd_shell",
-          "title": "question?",
+          "title": "How do you turn this into persistent access?",
           "isRequired": true,
           "choices": [
-            { "value": "bash_reverse",   "text": "reeee [costs 2 min]" },
-            { "value": "python_reverse", "text": "reeee [costs 2 min]" },
-            { "value": "nc_mkfifo",      "text": "reeee [costs 3 min]" },
-            { "value": "web_shell",      "text": "reeee [costs 4 min]" }
+            { "value": "bash_reverse",   "text": "Use a callback payload to establish a connection back to your listener [costs 2 min]" },
+            { "value": "python_reverse", "text": "Use a scripting-language payload — more portable across different server setups [costs 2 min]" },
+            { "value": "nc_mkfifo",      "text": "Use a pipe-based approach suited for limited environments [costs 3 min]" },
+            { "value": "web_shell",      "text": "Drop a remotely-accessible file onto the server's web root [costs 4 min]" }
           ]
         }
       ]
     },
     {
       "name": "oscmd_3",
-      "title": "Path B — OS Command Injection | Step 3: ???",
+      "title": "Path B — OS Command Injection | Step 3: Escalate Privileges",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_shell_ok",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "html": "<div class='orc-context'>You're in, but running as a low-privilege service account. You can't reach the transfer system from here. You need to find a path to higher privileges — or credentials that get you where you need to go.</div>"
         },
         {
           "type": "radiogroup",
           "name": "oscmd_privesc",
-          "title": "question?",
+          "title": "How do you attempt to escalate your access?",
           "isRequired": true,
           "choices": [
-            { "value": "read_config", "text": "reeee [costs 1 min]" },
-            { "value": "suid_abuse",  "text": "reeee [costs 3 min]" },
-            { "value": "sudo_check",  "text": "reeee [costs 1 min]" },
-            { "value": "cron_hijack", "text": "reeee [costs 2 min]" }
+            { "value": "read_config", "text": "Look through application config files — services often store credentials in plaintext [costs 1 min]" },
+            { "value": "suid_abuse",  "text": "Search for system binaries with elevated permissions that might be abusable [costs 3 min]" },
+            { "value": "sudo_check",  "text": "Check what commands your current account is permitted to run with elevated rights [costs 1 min]" },
+            { "value": "cron_hijack", "text": "Look for scheduled tasks running as a higher-privileged user that you might influence [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "oscmd_branch_suid",
-      "title": "Path B — OS Command Injection | THIS IS YOUR BRANCH STRUCTURE",
+      "title": "Path B — OS Command Injection | Dead End",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_privesc} = 'suid_abuse'",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_suid_result",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-error'>Nothing here is exploitable — the system is patched and locked down on that front. You've spent time chasing a dead end. You'll need to pivot to a different angle before the clock runs out.</div>"
         },
         {
           "type": "radiogroup",
           "name": "oscmd_suid_choice",
-          "title": "question?",
+          "title": "What do you try instead?",
           "isRequired": true,
           "choices": [
-            { "value": "fall_config", "text": "reeee [costs 2 min]" },
-            { "value": "fall_cron",   "text": "reeee [costs 2 min]" }
+            { "value": "fall_config", "text": "Fall back to reading application config files for stored credentials [costs 2 min]" },
+            { "value": "fall_cron",   "text": "Fall back to checking scheduled tasks for a writable privileged script [costs 2 min]" }
           ]
         }
       ]
     },
     {
       "name": "oscmd_4",
-      "title": "Path B — OS Command Injection | Step 4: ???",
+      "title": "Path B — OS Command Injection | Step 4: Reach the Transfer System",
       "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_privesc} = 'read_config' or {oscmd_privesc} = 'sudo_check' or {oscmd_privesc} = 'cron_hijack' or {oscmd_suid_choice} = 'fall_config' or {oscmd_suid_choice} = 'fall_cron')",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_db_creds",
-          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-success'>You found stored credentials for a service account with direct access to the transfer approval system. You now have everything you need. How do you use them?</div>"
         },
         {
           "type": "radiogroup",
           "name": "oscmd_final",
-          "title": "question?",
+          "title": "How do you use the credentials to reach your objective?",
           "isRequired": true,
           "choices": [
-            { "value": "insert_transfer", "text": "reeee [costs 1 min]" },
-            { "value": "steal_session",   "text": "reeee [costs 2 min]" },
-            { "value": "update_balance",  "text": "reeee [costs 3 min]" }
+            { "value": "insert_transfer", "text": "Access the backend directly and submit a pre-approved transfer record [costs 1 min]" },
+            { "value": "steal_session",   "text": "Grab an active session token and impersonate a logged-in user in the portal [costs 2 min]" },
+            { "value": "update_balance",  "text": "Modify account records directly in the backend [costs 3 min]" }
           ]
         }
       ]
     },
     {
       "name": "oscmd_fail",
-      "title": "Path B — OS Command Injection | failed",
+      "title": "Path B — OS Command Injection | Complete",
       "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_final} = 'insert_transfer' or {oscmd_final} = 'steal_session' or {oscmd_final} = 'update_balance')",
       "elements": [
         {
           "type": "html",
           "name": "oscmd_win",
-          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+          "html": "<div class='orc-context orc-win'><strong>// ACCESS GRANTED</strong><br/><br/>Starting from a single vulnerable endpoint, you escalated access, recovered credentials, and reached the transfer system.<br/><br/>Path B finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

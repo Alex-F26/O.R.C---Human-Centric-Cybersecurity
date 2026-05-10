@@ -2,64 +2,52 @@
   "pages": [
     {
       "name": "questions_1",
-      "title": "q1",
+      "title": "Post-Game Questions — Part 1",
       "elements": [
         {
           "type": "html",
-          "name": "csrf_context",
-          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+          "name": "q1_context",
+          "html": "<div class='orc-context'>Take a moment to reflect on the choices you just made.</div>"
         },
         {
           "type": "comment",
-          "name": "csrf_recon",
-          "title": "literally why",
-          "isRequired": true,
-          "choices": [
-            { "value": "burp_csrf",     "text": "why not?" }
-        
-          ]
+          "name": "q1_response",
+          "title": "How did you choose which attack path to pursue first?",
+          "isRequired": true
         }
       ]
     },
     {
       "name": "questions_2",
-      "title": "q2",
+      "title": "Post-Game Questions — Part 2",
       "elements": [
         {
           "type": "html",
-          "name": "csrf_context",
-          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+          "name": "q2_context",
+          "html": "<div class='orc-context'></div>"
         },
         {
           "type": "comment",
-          "name": "csrf_recon",
-          "title": "literally why",
-          "isRequired": true,
-          "choices": [
-            { "value": "burp_csrf",     "text": "why not?" }
-            
-          ]
+          "name": "q2_response",
+          "title": "At any point did you consider switching to a different path? What made you stay or switch?",
+          "isRequired": true
         }
       ]
     },
     {
       "name": "questions_3",
-      "title": "q3",
+      "title": "Post-Game Questions — Part 3",
       "elements": [
         {
           "type": "html",
-          "name": "csrf_context",
-          "html": "<div class='orc-context'><strong>WHYYYYY</strong></div>"
+          "name": "q3_context",
+          "html": "<div class='orc-context'></div>"
         },
         {
           "type": "comment",
-          "name": "csrf_recon",
-          "title": "literally why",
-          "isRequired": true,
-          "choices": [
-            { "value": "burp_csrf",     "text": "why not?" }
-            
-          ]
+          "name": "q3_response",
+          "title": "What was your biggest roadblock, and what would you do differently if you ran through this again?",
+          "isRequired": true
         }
       ]
     }

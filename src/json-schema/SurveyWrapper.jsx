@@ -7,7 +7,7 @@ import pathSqli  from "../json-schema/path_sqli.json";
 import pathOscmd from "../json-schema/path_oscmd.json";
 import pathCsrf  from "../json-schema/path_csrf.json";
 import pathXss   from "../json-schema/path_xss.json";
-import questions   from "../json-schema/questions.json";
+import questions from "../json-schema/questions.json";
 
 const surveyJson = {
   ...base,
@@ -21,23 +21,23 @@ const surveyJson = {
   ],
 };
 
-//Time costs in seconds
+// Time costs in seconds
 const TIME_COSTS = {
   recon_tool:    { nmap: 180, netdiscover: 60, wireshark: 240, manual: 120 },
   recon_target:  { db_server: 60, ssh_server: 60, mail_server: 60, web_server: 60 },
   chosen_path:   { sqli: 120, oscmd: 120, csrf: 120, xss: 120 },
 
-  sqli_fingerprint:    { manual_quote: 60, sqlmap_detect: 120, burp_intercept: 180, source_view: 60 },
-  sqli_exploit:        { auth_bypass: 60, union_select: 180, sqlmap_full: 240, blind_sqli: 300 },
-  sqli_account:        { admin: 120, jsmith: 120, svc_transfer_xk9: 0, root: 300 },
-  sqli_dead_end_choice:{ retry_svc: 180, switch_path: 300 },
-  sqli_final:          { immediate_transfer: 60, recon_more: 180, cover_tracks: 240 },
+  sqli_fingerprint:     { manual_quote: 60, sqlmap_detect: 120, burp_intercept: 180, source_view: 60 },
+  sqli_exploit:         { auth_bypass: 60, union_select: 180, sqlmap_full: 240, blind_sqli: 300 },
+  sqli_account:         { admin: 120, jsmith: 120, svc_transfer_xk9: 0, root: 300 },
+  sqli_dead_end_choice: { retry_svc: 180, switch_path: 300 },
+  sqli_final:           { immediate_transfer: 60, recon_more: 180, cover_tracks: 240 },
 
-  oscmd_discover:   { semicolon_id: 60, burp_scan: 180, pipe_whoami: 60, commix_auto: 120 },
-  oscmd_shell:      { bash_reverse: 120, python_reverse: 120, nc_mkfifo: 180, web_shell: 240 },
-  oscmd_privesc:    { read_config: 60, suid_abuse: 180, sudo_check: 60, cron_hijack: 120 },
-  oscmd_suid_choice:{ fall_config: 120, fall_cron: 120 },
-  oscmd_final:      { insert_transfer: 60, steal_session: 120, update_balance: 180 },
+  oscmd_discover:    { semicolon_id: 60, burp_scan: 180, pipe_whoami: 60, commix_auto: 120 },
+  oscmd_shell:       { bash_reverse: 120, python_reverse: 120, nc_mkfifo: 180, web_shell: 240 },
+  oscmd_privesc:     { read_config: 60, suid_abuse: 180, sudo_check: 60, cron_hijack: 120 },
+  oscmd_suid_choice: { fall_config: 120, fall_cron: 120 },
+  oscmd_final:       { insert_transfer: 60, steal_session: 120, update_balance: 180 },
 
   csrf_recon:      { burp_csrf: 120, manual_review: 60, check_cookies: 60, owasp_zap: 180 },
   csrf_payload:    { auto_form: 60, img_tag: 120, fetch_api: 120, xmlhttprequest: 120 },
@@ -54,6 +54,7 @@ const TIME_COSTS = {
 
 const TOTAL_SECONDS = 20 * 60;
 const SUCCESS_PAGES = new Set(["sqli_fail", "oscmd_fail", "csrf_success", "xss_fail"]);
+const NO_SWITCH_PAGES = new Set(["start", "recon", "path_selection", "sqli_fail", "oscmd_fail", "csrf_success", "xss_fail"]);
 
 function fmt(secs) {
   const s = Math.max(0, secs);
@@ -66,11 +67,13 @@ export default function SurveyWrapper() {
   const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
   const [running, setRunning]   = useState(false);
   const [done, setDone]         = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
   const [toasts, setToasts]     = useState([]);
   const [history, setHistory]   = useState([]);
-  const intervalRef = useRef(null);
-  const timeLeftRef = useRef(TOTAL_SECONDS);
-  const deductRef = useRef(null);
+  const intervalRef  = useRef(null);
+  const timeLeftRef  = useRef(TOTAL_SECONDS);
+  const deductRef    = useRef(null);
+  const surveyRef    = useRef(null);
 
   useEffect(() => { timeLeftRef.current = timeLeft; }, [timeLeft]);
 
@@ -90,10 +93,13 @@ export default function SurveyWrapper() {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 2500);
   }
 
-  // Tick
+  deductRef.current = deduct;
+
+  // Countdown tick
   useEffect(() => {
     if (!running) return;
     if (intervalRef.current) return;
+
     intervalRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -101,43 +107,45 @@ export default function SurveyWrapper() {
           intervalRef.current = null;
           setRunning(false);
           setDone(true);
-          survey.doComplete();
+          setTimedOut(true);
+          surveyRef.current?.doComplete();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-    return () => { clearInterval(intervalRef.current); intervalRef.current = null; };
-  }, [running]); 
 
-  deductRef.current = deduct;
+    return () => {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    };
+  }, [running]);
 
   const [survey] = useState(() => {
     const s = new Model(surveyJson);
+    surveyRef.current = s;
 
     s.onCurrentPageChanged.add((_, { newCurrentPage }) => {
       const name = newCurrentPage?.name;
-      console.log("➡️ page changed to:", name, "| isSwitching:", isSwitching, "| isNavigatingToQuestions:", isNavigatingToQuestions);
+
       if (name === "recon") setRunning(true);
-      if (SUCCESS_PAGES.has(name)) { stopTimer(); setDone(true); }
-      
+
+      if (SUCCESS_PAGES.has(name)) {
+        stopTimer();
+        setDone(true);
+      }
     });
 
     s.onValueChanged.add((_, { name, value }) => {
       const cost = TIME_COSTS[name]?.[value];
-      if (cost > 0) deduct(cost, `${name}: ${value}`);
+      if (cost > 0) deductRef.current(cost, `${name}: ${value}`);
     });
 
     s.onAfterRenderPage.add((_, { htmlElement, page }) => {
-      // Only show the button after path_selection has been answered
+      // Only show switch button once a path has been chosen
       if (!s.getValue("chosen_path")) return;
-      if (page.name === "path_selection") return; // don't show ON the path page itself(or at least its not supposed to but its dumb)
-
-      // Don't show on start or success pages
-      const noButtonPages = new Set(["start", "recon", "sqli_fail", "oscmd_fail", "csrf_success", "xss_fail"]);
-      if (noButtonPages.has(page.name)) return;
-
-      // Avoid duplicates if page re-renders
+      if (NO_SWITCH_PAGES.has(page.name)) return;
+      // Avoid duplicate buttons if page re-renders
       if (htmlElement.querySelector(".orc-switch-btn")) return;
 
       const btn = document.createElement("button");
@@ -146,27 +154,35 @@ export default function SurveyWrapper() {
       btn.onclick = () => {
         btn.remove();
         deductRef.current(300, "switch_path_penalty");
-        
-        s.currentPage = s.getPageByName("path_selection");
-        
+
+        // Clear all path-specific answers so the new path starts clean
+        const pathKeys = Object.keys(TIME_COSTS).filter(k =>
+          k !== "recon_tool" && k !== "recon_target" && k !== "chosen_path"
+        );
+        pathKeys.forEach(k => s.setValue(k, null));
         s.setValue("chosen_path", null);
-        
+
+        s.currentPage = s.getPageByName("path_selection");
       };
+
       htmlElement.insertBefore(btn, htmlElement.firstChild);
     });
 
-    //THIS HERE DOESNT WORK HOW I NEED IT TO RAAAA
-
     s.onComplete.add((sender) => {
       stopTimer();
-      console.log("ORC Results:", {
-        ...sender.data,
-        timeRemaining: timeLeftRef.current,
-        timeUsed: TOTAL_SECONDS - timeLeftRef.current,
-        timedOut: timeLeftRef.current === 0,
-      });
 
-      
+      const results = {
+        answers:       sender.data,
+        timeRemaining: timeLeftRef.current,
+        timeUsed:      TOTAL_SECONDS - timeLeftRef.current,
+        timedOut:      timeLeftRef.current === 0,
+        completedPath: sender.data.chosen_path ?? null,
+      };
+
+      console.log("ORC Results:", results);
+
+      // Drop results wherever your backend/collection endpoint expects them.
+      // e.g. fetch("/api/results", { method: "POST", body: JSON.stringify(results) });
     });
 
     return s;
@@ -179,7 +195,7 @@ export default function SurveyWrapper() {
   return (
     <div style={{ position: "relative" }}>
 
-      {/*Timer HUD*/}
+      {/* Timer HUD */}
       <div style={{
         position: "fixed",
         top: 16,
@@ -196,7 +212,7 @@ export default function SurveyWrapper() {
         transition: "border-color 0.4s, box-shadow 0.4s",
       }}>
         <div style={{ fontSize: 10, color: "#6b7280", letterSpacing: 3, textTransform: "uppercase", marginBottom: 6 }}>
-          {done && timeLeft === 0 ? "⛔ TIME EXPIRED" : done ? "✅ COMPLETE" : running ? "⏱ TIME REMAINING" : "STANDBY"}
+          {timedOut ? "⛔ TIME EXPIRED" : done ? "✅ COMPLETE" : running ? "⏱ TIME REMAINING" : "STANDBY"}
         </div>
 
         <div style={{ fontSize: 42, fontWeight: 800, color, lineHeight: 1, letterSpacing: 3, transition: "color 0.4s" }}>
@@ -218,24 +234,28 @@ export default function SurveyWrapper() {
             <div style={{ fontSize: 9, color: "#6b7280", letterSpacing: 2, marginBottom: 4, textTransform: "uppercase" }}>
               Deductions
             </div>
-            {history.slice(0, 5).map((h, i) => (
-              <div key={h.id} style={{
-                fontSize: 10,
-                color: "#ef4444",
-                opacity: Math.max(0.25, 1 - i * 0.18),
-                lineHeight: 1.7,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}>
-                -{Math.round(h.secs / 60)}m &nbsp;{h.text}
-              </div>
-            ))}
+            {history.slice(0, 5).map((h, i) => {
+              const opacity = Math.max(0.25, 1 - i * 0.18);
+              const mins = Math.round(h.secs / 60);
+              return (
+                <div key={h.id} style={{
+                  fontSize: 10,
+                  color: "#ef4444",
+                  opacity: opacity,
+                  lineHeight: 1.7,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}>
+                  -{mins}m &nbsp;{h.text}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/*Toast popups*/}
+      {/* Toast popups */}
       <div style={{
         position: "fixed",
         top: 16,
@@ -264,7 +284,7 @@ export default function SurveyWrapper() {
         ))}
       </div>
 
-      {/*Survey*/}
+      {/* Survey */}
       <Survey model={survey} />
 
       <style>{`
