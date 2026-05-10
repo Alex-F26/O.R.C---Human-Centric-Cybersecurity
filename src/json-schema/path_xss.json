@@ -1,7 +1,7 @@
 {
   "pages": [
     {
-      "name": "xss_intro",
+      "name": "xss_intro 2 electric boogaloo",
       "title": "Path C — Cross-Site Scripting | Mission Brief",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
