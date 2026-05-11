@@ -1,17 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import "survey-core/survey-core.min.css";
-import base      from "../json-schema/base.json";
-import pathSqli  from "../json-schema/path_sqli.json";
+import base from "../json-schema/base.json";
+import pathSqli from "../json-schema/path_sqli.json";
 import pathOscmd from "../json-schema/path_oscmd.json";
-import pathCsrf  from "../json-schema/path_csrf.json";
-import pathXss   from "../json-schema/path_xss.json";
-import questions  from "../json-schema/questions.json";
+import pathCsrf from "../json-schema/path_csrf.json";
+import pathXss from "../json-schema/path_xss.json";
+import questions from "../json-schema/questions.json";
 
-// Survey JSON
+const INITIAL_TIME_MINUTES = 30;
+const TOTAL_SECONDS = INITIAL_TIME_MINUTES * 60;
+const SWITCH_PATH_DELTA_MINUTES = -5;
+const NAVIGATION_DELAY_MS = 250;
+
 const surveyJson = {
   ...base,
+  showProgressBar: "off",
+  showTimerPanel: "none",
   pages: [
     ...base.pages,
     ...pathSqli.pages,
@@ -22,99 +28,26 @@ const surveyJson = {
   ],
 };
 
-// Time costs (seconds)
-const TIME_COSTS = {
-  recon_tool:   { nmap: 180, netdiscover: 60, wireshark: 240, manual: 120 },
-  recon_target: { db_server: 60, ssh_server: 60, mail_server: 60, web_server: 60 },
-  chosen_path:  { sqli: 120, oscmd: 120, csrf: 120, xss: 120 },
-
-  sqli_fingerprint:          { manual_quote: 60, sqlmap_detect: 120, burp_intercept: 180, source_view: 60 },
-  sqli_exploit:              { auth_bypass: 60, union_select: 180, sqlmap_full: 240, blind_sqli: 300 },
-  sqli_account:              { admin: 120, jsmith: 120, svc_transfer_xk9: 0, root: 300 },
-  sqli_dead_end_choice:      { retry_svc: 180, switch_path: 300 },
-  sqli_final:                { immediate_transfer: 60, recon_more: 180, cover_tracks: 240 },
-  sqli_redirect_dead_choice: { retry_sqli: 120, switch_path: 300 },
-  sqli_blind_dead_choice:    { retry_sqli: 120, switch_path: 300 },
-  sqli_honeypot_choice:      { retry_sqli: 180, switch_path: 300 },
-  sqli_temp_password_choice: { retry_sqli: 180, switch_path: 300 },
-  sqli_finance_dead_choice:  { retry_sqli: 120, switch_path: 300 },
-  sqli_privesc_dead_choice:  { retry_sqli: 120, switch_path: 300 },
-  sqli_more_intel_choice:    { retry_sqli: 120, switch_path: 300 },
-  sqli_audit_dead_choice:    { retry_sqli: 120, switch_path: 300 },
-  sqli_crack_dead_choice:    { retry_sqli: 120, switch_path: 300 },
-  sqli_session_inject_choice:{ retry_sqli: 120, switch_path: 300 },
-  sqli_reset_choice:         { retry_sqli: 120, switch_path: 300 },
-  sqli_auth_bypass_choice:   { retry_sqli: 180, switch_path: 300 },
-  sqli_final_dead_choice:    { switch_path: 300 },
-
-  oscmd_q1_answer:      { employee_lookup: 120, report_export: 120, login_portal: 60, system_status: 120 },
-  oscmd_q2_answer:      { input_test: 60, stage_persistence_post: 300, manual_bruteforce: 240, approve_transfer_login: 240 },
-  oscmd_q3_answer:      { status_code_only: 60, directory_scan_first: 60, realistic_usernames: 60, fuzz_backend_behavior: 60 },
-  oscmd_q4_answer:      { check_transfer_before_confirming: 240, compare_controlled_responses: 120, install_tools_debug: 300, bruteforce_and_tool: 360 },
-  oscmd_q5_answer:      { fake_admin_profile: 180, os_files: 240, app_data_files: 120, employee_bruteforce_info: 120 },
-  oscmd_q6_answer:      { support_notes: 60, backup_config: 60, public_policy: 60, user_and_password_lists: 120 },
-  oscmd_q7_answer:      { create_wordlist: 240, restart_recon: 300, assume_admin: 300, manual_try_all: 480 },
-  oscmd_q7_1_answer:    { run_bruteforce_tooling: 420, ignore_restart: 300, admin_labeled_first: 300, manual_first_pairs: 480 },
-  oscmd_q8_answer:      { fake_admin_search: 180, profile_picture: 120, messages_permissions: 120, wordlist_other_pages: 360 },
-  oscmd_q9_answer:      { office_memo: 60, finance_routing: 120, it_newsletter: 120, logged_admin_alert: 180 },
-  oscmd_q10_answer:     { chase_admin: 240, restart_homepage: 180, print_shadow_files: 120, check_inbox_permissions: 60 },
-  oscmd_q10_1_answer:   { direct_login_spray_hashes: 300, restart_homepage: 240, john_wordlist: 540, check_inbox_permissions: 60 },
-  oscmd_q10_2_answer:   { hashcat_wordlist: 480, restart_homepage: 240, hashes_as_passwords: 300, check_inbox_permissions: 60 },
-  oscmd_q10_3_answer:   { wordlist_bruteforce: 480, restart_homepage: 240, different_hash_mode: 300, check_inbox_permissions: 60 },
-  oscmd_q10_4_answer:   { restart_homepage: 240, try_sql_injection: 540, check_inbox_permissions: 60 },
-  oscmd_q11_answer:     { install_persistence: 240, pivot_other_vuln: 180, follow_lead: 180 },
-  oscmd_q12_answer:     { pivot_other_vuln: 180, follow_lead: 300, apt_install_from_login: 180, quit: 0 },
-  oscmd_q12_1_answer:   { system_diagnostics: 180, change_local_config: 120, retry_package_manager: 240, manual_webpage_install: 420 },
-  oscmd_q12_2_1_answer: { system_diagnostics_again: 180, change_local_config_again: 120, retry_package_manager_again: 240, manual_webpage_install: 420 },
-  oscmd_q12_3_answer:   { basic_network_troubleshoot: 180, change_local_config: 120, pivot_other_vuln: 300, compile_custom_programs: 360 },
-  oscmd_q12_3_1_answer: { extensive_network_troubleshoot: 180, change_local_config: 120, pivot_other_vuln: 300, follow_admin_lead: 360 },
-  oscmd_q13_answer:     { pivot_other_vuln: 180, reset_password_observe: 300, compare_public_hash_examples: 240, search_config_salt: 360 },
-  oscmd_q14_answer:     { change_password_again: 180, make_new_account: 240, reassess_machine_value: 0, compare_hash_pattern: 240 },
-  oscmd_q15_answer:     { retry_cracking_salted: 540, stage_persistence: 900, troubleshoot_failed_request: 240, unrelated_system_checks: 180 },
-  oscmd_q16_answer:     { recon_each_account: 540, stage_persistence: 900, pivot_other_vuln: 300 },
-  oscmd_q16_1_answer:   { analyze_files: 720, stage_persistence: 900, reassess_value: 600, pivot_other_vuln: 0 },
-  oscmd_q16_2_1_answer: { analyze_network: 540, assess_files_dirs: 240, extensive_troubleshoot: 480, retry_callback_name: 360 },
-  oscmd_q16_2_2_answer: { analyze_network: 540, assess_files_dirs: 480, extensive_troubleshoot: 540, pivot_other_vuln: 0 },
-  oscmd_q16_2_3_answer: { bypass_filtering: 480, reassess_value: 600, assess_files_dirs: 480, pivot_csrf: 300 },
-  oscmd_q16_2_3_1_answer: { reassess_value: 600, assess_files_dirs: 480, pivot_other_vuln: 0 },
-  oscmd_q17_answer:     { back_to_vuln_selection: 0 },
-
-  xss_q1_answer:  { nmap_scan: 480, search_cves: 1080, browse_manually: 300 },
-  xss_q2_answer:  { log_surface: 0, ignore_search: 300, fingerprint_stack: 360 },
-  xss_q3_answer:  { direct_script_test: 900, intercept_request: 300, benign_test: 60, fuzz_length: 420 },
-  xss_q4_answer:  { credential_payload_now: 720, compare_search: 240, confirm_active_behavior: 60, document_only: 540 },
-  xss_q5_answer:  { focus_comment_only: 480, map_all_surfaces: 120, stress_test: 1200, enumerate_dirs: 360 },
-  xss_q6_answer:  { run_dirb: 480, credential_capture_detour: 0, retry_payload: 720 },
-  xss_q7_answer:  { continue_exfil_attempt: 600, decode_cookie: 480, sim_phish_form: 0 },
-  xss_q8_answer:  { build_reflected_link: 480, inspect_dom: 600, hunt_second_order: 300, confirm_stored: 0 },
-  xss_q9_answer:  { finance_channel: 360, general_discussion: 60, it_support: 240, all_channels: 840 },
-  xss_q10_answer: { skip_pinned: 300, post_elsewhere: 180, inject_welcome: 0, enumerate_links: 240 },
-  xss_q11_answer: { external_redirect: 960, sim_session_prompt: 60, key_capture: 420, browser_hook: 600 },
-  xss_q12_answer: { validate_forum: 360, analyze_format: 0, test_vpn: 720, queue_harvest: 240 },
-  xss_q13_answer: { stuff_vpn: 1200, validate_forum_all: 420, analyze_list: 120, sort_reuse: 240 },
-  xss_q14_answer: { test_vpn_all: 300, check_forum_perms: 1500, try_it_admin: 60, try_hr_director: 360 },
-  xss_q15_answer: { redeploy_payload: 1680, bruteforce_vpn: 2100, expand_testing: 720 },
-  xss_q16_answer: { redeploy_second_payload: 1200, bruteforce_again: 1500, keep_testing_services: 900 },
-  xss_pivot_answer: { return_path_select: 0 },
-
-  csrf_cookie_choice:       { intercept_now: 60, skip_to_payload: 120 },
-  csrf_recon:               { burp_csrf: 120, manual_review: 60, check_cookies: 60, owasp_zap: 180 },
-  csrf_payload:             { auto_form: 60, img_tag: 120, fetch_api: 120, xmlhttprequest: 120 },
-  csrf_img_choice:          { fix_form: 120, fix_fetch: 120 },
-  csrf_fetch_dead_choice:   { switch_to_form: 60, switch_path: 300 },
-  csrf_delivery:            { phish_cfo: 120, phish_ops: 120, internal_post: 180, wait_and_monitor: 300 },
-  csrf_cfo_dead_choice:     { retry_delivery: 120, switch_path: 300 },
-  csrf_board_dead_choice:   { retry_delivery: 120, switch_path: 300 },
-  csrf_final:               { second_csrf: 120, session_hijack: 180, wait_auto: 300, cancel_monitor: 240 },
-  csrf_monitor_dead_choice: { retry_final: 120, switch_path: 300 },
-  csrf_hijack_dead_choice:  { retry_final: 120, switch_path: 300 },
+const PATH_PREFIX_TO_VALUE = {
+  sqli: "sqli",
+  oscmd: "oscmd",
+  csrf: "csrf",
+  xss: "xss",
 };
 
-// Constants
-const TOTAL_SECONDS = 30 * 60;
-const SUCCESS_PAGES = new Set(["csrf_success"]);
+// Pages that represent a completed operation and should pause the timer,
+// then show the overlay that sends participants to the post-game questions.
+const END_PAGES = new Set(["csrf_success"]);
+
+// Pages that should not show the manual Switch Path button.
 const NO_SWITCH_PAGES = new Set([
-  "start", "recon", "path_selection", "csrf_success",
+  "start",
+  "recon",
+  "path_selection",
+  "questions_1",
+  "questions_2",
+  "questions_3",
+  "csrf_success",
 ]);
 
 function fmt(secs) {
@@ -122,69 +55,272 @@ function fmt(secs) {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
-let toastId = 0;
+function buildSurveyMeta(json) {
+  const pageNames = new Set();
+  const pageIndex = new Map();
+  const choiceIndex = new Map();
+  const pageDefaults = new Map();
 
-// Component
+  json.pages.forEach((page, index) => {
+    pageNames.add(page.name);
+    pageIndex.set(page.name, index);
+    if (page.defaultNextPage) pageDefaults.set(page.name, page.defaultNextPage);
+
+    page.elements?.forEach((element) => {
+      if (!Array.isArray(element.choices)) return;
+      const byValue = choiceIndex.get(element.name) ?? new Map();
+      element.choices.forEach((choice) => {
+        byValue.set(choice.value, { ...choice, pageName: page.name, questionName: element.name });
+      });
+      choiceIndex.set(element.name, byValue);
+    });
+  });
+
+  return { pageNames, pageIndex, choiceIndex, pageDefaults };
+}
+
+function getPathFromPageName(pageName) {
+  if (!pageName || pageName === "path_selection" || pageName.startsWith("questions")) return null;
+  const prefix = pageName.split("_")[0];
+  return PATH_PREFIX_TO_VALUE[prefix] ?? null;
+}
+
+function getNextPageName(survey, meta, currentPageName) {
+  const defaultNext = meta.pageDefaults.get(currentPageName);
+  if (defaultNext) return defaultNext;
+
+  const currentIndex = meta.pageIndex.get(currentPageName);
+  if (currentIndex == null) return null;
+
+  for (let i = currentIndex + 1; i < survey.pages.length; i += 1) {
+    const candidate = survey.pages[i];
+    if (candidate?.isVisible) return candidate.name;
+  }
+  return null;
+}
+
+function makeCsvValue(value) {
+  if (value == null) return "";
+  const stringValue = typeof value === "object" ? JSON.stringify(value) : String(value);
+  return `"${stringValue.replaceAll('"', '""')}"`;
+}
+
+function downloadCsv(filename, rows) {
+  const csv = rows.map((row) => row.map(makeCsvValue).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function SurveyWrapper() {
-  const [timeLeft, setTimeLeft]     = useState(TOTAL_SECONDS);
-  const [running, setRunning]       = useState(false);
-  const [done, setDone]             = useState(false);
-  const [timedOut, setTimedOut]     = useState(false);
-  const [showTimeout, setShowTimeout] = useState(false);
-  const [toasts, setToasts]         = useState([]);
-  const [history, setHistory]       = useState([]);
+  const meta = useMemo(() => buildSurveyMeta(surveyJson), []);
+  const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
+  const [running, setRunning] = useState(false);
+  const [timerStopped, setTimerStopped] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+  const [overlay, setOverlay] = useState(null); // "timeout" | "complete" | null
+  const [surveyFinished, setSurveyFinished] = useState(false);
+  const [actionFeedback, setActionFeedback] = useState(null);
 
   const intervalRef = useRef(null);
   const timeLeftRef = useRef(TOTAL_SECONDS);
-  const deductRef   = useRef(null);
-  const surveyRef   = useRef(null);
-  const isSwitchingPath = useRef(false);
+  const surveyRef = useRef(null);
   const startedRef = useRef(false);
+  const lockedRef = useRef(false);
+  const programmaticValueChangeRef = useRef(false);
+  const choiceHistoryRef = useRef([]);
 
   function stopTimer() {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
     setRunning(false);
+    setTimerStopped(true);
   }
 
-  function deduct(seconds, label) {
-    if (seconds <= 0) return;
-    setTimeLeft(prev => Math.max(0, prev - seconds));
-    const id = ++toastId;
-    const mins = Math.round(seconds / 60);
-    setToasts(prev => [...prev, { id, text: `-${mins} min — ${label}` }]);
-    setHistory(prev => [{ id, text: label, secs: seconds }, ...prev].slice(0, 20));
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 2500);
+  function applyTimeDelta(deltaMinutes) {
+    if (typeof deltaMinutes !== "number" || Number.isNaN(deltaMinutes)) return;
+    const deltaSeconds = Math.round(deltaMinutes * 60);
+    setTimeLeft((previous) => {
+      const next = Math.max(0, Math.min(TOTAL_SECONDS, previous + deltaSeconds));
+      timeLeftRef.current = next;
+      if (next === 0 && previous > 0 && deltaSeconds < 0) {
+        window.setTimeout(() => {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setRunning(false);
+          setTimerStopped(true);
+          setTimedOut(true);
+          setOverlay("timeout");
+        }, 0);
+      }
+      return next;
+    });
   }
 
-  deductRef.current = deduct;
+  function recordChoice({ pageName, questionName, value, text, timeDeltaMinutes, gotoPage }) {
+    choiceHistoryRef.current.push({
+      timestamp: new Date().toISOString(),
+      pageName,
+      questionName,
+      value,
+      text,
+      timeDeltaMinutes: typeof timeDeltaMinutes === "number" ? timeDeltaMinutes : 0,
+      gotoPage: gotoPage ?? "",
+      timeRemainingSeconds: timeLeftRef.current,
+    });
+  }
 
-  // Countdown tick
+  function goToPage(survey, pageName) {
+    if (!pageName) return false;
+    const page = survey.getPageByName(pageName);
+    if (!page) {
+      console.warn(`[ORC] GOTO target not found: ${pageName}`);
+      return false;
+    }
+
+    if (pageName === "path_selection") {
+      programmaticValueChangeRef.current = true;
+      survey.clearValue("chosen_path");
+      programmaticValueChangeRef.current = false;
+    } else {
+      const nextPath = getPathFromPageName(pageName);
+      if (nextPath && survey.getValue("chosen_path") !== nextPath) {
+        programmaticValueChangeRef.current = true;
+        survey.setValue("chosen_path", nextPath);
+        programmaticValueChangeRef.current = false;
+      }
+    }
+
+    survey.currentPage = page;
+    return true;
+  }
+
+  function proceedToPostGame() {
+    setOverlay(null);
+    const survey = surveyRef.current;
+    if (!survey) return;
+    const page = survey.getPageByName("questions_1");
+    if (page) survey.currentPage = page;
+  }
+
+  function handleChoice(survey, questionName, value) {
+    if (lockedRef.current || surveyFinished || overlay) return;
+    const choice = meta.choiceIndex.get(questionName)?.get(value);
+    if (!choice) return;
+
+    const currentPageName = survey.currentPage?.name;
+    if (!currentPageName || currentPageName.startsWith("questions")) return;
+
+    lockedRef.current = true;
+    setActionFeedback(null);
+    const question = survey.getQuestionByName(questionName);
+    if (question) question.readOnly = true;
+
+    const delta = typeof choice.timeDeltaMinutes === "number" ? choice.timeDeltaMinutes : 0;
+    const shouldAdvance = choice.advanceOnSelect !== false;
+
+    applyTimeDelta(delta);
+    recordChoice({
+      pageName: currentPageName,
+      questionName,
+      value,
+      text: choice.text,
+      timeDeltaMinutes: delta,
+      gotoPage: shouldAdvance ? choice.gotoPage : currentPageName,
+    });
+
+    window.setTimeout(() => {
+      const updatedSurvey = surveyRef.current;
+      if (!updatedSurvey) return;
+
+      if (!shouldAdvance) {
+        // Wrong actions waste time, then keep the participant on the same question.
+        // We clear only this answer so they can try another option. The choice remains in choiceHistory.
+        programmaticValueChangeRef.current = true;
+        updatedSurvey.clearValue(questionName);
+        programmaticValueChangeRef.current = false;
+        if (question) question.readOnly = false;
+        setActionFeedback("That action did not move you forward. Time was deducted. Try another option.");
+        lockedRef.current = false;
+        return;
+      }
+
+      const target = choice.gotoPage || choice.nextPage || getNextPageName(updatedSurvey, meta, currentPageName);
+      const didNavigate = goToPage(updatedSurvey, target);
+      if (!didNavigate) updatedSurvey.nextPage();
+
+      window.setTimeout(() => {
+        updatedSurvey.currentPage?.elements?.forEach((element) => {
+          if (element.readOnly) element.readOnly = false;
+        });
+        lockedRef.current = false;
+      }, 50);
+    }, NAVIGATION_DELAY_MS);
+  }
+
+  function handlePathComplete(pageName) {
+    if (pageName && END_PAGES.has(pageName)) {
+      stopTimer();
+      setOverlay("complete");
+    }
+  }
+
+  function exportResultsCsv() {
+    const survey = surveyRef.current;
+    const answers = survey?.data ?? {};
+    const rows = [
+      ["section", "timestamp", "pageName", "questionName", "value", "text", "timeDeltaMinutes", "gotoPage", "timeRemainingSeconds"],
+      ["summary", new Date().toISOString(), "", "timeRemainingSeconds", timeLeftRef.current, "", "", "", ""],
+      ["summary", new Date().toISOString(), "", "timeUsedSeconds", TOTAL_SECONDS - timeLeftRef.current, "", "", "", ""],
+      ["summary", new Date().toISOString(), "", "timedOut", timedOut, "", "", "", ""],
+      ["summary", new Date().toISOString(), "", "completedPath", answers.chosen_path ?? "", "", "", "", ""],
+      ...choiceHistoryRef.current.map((entry) => [
+        "choice",
+        entry.timestamp,
+        entry.pageName,
+        entry.questionName,
+        entry.value,
+        entry.text,
+        entry.timeDeltaMinutes,
+        entry.gotoPage,
+        entry.timeRemainingSeconds,
+      ]),
+      ...Object.entries(answers).map(([key, value]) => [
+        "answer",
+        new Date().toISOString(),
+        "",
+        key,
+        value,
+        "",
+        "",
+        "",
+        "",
+      ]),
+    ];
+    downloadCsv(`orc-results-${new Date().toISOString().replace(/[:.]/g, "-")}.csv`, rows);
+  }
+
   useEffect(() => {
-    if (!running || done) return;
+    if (!running || timerStopped) return undefined;
 
-    intervalRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        const next = Math.max(0, prev - 1);
+    intervalRef.current = window.setInterval(() => {
+      setTimeLeft((previous) => {
+        const next = Math.max(0, previous - 1);
         timeLeftRef.current = next;
-
         if (next === 0) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
-
           setRunning(false);
-          setDone(true);
+          setTimerStopped(true);
           setTimedOut(true);
-          setShowTimeout(true);
-
-          const survey = surveyRef.current;
-          const timeoutPage = survey?.getPageByName("timeout");
-
-          if (survey && timeoutPage) {
-            survey.currentPage = timeoutPage;
-          }
+          setOverlay("timeout");
         }
-
         return next;
       });
     }, 1000);
@@ -193,276 +329,171 @@ export default function SurveyWrapper() {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     };
-  }, [running, done]);
+  }, [running, timerStopped]);
 
-  // Survey model
   const [survey] = useState(() => {
-    const s = new Model(surveyJson);
-    surveyRef.current = s;
+    const model = new Model(surveyJson);
+    surveyRef.current = model;
 
-    s.onCurrentPageChanged.add((_, { oldCurrentPage, newCurrentPage }) => {
-      const name = newCurrentPage?.name;
-
-      if (name && name !== "timeout" && name !== "start" && !startedRef.current) {
+    model.onCurrentPageChanged.add((sender, options) => {
+      setActionFeedback(null);
+      const name = options.newCurrentPage?.name;
+      if (name && name !== "start" && !name.startsWith("questions") && !startedRef.current) {
         startedRef.current = true;
         setRunning(true);
       }
-      if (SUCCESS_PAGES.has(name)) {
-        stopTimer();
-        setDone(true);
-      }
-
-      // Deduct time for answers on the page we just left
-      if (oldCurrentPage) {
-        oldCurrentPage.elements.forEach(el => {
-          const questionName = el.name;
-          const value = s.getValue(questionName);
-          if (value == null) return;
-          const cost = TIME_COSTS[questionName]?.[value];
-          if (cost > 0) deductRef.current(cost, `${questionName}: ${value}`);
-        });
-      }
+      handlePathComplete(name);
     });
 
-    s.onValueChanged.add((_, { name, value }) => {
-      if (value === "switch_path") {
-        deductRef.current(300, "switch_path_penalty");
-        const currentPath = s.getValue("chosen_path");
-        const prefix = currentPath ? `${currentPath}_` : null;
-        if (prefix) {
-          Object.keys(s.data).forEach(key => {
-            if (key.startsWith(prefix)) s.clearValue(key);
-          });
-        }
-        isSwitchingPath.current = true; // set flag BEFORE navigating
-        setTimeout(() => {
-          s.currentPage = s.getPageByName("path_selection");
-          setTimeout(() => {
-            s.clearValue("chosen_path");
-            isSwitchingPath.current = false; // clear flag after settled
-          }, 50);
-        }, 100);
-      }
-
-      if (value === "retry_final") {
-        deductRef.current(120, `${name}: retry_final`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("csrf_4");
-        }, 100);
-      }
-
-      if (value === "retry_delivery") {
-        deductRef.current(120, `${name}: retry_delivery`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("csrf_3");
-        }, 100);
-      }
-
-      if (value === "retry_sqli") {
-        deductRef.current(120, `${name}: retry_sqli`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("sqli_2");
-        }, 100);
-      }
-
-      if (value === "return_path_select" || value === "back_to_vuln_selection" || value === "pivot_other_vuln" || value === "pivot_csrf") {
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("path_selection");
-        }, 100);
-      }
+    model.onValueChanged.add((sender, options) => {
+      if (programmaticValueChangeRef.current) return;
+      handleChoice(sender, options.name, options.value);
     });
 
-    s.onAfterRenderPage.add((_, { htmlElement, page }) => {
-      if (page.name.startsWith("questions")) return;
-      if (!s.getValue("chosen_path")) return;
+    model.onAfterRenderPage.add((sender, { htmlElement, page }) => {
+      if (!page || page.name.startsWith("questions")) return;
+      if (!sender.getValue("chosen_path")) return;
       if (NO_SWITCH_PAGES.has(page.name)) return;
       if (htmlElement.querySelector(".orc-switch-btn")) return;
 
-      const btn = document.createElement("button");
-      btn.className = "orc-switch-btn";
-      btn.textContent = "⚠ Switch Path [costs 5 min]";
-      btn.onclick = () => {
-        btn.remove();
-        deductRef.current(300, "switch_path_penalty");
-        const pathKeys = Object.keys(TIME_COSTS).filter(k =>
-          k !== "recon_tool" && k !== "recon_target" && k !== "chosen_path"
-        );
-        pathKeys.forEach(k => s.setValue(k, null));
-        s.setValue("chosen_path", null);
-        s.currentPage = s.getPageByName("path_selection");
+      const button = document.createElement("button");
+      button.className = "orc-switch-btn";
+      button.textContent = "⚠ Switch Path [costs 5 min]";
+      button.onclick = () => {
+        if (lockedRef.current) return;
+        lockedRef.current = true;
+        applyTimeDelta(SWITCH_PATH_DELTA_MINUTES);
+        recordChoice({
+          pageName: sender.currentPage?.name ?? "",
+          questionName: "manual_switch_path",
+          value: "switch_path",
+          text: "Switch Path [costs 5 min]",
+          timeDeltaMinutes: SWITCH_PATH_DELTA_MINUTES,
+          gotoPage: "path_selection",
+        });
+        goToPage(sender, "path_selection");
+        window.setTimeout(() => {
+          lockedRef.current = false;
+        }, 50);
       };
-      htmlElement.insertBefore(btn, htmlElement.firstChild);
+      htmlElement.insertBefore(button, htmlElement.firstChild);
     });
 
-    s.onComplete.add((sender) => {
+    model.onComplete.add(() => {
       stopTimer();
+      setSurveyFinished(true);
       console.log("ORC Results:", {
-        answers:       sender.data,
+        answers: model.data,
+        choiceHistory: choiceHistoryRef.current,
         timeRemaining: timeLeftRef.current,
-        timeUsed:      TOTAL_SECONDS - timeLeftRef.current,
-        timedOut:      timeLeftRef.current === 0,
-        completedPath: sender.data.chosen_path ?? null,
+        timeUsed: TOTAL_SECONDS - timeLeftRef.current,
+        timedOut,
+        completedPath: model.data.chosen_path ?? null,
       });
     });
 
-    return s;
+    return model;
   });
 
-  
-  const pct   = (timeLeft / TOTAL_SECONDS) * 100;
+  const pct = (timeLeft / TOTAL_SECONDS) * 100;
   const color = timeLeft > 300 ? "#22c55e" : timeLeft > 120 ? "#eab308" : "#ef4444";
   const pulse = timeLeft <= 60 && running;
 
-
   return (
     <div style={{ position: "relative" }}>
-
-      {/*Timeout overlay*/}
-      {showTimeout && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 99999,
-          background: "#13141a",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "ui-monospace, Consolas, monospace",
-          padding: 40,
-        }}>
-          <div className="orc-context orc-error" style={{
-            maxWidth: 560,
-            textAlign: "center",
-            fontSize: 15,
-            lineHeight: 1.8,
-          }}>
-            <div style={{ fontSize: 28, marginBottom: 16 }}>⛔</div>
+      {overlay && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 99999,
+            background: "#13141a",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "ui-monospace, Consolas, monospace",
+            padding: 40,
+          }}
+        >
+          <div
+            className={overlay === "timeout" ? "orc-context orc-error" : "orc-context orc-win"}
+            style={{ maxWidth: 620, textAlign: "center", fontSize: 15, lineHeight: 1.8 }}
+          >
+            <div style={{ fontSize: 28, marginBottom: 16 }}>{overlay === "timeout" ? "⛔" : "✅"}</div>
             <strong style={{ fontSize: 18, letterSpacing: 3, display: "block", marginBottom: 12 }}>
-              TIME EXPIRED
+              {overlay === "timeout" ? "TIME EXPIRED" : "OPERATION COMPLETE"}
             </strong>
-            Your 20 minutes are up. The operation is over.
-            <br /><br />
-            Please answer the following questions based on what you attempted.
+            {overlay === "timeout"
+              ? "Your time is up. The operation is over. Please answer the following questions based on what you attempted."
+              : "This path reached an ending condition. Please answer the following questions based on your decisions."}
           </div>
           <button
             className="orc-switch-btn"
             style={{ marginTop: 28, fontSize: 13, padding: "10px 24px", borderColor: "#c084fc", color: "#c084fc" }}
-            onClick={() => {
-              setShowTimeout(false);
-              const s = surveyRef.current;
-              if (!s) return;
-              const page = s.getPageByName("questions_1");
-              if (page) {
-                s.currentPageNo = s.pages.indexOf(page);
-              }
-            }}
+            onClick={proceedToPostGame}
           >
-            → Proceed to Questions
+            → Proceed to Post-Game Questions
           </button>
         </div>
       )}
 
-      {/*Timer HUD*/}
-      <div style={{
-        position: "fixed",
-        top: 16,
-        right: 16,
-        zIndex: 9999,
-        width: 220,
-        background: "#16171d",
-        border: `2px solid ${color}`,
-        borderRadius: 10,
-        padding: "12px 16px 14px",
-        boxShadow: `0 0 24px ${color}55`,
-        fontFamily: "ui-monospace, Consolas, monospace",
-        animation: pulse ? "hud-pulse 0.8s ease-in-out infinite" : "none",
-        transition: "border-color 0.4s, box-shadow 0.4s",
-      }}>
+      <div
+        style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          zIndex: 9999,
+          width: 220,
+          background: "#16171d",
+          border: `2px solid ${color}`,
+          borderRadius: 10,
+          padding: "12px 16px 14px",
+          boxShadow: `0 0 24px ${color}55`,
+          fontFamily: "ui-monospace, Consolas, monospace",
+          animation: pulse ? "hud-pulse 0.8s ease-in-out infinite" : "none",
+          transition: "border-color 0.4s, box-shadow 0.4s",
+        }}
+      >
         <div style={{ fontSize: 10, color: "#6b7280", letterSpacing: 3, textTransform: "uppercase", marginBottom: 6 }}>
-          {timedOut ? "⛔ TIME EXPIRED" : done ? "✅ COMPLETE" : running ? "⏱ TIME REMAINING" : "STANDBY"}
+          {timedOut ? "⛔ TIME EXPIRED" : timerStopped ? "✅ STOPPED" : running ? "⏱ TIME REMAINING" : "STANDBY"}
         </div>
-
         <div style={{ fontSize: 42, fontWeight: 800, color, lineHeight: 1, letterSpacing: 3, transition: "color 0.4s" }}>
           {fmt(timeLeft)}
         </div>
-
         <div style={{ marginTop: 10, background: "#2e303a", borderRadius: 4, height: 5, overflow: "hidden" }}>
-          <div style={{
-            width: `${pct}%`,
-            height: "100%",
-            background: color,
-            borderRadius: 4,
-            transition: "width 1s linear, background 0.4s",
-          }} />
+          <div
+            style={{
+              width: `${pct}%`,
+              height: "100%",
+              background: color,
+              borderRadius: 4,
+              transition: "width 1s linear, background 0.4s",
+            }}
+          />
         </div>
-
-        {history.length > 0 && (
-          <div style={{ marginTop: 10, borderTop: "1px solid #2e303a", paddingTop: 8 }}>
-            <div style={{ fontSize: 9, color: "#6b7280", letterSpacing: 2, marginBottom: 4, textTransform: "uppercase" }}>
-              Deductions
-            </div>
-            {history.slice(0, 5).map((h, i) => (
-              <div key={h.id} style={{
-                fontSize: 10,
-                color: "#ef4444",
-                opacity: Math.max(0.25, 1 - i * 0.18),
-                lineHeight: 1.7,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}>
-                -{Math.round(h.secs / 60)}m &nbsp;{h.text}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/*Toast popups*/}
-      <div style={{
-        position: "fixed",
-        top: 16,
-        right: 252,
-        zIndex: 10000,
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-        alignItems: "flex-end",
-        pointerEvents: "none",
-      }}>
-        {toasts.map(t => (
-          <div key={t.id} style={{
-            background: "rgba(239,68,68,0.15)",
-            border: "1px solid #ef4444",
-            borderRadius: 6,
-            padding: "6px 12px",
-            fontFamily: "ui-monospace, Consolas, monospace",
-            fontSize: 12,
-            color: "#ef4444",
-            whiteSpace: "nowrap",
-            animation: "toast-in 0.25s ease-out forwards",
-          }}>
-            {t.text}
-          </div>
-        ))}
-      </div>
+      {surveyFinished && (
+        <div style={{ marginBottom: 16, paddingTop: 8 }}>
+          <button className="orc-export-btn" onClick={exportResultsCsv}>
+            Download Results CSV
+          </button>
+        </div>
+      )}
 
-      {/*Survey*/}
+      {actionFeedback && (
+        <div className="orc-action-feedback" role="status">
+          {actionFeedback}
+        </div>
+      )}
+
       <Survey model={survey} />
 
       <style>{`
         @keyframes hud-pulse {
           0%, 100% { box-shadow: 0 0 24px #ef444466; }
-          50%       { box-shadow: 0 0 48px #ef4444cc; }
-        }
-        @keyframes toast-in {
-          from { opacity: 0; transform: translateX(20px); }
-          to   { opacity: 1; transform: translateX(0); }
+          50% { box-shadow: 0 0 48px #ef4444cc; }
         }
         .orc-intro, .orc-context {
           padding: 16px 20px;
@@ -474,24 +505,18 @@ export default function SurveyWrapper() {
           line-height: 1.6;
           color: #9ca3af;
         }
-
         .orc-intro h2 {
           color: #c084fc;
           font-size: 18px;
           margin: 0 0 12px;
           letter-spacing: 4px;
         }
-
-        /* Remove the separate background/border overrides on variants,
-          keep only the border-color tint so they still feel distinct */
-        .orc-context.orc-error {
+        .orc-context.orc-error, .orc-context.orc-fail {
           border-color: #ef4444;
         }
-
         .orc-context.orc-success {
           border-color: #22c55e;
         }
-
         .orc-context.orc-win {
           border-color: #c084fc;
           color: #f3f4f6;
@@ -507,7 +532,7 @@ export default function SurveyWrapper() {
           margin: 8px 0 0 16px;
           padding: 0;
         }
-        .orc-switch-btn {
+        .orc-switch-btn, .orc-export-btn {
           display: inline-block;
           margin-bottom: 16px;
           padding: 8px 16px;
@@ -521,8 +546,23 @@ export default function SurveyWrapper() {
           cursor: pointer;
           transition: background 0.2s;
         }
-        .orc-switch-btn:hover {
-          background: rgba(239, 68, 68, 0.1);
+        .orc-export-btn {
+          border-color: #22c55e;
+          color: #22c55e;
+        }
+        .orc-switch-btn:hover, .orc-export-btn:hover {
+          background: rgba(255,255,255,0.06);
+        }
+        .orc-action-feedback {
+          margin: 0 0 16px 0;
+          padding: 12px 16px;
+          border-radius: 6px;
+          border: 1px solid #eab308;
+          background: rgba(234, 179, 8, 0.08);
+          color: #fde68a;
+          font-family: ui-monospace, Consolas, monospace;
+          font-size: 13px;
+          line-height: 1.5;
         }
       `}</style>
     </div>

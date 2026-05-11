@@ -16,15 +16,34 @@
           "title": "How do you probe the target for SQL injection?",
           "isRequired": true,
           "choices": [
-            { "value": "manual_quote",   "text": "Manually send a single quote into a parameter and observe how the server responds [costs 1 min]" },
-            { "value": "sqlmap_detect",  "text": "Run an automated detection scan against the login form [costs 2 min]" },
-            { "value": "burp_intercept", "text": "Intercept requests in a proxy and review each parameter by hand [costs 3 min]" },
-            { "value": "source_view",    "text": "View the page source to look for hidden fields or clues about how queries are built [costs 1 min]" }
+            {
+              "value": "manual_quote",
+              "text": "Manually send a single quote into a parameter and observe how the server responds [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "sqlmap_detect",
+              "text": "Run an automated detection scan against the login form [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "burp_intercept",
+              "text": "Intercept requests in a proxy and review each parameter by hand [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "source_view",
+              "text": "View the page source to look for hidden fields or clues about how queries are built [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_1_source_branch",
       "title": "Path A — SQL Injection | Step 1.1: Source Review",
@@ -41,14 +60,28 @@
           "title": "You found a hidden redirect parameter. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "test_redirect",  "text": "Tamper with the redirect field — inject a quote and see if it causes an error [costs 1 min]" },
-            { "value": "test_username",  "text": "Ignore the redirect field and focus on the username/password fields instead [costs 1 min]" },
-            { "value": "run_sqlmap_now", "text": "Feed the full request to an automated scanner targeting all three parameters [costs 2 min]" }
+            {
+              "value": "test_redirect",
+              "text": "Tamper with the redirect field — inject a quote and see if it causes an error [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "test_username",
+              "text": "Ignore the redirect field and focus on the username/password fields instead [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "run_sqlmap_now",
+              "text": "Feed the full request to an automated scanner targeting all three parameters [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_2_redirect_branch",
       "title": "Path A — SQL Injection | Step 2 (Redirect Field): Probe the Parameter",
@@ -65,13 +98,22 @@
           "title": "The redirect field errors silently. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "try_blind_redirect", "text": "Attempt time-based blind injection on the redirect field [costs 4 min]" },
-            { "value": "pivot_to_username",  "text": "Drop the redirect field and pivot to testing the username field instead [costs 1 min]" }
+            {
+              "value": "try_blind_redirect",
+              "text": "Attempt time-based blind injection on the redirect field [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "pivot_to_username",
+              "text": "Drop the redirect field and pivot to testing the username field instead [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_2_blind_redirect_dead",
       "title": "Path A — SQL Injection | Dead End: Redirect Parameter",
@@ -88,13 +130,22 @@
           "title": "The redirect parameter leads nowhere useful. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and try the username field instead [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and try the username field instead [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_2",
       "title": "Path A — SQL Injection | Step 2: Confirm the Vulnerability",
@@ -111,15 +162,34 @@
           "title": "Injection is confirmed. What is your exploitation approach?",
           "isRequired": true,
           "choices": [
-            { "value": "auth_bypass",  "text": "Inject a classic bypass payload into the login form to authenticate without valid credentials [costs 1 min]" },
-            { "value": "union_select", "text": "Use a UNION-based payload to pull data from tables directly into the page response [costs 3 min]" },
-            { "value": "sqlmap_full",  "text": "Run a full automated database dump [costs 4 min]" },
-            { "value": "blind_sqli",   "text": "Use time-based blind injection to infer data without visible output [costs 5 min]" }
+            {
+              "value": "auth_bypass",
+              "text": "Inject a classic bypass payload into the login form to authenticate without valid credentials [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "union_select",
+              "text": "Use a UNION-based payload to pull data from tables directly into the page response [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "sqlmap_full",
+              "text": "Run a full automated database dump [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "blind_sqli",
+              "text": "Use time-based blind injection to infer data without visible output [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_blind_dead",
       "title": "Path A — SQL Injection | Dead End: Blind Injection",
@@ -136,13 +206,22 @@
           "title": "Blind injection is throttled and too slow. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and try a different injection technique [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and try a different injection technique [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3",
       "title": "Path A — SQL Injection | Step 3: Choose Your Target Account",
@@ -159,16 +238,40 @@
           "title": "Which account do you target?",
           "isRequired": true,
           "choices": [
-            { "value": "admin",            "text": "admin — sounds like the most powerful account [costs 2 min]" },
-            { "value": "jsmith",           "text": "jsmith — a real employee, low-profile, might have portal access [costs 2 min]" },
-            { "value": "svc_transfer_xk9", "text": "svc_transfer_xk9 — unusual name, but 'transfer_approver' is exactly what you need [costs 1 min]" },
-            { "value": "root",             "text": "root — if you can get in here, you own everything [costs 5 min]" },
-            { "value": "audit_log_svc",    "text": "audit_log_svc — read-only access, but maybe you can escalate [costs 2 min]" }
+            {
+              "value": "admin",
+              "text": "admin — sounds like the most powerful account [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "jsmith",
+              "text": "jsmith — a real employee, low-profile, might have portal access [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "svc_transfer_xk9",
+              "text": "svc_transfer_xk9 — unusual name, but 'transfer_approver' is exactly what you need [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "root",
+              "text": "root — if you can get in here, you own everything [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "audit_log_svc",
+              "text": "audit_log_svc — read-only access, but maybe you can escalate [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_honeypot",
       "title": "Path A — SQL Injection | Dead End: Honeypot Accounts",
@@ -185,13 +288,22 @@
           "title": "You tripped a honeypot. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and target a different account [costs 3 min penalty]" },
-            { "value": "switch_path", "text": "Cut your losses and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and target a different account [costs 3 min penalty]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Cut your losses and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_jsmith_branch",
       "title": "Path A — SQL Injection | Step 3.1: Employee Account",
@@ -208,15 +320,34 @@
           "title": "You're in as jsmith. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "read_messages",     "text": "Read jsmith's internal messages — there may be credentials or routing info [costs 1 min]" },
-            { "value": "test_finance_link", "text": "Try to access the greyed-out Finance Operations link [costs 1 min]" },
-            { "value": "look_for_privesc",  "text": "Poke around the portal for misconfigured access controls [costs 2 min]" },
-            { "value": "abandon_jsmith",    "text": "jsmith has no transfer rights — go back and target a different account [costs 2 min penalty]" }
+            {
+              "value": "read_messages",
+              "text": "Read jsmith's internal messages — there may be credentials or routing info [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "test_finance_link",
+              "text": "Try to access the greyed-out Finance Operations link [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "look_for_privesc",
+              "text": "Poke around the portal for misconfigured access controls [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "abandon_jsmith",
+              "text": "jsmith has no transfer rights — go back and target a different account [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_jsmith_messages",
       "title": "Path A — SQL Injection | Step 3.2: jsmith's Inbox",
@@ -233,14 +364,28 @@
           "title": "Useful intel in the inbox. What do you do with it?",
           "isRequired": true,
           "choices": [
-            { "value": "try_temp_password",   "text": "Try the temporary password against svc_transfer_xk9 directly [costs 1 min]" },
-            { "value": "go_back_svc",         "text": "Use the confirmed account name and target svc_transfer_xk9 through injection [costs 1 min]" },
-            { "value": "look_for_more_intel", "text": "Keep digging through jsmith's portal for more leads [costs 2 min]" }
+            {
+              "value": "try_temp_password",
+              "text": "Try the temporary password against svc_transfer_xk9 directly [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "go_back_svc",
+              "text": "Use the confirmed account name and target svc_transfer_xk9 through injection [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "look_for_more_intel",
+              "text": "Keep digging through jsmith's portal for more leads [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_temp_password_dead",
       "title": "Path A — SQL Injection | Dead End: Password Reuse",
@@ -257,13 +402,22 @@
           "title": "The account is now locked out. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and approach svc_transfer_xk9 through SQL injection instead [costs 3 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and approach svc_transfer_xk9 through SQL injection instead [costs 3 min penalty]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_jsmith_finance_dead",
       "title": "Path A — SQL Injection | Dead End: Finance Operations Link",
@@ -280,13 +434,22 @@
           "title": "URL tampering is blocked server-side. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and target a different account through SQL injection [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and target a different account through SQL injection [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_jsmith_privesc_dead",
       "title": "Path A — SQL Injection | Dead End: Privilege Escalation",
@@ -303,13 +466,22 @@
           "title": "No privilege escalation path from jsmith. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and target a different account through SQL injection [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and target a different account through SQL injection [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_jsmith_more_intel_dead",
       "title": "Path A — SQL Injection | Dead End: Further Recon",
@@ -326,13 +498,22 @@
           "title": "Nothing else useful here. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and approach svc_transfer_xk9 through SQL injection [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and approach svc_transfer_xk9 through SQL injection [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_audit_branch",
       "title": "Path A — SQL Injection | Step 3.3: Audit Log Account",
@@ -349,14 +530,28 @@
           "title": "You have read-only audit access. What do you look for?",
           "isRequired": true,
           "choices": [
-            { "value": "read_svc_activity",   "text": "Read svc_transfer_xk9's recent activity — look for session patterns or tokens [costs 1 min]" },
-            { "value": "read_all_transfers",  "text": "Pull all recent transfer records to understand the approval workflow [costs 2 min]" },
-            { "value": "abandon_audit",       "text": "Audit access is useless for your goal — go back and target a better account [costs 2 min penalty]" }
+            {
+              "value": "read_svc_activity",
+              "text": "Read svc_transfer_xk9's recent activity — look for session patterns or tokens [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "read_all_transfers",
+              "text": "Pull all recent transfer records to understand the approval workflow [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "abandon_audit",
+              "text": "Audit access is useless for your goal — go back and target a better account [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_3_audit_svc_logs_dead",
       "title": "Path A — SQL Injection | Dead End: Audit Log Analysis",
@@ -373,13 +568,22 @@
           "title": "Audit access leads nowhere actionable. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and target svc_transfer_xk9 directly through SQL injection [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and target svc_transfer_xk9 directly through SQL injection [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_4",
       "title": "Path A — SQL Injection | Step 4: Access the Service Account",
@@ -396,15 +600,34 @@
           "title": "How do you attempt to gain access to svc_transfer_xk9?",
           "isRequired": true,
           "choices": [
-            { "value": "auth_bypass_svc",  "text": "Inject an auth bypass payload directly into the login query [costs 1 min]" },
-            { "value": "crack_hash",       "text": "Extract the bcrypt hash and attempt to crack it offline [costs 5 min]" },
-            { "value": "session_inject",   "text": "Inject a crafted session row into the sessions table to create an active session without logging in [costs 3 min]" },
-            { "value": "reset_password",   "text": "Use an UPDATE injection to overwrite the account's password hash [costs 2 min]" }
+            {
+              "value": "auth_bypass_svc",
+              "text": "Inject an auth bypass payload directly into the login query [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "crack_hash",
+              "text": "Extract the bcrypt hash and attempt to crack it offline [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "session_inject",
+              "text": "Inject a crafted session row into the sessions table to create an active session without logging in [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "reset_password",
+              "text": "Use an UPDATE injection to overwrite the account's password hash [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_4_crack_dead",
       "title": "Path A — SQL Injection | Dead End: Hash Cracking",
@@ -421,13 +644,22 @@
           "title": "Cracking is not viable in your time window. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and try a different method to access the account [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_4_session_inject_dead",
       "title": "Path A — SQL Injection | Dead End: Session Table Injection",
@@ -444,13 +676,22 @@
           "title": "The session injection approach is blocked by in-memory validation. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and try a different method to access the account [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_4_reset_dead",
       "title": "Path A — SQL Injection | Dead End: Password Reset via Injection",
@@ -467,13 +708,22 @@
           "title": "The service account requires a second factor you can't produce. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and try a different method to access the account [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_4_auth_bypass_dead",
       "title": "Path A — SQL Injection | Dead End: Auth Bypass",
@@ -490,13 +740,22 @@
           "title": "You're in the session but locked out of the transfer dashboard by MFA. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_sqli", "text": "Go back and look for another angle within SQL Injection [costs 3 min penalty]" },
-            { "value": "switch_path", "text": "Abandon SQL Injection — this path cannot complete the transfer [costs 5 min penalty]" }
+            {
+              "value": "retry_sqli",
+              "text": "Go back and look for another angle within SQL Injection [costs 3 min penalty]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon SQL Injection — this path cannot complete the transfer [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "sqli_final_dead",
       "title": "Path A — SQL Injection | Full Dead End",
@@ -513,7 +772,12 @@
           "title": "SQL Injection cannot complete the objective. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "switch_path", "text": "Switch to a different attack path [costs 5 min penalty]" }
+            {
+              "value": "switch_path",
+              "text": "Switch to a different attack path [costs 5 min penalty]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]

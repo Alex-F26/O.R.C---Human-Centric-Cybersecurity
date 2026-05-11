@@ -18,7 +18,7 @@
     },
     {
       "name": "recon",
-      "title": "Phase 1 \u2014 Reconnaissance",
+      "title": "Phase 1 — Reconnaissance",
       "elements": [
         {
           "type": "radiogroup",
@@ -28,23 +28,27 @@
           "choices": [
             {
               "value": "nmap",
-              "text": "Nmap \u2014 Run a full port scan across the subnet [costs 3 min]",
-              "timeDeltaMinutes": -3
+              "text": "Nmap — Run a full port scan across the subnet [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
             },
             {
               "value": "netdiscover",
-              "text": "Netdiscover \u2014 Passive ARP scan to find live hosts [costs 1 min]",
-              "timeDeltaMinutes": -1
+              "text": "Netdiscover — Passive ARP scan to find live hosts [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
             },
             {
               "value": "wireshark",
-              "text": "Wireshark \u2014 Capture live traffic and analyze passively [costs 4 min]",
-              "timeDeltaMinutes": -4
+              "text": "Wireshark — Capture live traffic and analyze passively [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true
             },
             {
               "value": "manual",
-              "text": "Manual enumeration \u2014 Check local ARP table and routing [costs 2 min]",
-              "timeDeltaMinutes": -2
+              "text": "Manual enumeration — Check local ARP table and routing [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
             }
           ]
         },
@@ -57,23 +61,27 @@
           "choices": [
             {
               "value": "db_server",
-              "text": "192.168.1.42 \u2014 Port 3306 open (MySQL) [costs 1 min]",
-              "timeDeltaMinutes": -1
+              "text": "192.168.1.42 — Port 3306 open (MySQL) [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
             },
             {
               "value": "ssh_server",
-              "text": "192.168.1.17 \u2014 Port 22 open (SSH), banner shows Ubuntu 18.04 [costs 1 min]",
-              "timeDeltaMinutes": -1
+              "text": "192.168.1.17 — Port 22 open (SSH), banner shows Ubuntu 18.04 [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
             },
             {
               "value": "mail_server",
-              "text": "192.168.1.88 \u2014 Port 25/143 open, mail server [costs 1 min]",
-              "timeDeltaMinutes": -1
+              "text": "192.168.1.88 — Port 25/143 open, mail server [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
             },
             {
               "value": "web_server",
-              "text": "192.168.1.55 \u2014 Port 80/443 open, internal web portal [costs 1 min]",
-              "timeDeltaMinutes": -1
+              "text": "192.168.1.55 — Port 80/443 open, internal web portal [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
             }
           ]
         }
@@ -81,7 +89,7 @@
     },
     {
       "name": "path_selection",
-      "title": "Phase 2 \u2014 Path Selection",
+      "title": "Phase 2 — Path Selection",
       "elements": [
         {
           "type": "radiogroup",
@@ -91,23 +99,27 @@
           "choices": [
             {
               "value": "sqli",
-              "text": "Path A \u2014 SQL Injection via the internal web portal [costs 2 min]",
-              "timeDeltaMinutes": -2
+              "text": "Path A — SQL Injection via the internal web portal [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
             },
             {
               "value": "oscmd",
-              "text": "Path B \u2014 OS Command Injection via the web app's diagnostic endpoint [costs 2 min]",
-              "timeDeltaMinutes": -2
+              "text": "Path B — OS Command Injection via the web app's diagnostic endpoint [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
             },
             {
               "value": "xss",
-              "text": "Path C \u2014 Stored XSS through the internal forum [costs 2 min]",
-              "timeDeltaMinutes": -2
+              "text": "Path C — Stored XSS through the internal forum [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
             },
             {
               "value": "csrf",
-              "text": "Path D \u2014 CSRF/request forgery against the transfer portal [costs 2 min]",
-              "timeDeltaMinutes": -2
+              "text": "Path D — CSRF/request forgery against the transfer portal [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
             }
           ]
         }
