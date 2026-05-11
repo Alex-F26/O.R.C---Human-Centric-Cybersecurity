@@ -1,133 +1,1188 @@
 {
+  "title": "OS Injection Path",
+  "description": "OS Injection path questions v2 with developer goto notes. JSON cannot contain real comments, so GOTO reminders are stored as DEVELOPER_NOTE fields inside the affected answer choices.",
+  "showQuestionNumbers": "off",
   "pages": [
     {
-      "name": "oscmd_1",
-      "title": "Path B — OS Command Injection | Step 1: ???",
+      "name": "oscmd_q1",
+      "title": "OS Injection | Question 1",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_context",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "name": "oscmd_q1_context",
+          "html": "<div class='orc-context'><strong>You are reviewing the bank's internal employee portal. Your objective is to find a page that may interact with the server or operating system.</strong></div>"
         },
         {
           "type": "radiogroup",
-          "name": "oscmd_discover",
-          "title": "question?",
+          "name": "oscmd_q1_answer",
+          "title": "Which area do you inspect first?",
           "isRequired": true,
           "choices": [
-            { "value": "semicolon_id",  "text": "reeee [costs 1 min]" },
-            { "value": "burp_scan",     "text": "reeee [costs 3 min]" },
-            { "value": "pipe_whoami",   "text": "reeee [costs 1 min]" },
-            { "value": "commix_auto",   "text": "reeee [costs 2 min]" }
+            {
+              "value": "employee_lookup",
+              "text": "Inspect the employee lookup tool that searches internal user records [costs 2 min]"
+            },
+            {
+              "value": "report_export",
+              "text": "Inspect the report export page that creates downloadable files [costs 2 min]"
+            },
+            {
+              "value": "login_portal",
+              "text": "Inspect the employee login portal and support login behavior [costs 1 min]"
+            },
+            {
+              "value": "system_status",
+              "text": "Inspect the system status page that checks service availability [costs 2 min]"
+            }
           ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q2"
     },
     {
-      "name": "oscmd_2",
-      "title": "Path B — OS Command Injection | Step 2: ???",
+      "name": "oscmd_q2",
+      "title": "OS Injection | Question 2",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_confirmed",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "name": "oscmd_q2_context",
+          "html": "<div class='orc-context'><strong>The employee login portal accepts a username and password. The page gives unusual error behavior when login attempts fail.</strong></div>"
         },
         {
           "type": "radiogroup",
-          "name": "oscmd_shell",
-          "title": "question?",
+          "name": "oscmd_q2_answer",
+          "title": "The login page gives an unusual response. What do you try next?",
           "isRequired": true,
           "choices": [
-            { "value": "bash_reverse",   "text": "reeee [costs 2 min]" },
-            { "value": "python_reverse", "text": "reeee [costs 2 min]" },
-            { "value": "nc_mkfifo",      "text": "reeee [costs 3 min]" },
-            { "value": "web_shell",      "text": "reeee [costs 4 min]" }
+            {
+              "value": "input_test",
+              "text": "Use an input test to see whether the backend response changes [costs 1 min]"
+            },
+            {
+              "value": "stage_persistence_post",
+              "text": "Send POST requests to stage a simulated persistence method on the server [costs 5 min]"
+            },
+            {
+              "value": "manual_bruteforce",
+              "text": "Enter common employee usernames/passwords manually (bruteforce) [costs 4 min]"
+            },
+            {
+              "value": "approve_transfer_login",
+              "text": "Try to approve a transfer from the login page [costs 4 min]"
+            }
           ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q3"
     },
     {
-      "name": "oscmd_3",
-      "title": "Path B — OS Command Injection | Step 3: ???",
+      "name": "oscmd_q3",
+      "title": "OS Injection | Question 3",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_shell_ok",
-          "html": "<div class='orc-context'><strong>context</strong></div>"
+          "name": "oscmd_q3_context",
+          "html": "<div class='orc-context'><strong>The login portal responds differently than expected. It appears to leak backend-style debug information instead of only showing normal login messages.</strong></div>"
         },
         {
           "type": "radiogroup",
-          "name": "oscmd_privesc",
-          "title": "question?",
+          "name": "oscmd_q3_answer",
+          "title": "What do you check next?",
           "isRequired": true,
           "choices": [
-            { "value": "read_config", "text": "reeee [costs 1 min]" },
-            { "value": "suid_abuse",  "text": "reeee [costs 3 min]" },
-            { "value": "sudo_check",  "text": "reeee [costs 1 min]" },
-            { "value": "cron_hijack", "text": "reeee [costs 2 min]" }
+            {
+              "value": "status_code_only",
+              "text": "Capture the failed login request and check only the HTTP status code [costs 1 min]"
+            },
+            {
+              "value": "directory_scan_first",
+              "text": "Run a directory scan against the portal before testing the login input [costs 1 min]"
+            },
+            {
+              "value": "realistic_usernames",
+              "text": "Try several realistic usernames to see whether the error message changes [costs 1 min]"
+            },
+            {
+              "value": "fuzz_backend_behavior",
+              "text": "Fuzz the login page to see whether the error exposes backend behavior [costs 1 min]"
+            }
           ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q4"
     },
     {
-      "name": "oscmd_branch_suid",
-      "title": "Path B — OS Command Injection | THIS IS YOUR BRANCH STRUCTURE",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_privesc} = 'suid_abuse'",
+      "name": "oscmd_q4",
+      "title": "OS Injection | Question 4",
+      "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_suid_result",
-          "html": "<div class='orc-context orc-error'><strong>context</strong></div>"
+          "name": "oscmd_q4_context",
+          "html": "<div class='orc-context'><strong>The login system appears to be handling input unsafely.</strong></div>"
         },
         {
           "type": "radiogroup",
-          "name": "oscmd_suid_choice",
-          "title": "question?",
+          "name": "oscmd_q4_answer",
+          "title": "What is your next move?",
           "isRequired": true,
           "choices": [
-            { "value": "fall_config", "text": "reeee [costs 2 min]" },
-            { "value": "fall_cron",   "text": "reeee [costs 2 min]" }
+            {
+              "value": "check_transfer_before_confirming",
+              "text": "Check the transfer request page before confirming what the login error exposes [costs 4 min]"
+            },
+            {
+              "value": "compare_controlled_responses",
+              "text": "Compare controlled login responses to confirm backend behavior [costs 2 min]"
+            },
+            {
+              "value": "install_tools_debug",
+              "text": "Try to install command-line tools through the debug output [costs 5 min]"
+            },
+            {
+              "value": "bruteforce_and_tool",
+              "text": "Brute force the login page with usernames/passwords and check backend behavior with a security tool [costs 6 min]"
+            }
           ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q5"
     },
     {
-      "name": "oscmd_4",
-      "title": "Path B — OS Command Injection | Step 4: ???",
-      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_privesc} = 'read_config' or {oscmd_privesc} = 'sudo_check' or {oscmd_privesc} = 'cron_hijack' or {oscmd_suid_choice} = 'fall_config' or {oscmd_suid_choice} = 'fall_cron')",
+      "name": "oscmd_q5",
+      "title": "OS Injection | Question 5",
+      "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_db_creds",
-          "html": "<div class='orc-context orc-success'><strong>context</strong></div>"
+          "name": "oscmd_q5_context",
+          "html": "<div class='orc-context'><strong>The backend response suggests the login portal may expose system information. You need to decide where to look first.</strong></div>"
         },
         {
           "type": "radiogroup",
-          "name": "oscmd_final",
-          "title": "question?",
+          "name": "oscmd_q5_answer",
+          "title": "Where do you look first?",
           "isRequired": true,
           "choices": [
-            { "value": "insert_transfer", "text": "reeee [costs 1 min]" },
-            { "value": "steal_session",   "text": "reeee [costs 2 min]" },
-            { "value": "update_balance",  "text": "reeee [costs 3 min]" }
+            {
+              "value": "fake_admin_profile",
+              "text": "Focus on the fake admin profile page [costs 3 min]"
+            },
+            {
+              "value": "os_files",
+              "text": "Search for operating system files [costs 4 min]"
+            },
+            {
+              "value": "app_data_files",
+              "text": "Look for application-related folders or exposed data files [costs 2 min]"
+            },
+            {
+              "value": "employee_bruteforce_info",
+              "text": "Look for useful employee info to use for a brute force [costs 2 min]"
+            }
           ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q6"
     },
     {
-      "name": "oscmd_fail",
-      "title": "Path B — OS Command Injection | failed",
-      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_final} = 'insert_transfer' or {oscmd_final} = 'steal_session' or {oscmd_final} = 'update_balance')",
+      "name": "oscmd_q6",
+      "title": "OS Injection | Question 6",
+      "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
           "type": "html",
-          "name": "oscmd_win",
-          "html": "<div class='orc-context orc-win'><strong>context</strong></div>"
+          "name": "oscmd_q6_context",
+          "html": "<div class='orc-context'><strong>You found an exposed internal data area. Several files are visible, but not all of them help your objective.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q6_answer",
+          "title": "Which file do you open first?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "support_notes",
+              "text": "Open recent support notes to look for employee troubleshooting details [costs 1 min]"
+            },
+            {
+              "value": "backup_config",
+              "text": "Open a portal backup configuration file to look for system hints [costs 1 min]"
+            },
+            {
+              "value": "public_policy",
+              "text": "Open the public policy document [costs 1 min]"
+            },
+            {
+              "value": "user_and_password_lists",
+              "text": "Open the user account list and compromised password list [costs 2 min]"
+            }
+          ]
         }
-      ]
+      ],
+      "defaultNextPage": "oscmd_q7"
+    },
+    {
+      "name": "oscmd_q7",
+      "title": "OS Injection | Question 7",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q7_context",
+          "html": "<div class='orc-context'><strong>You found possible usernames and passwords. This creates a path into the internal portal, but it may not be a high-privilege path.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q7_answer",
+          "title": "You found possible usernames and passwords. What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "create_wordlist",
+              "text": "Create a wordlist with usernames and passwords [costs 4 min]",
+              "gotoPage": "oscmd_q7_1"
+            },
+            {
+              "value": "restart_recon",
+              "text": "Ignore the credentials and restart recon [costs 5 min]"
+            },
+            {
+              "value": "assume_admin",
+              "text": "Assume the admin account is the correct account [costs 5 min]"
+            },
+            {
+              "value": "manual_try_all",
+              "text": "Try every username and password combination manually [costs 8 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q8"
+    },
+    {
+      "name": "oscmd_q7_1",
+      "title": "OS Injection | Question 7.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q7_answer} = 'create_wordlist'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q7_1_context",
+          "html": "<div class='orc-context'><strong>You created the wordlist. This creates a path into the internal portal, but it may not be a high-privilege path.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q7_1_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "run_bruteforce_tooling",
+              "text": "Run bruteforce tooling with the new wordlist [costs 7 min]"
+            },
+            {
+              "value": "ignore_restart",
+              "text": "Ignore the credentials and restart recon [costs 5 min]"
+            },
+            {
+              "value": "admin_labeled_first",
+              "text": "Run the wordlist only against accounts labeled admin first [costs 5 min]"
+            },
+            {
+              "value": "manual_first_pairs",
+              "text": "Test the first few credential pairs manually before using tooling [costs 8 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q8"
+    },
+    {
+      "name": "oscmd_q8",
+      "title": "OS Injection | Question 8",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q8_context",
+          "html": "<div class='orc-context'><strong>The credential check identifies one working employee account. You can now enter the internal portal, but you still need to determine the value of this access.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q8_answer",
+          "title": "You are inside the portal. What do you check first?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "fake_admin_search",
+              "text": "Search for the fake admin account [costs 3 min]"
+            },
+            {
+              "value": "profile_picture",
+              "text": "Change the profile picture [costs 2 min]"
+            },
+            {
+              "value": "messages_permissions",
+              "text": "Check messages and account permissions [costs 2 min]"
+            },
+            {
+              "value": "wordlist_other_pages",
+              "text": "Run the wordlist against other company login pages identified in the scan [costs 6 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q9"
+    },
+    {
+      "name": "oscmd_q9",
+      "title": "OS Injection | Question 9",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q9_context",
+          "html": "<div class='orc-context'><strong>The employee inbox contains several messages. Most are normal internal messages, but one may point to the real transfer approval process.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q9_answer",
+          "title": "Which message do you open first?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "office_memo",
+              "text": "Office memo [costs 1 min]"
+            },
+            {
+              "value": "finance_routing",
+              "text": "Security message mentioning Finance Operations and transfer approval routing [costs 2 min]"
+            },
+            {
+              "value": "it_newsletter",
+              "text": "IT newsletter [costs 2 min]"
+            },
+            {
+              "value": "logged_admin_alert",
+              "text": "Logged admin alert [costs 3 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q10"
+    },
+    {
+      "name": "oscmd_q10",
+      "title": "OS Injection | Question 10",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q10_context",
+          "html": "<div class='orc-context'><strong>You have access to the website but the account is low privilege and cannot do much.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q10_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "chase_admin",
+              "text": "Keep chasing the admin account [costs 4 min]"
+            },
+            {
+              "value": "restart_homepage",
+              "text": "Restart from the homepage [costs 3 min]"
+            },
+            {
+              "value": "print_shadow_files",
+              "text": "Print shadow files (password file on Linux) [costs 2 min]",
+              "gotoPage": "oscmd_q10_1"
+            },
+            {
+              "value": "check_inbox_permissions",
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q11"
+    },
+    {
+      "name": "oscmd_q10_1",
+      "title": "OS Injection | Question 10.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_answer} = 'print_shadow_files'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q10_1_context",
+          "html": "<div class='orc-context'><strong>The shadow files printed to the debug screen. This could be huge. Your next step can change everything.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q10_1_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "direct_login_spray_hashes",
+              "text": "Pair usernames with the hash output and try a direct login spray [costs 5 min]"
+            },
+            {
+              "value": "restart_homepage",
+              "text": "Restart from the homepage [costs 4 min]"
+            },
+            {
+              "value": "john_wordlist",
+              "text": "Create a wordlist to crack hashes [costs 9 min]",
+              "gotoPage": "oscmd_q10_2"
+            },
+            {
+              "value": "check_inbox_permissions",
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q11"
+    },
+    {
+      "name": "oscmd_q10_2",
+      "title": "OS Injection | Question 10.2",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_1_answer} = 'john_wordlist'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q10_2_context",
+          "html": "<div class='orc-context'><strong>Drats! It seems like you still have a hashed output. Perhaps the hashes were salted.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q10_2_answer",
+          "title": "What do you do now?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "hashcat_wordlist",
+              "text": "Create a wordlist to crack with a different tool [costs 8 min]",
+              "gotoPage": "oscmd_q10_3"
+            },
+            {
+              "value": "restart_homepage",
+              "text": "Restart from the homepage [costs 4 min]"
+            },
+            {
+              "value": "hashes_as_passwords",
+              "text": "Try the hashes as passwords in a new username list [costs 5 min]"
+            },
+            {
+              "value": "check_inbox_permissions",
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q11"
+    },
+    {
+      "name": "oscmd_q10_3",
+      "title": "OS Injection | Question 10.3",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_2_answer} = 'hashcat_wordlist'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q10_3_context",
+          "html": "<div class='orc-context'><strong>Still nothing but hashes. You can keep going with different settings, or maybe move on and come back later.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q10_3_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "wordlist_bruteforce",
+              "text": "Create a wordlist and run bruteforce with usernames and passwords [costs 8 min]"
+            },
+            {
+              "value": "restart_homepage",
+              "text": "Restart from the homepage [costs 4 min]"
+            },
+            {
+              "value": "different_hash_mode",
+              "text": "Try a different hash mode and reuse the same username list [costs 5 min]",
+              "gotoPage": "oscmd_q10_4"
+            },
+            {
+              "value": "check_inbox_permissions",
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q11"
+    },
+    {
+      "name": "oscmd_q10_4",
+      "title": "OS Injection | Question 10.4",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_3_answer} = 'different_hash_mode'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q10_4_context",
+          "html": "<div class='orc-context'><strong>It did not seem to work, but perhaps you can come back later. You still have portal access, but the account is low privilege and cannot approve much.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q10_4_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "restart_homepage",
+              "text": "Restart from the homepage [costs 4 min]"
+            },
+            {
+              "value": "try_sql_injection",
+              "text": "Try a different attack approach [costs 9 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "check_inbox_permissions",
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q11"
+    },
+    {
+      "name": "oscmd_q11",
+      "title": "OS Injection | Question 11",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q11_context",
+          "html": "<div class='orc-context'><strong>The inbox revealed relevant information. A message says their passwords are insecure and mentions improper hashing. This is another lead.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q11_answer",
+          "title": "Should you follow the lead for an admin-level account or install a simulated persistence method?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "install_persistence",
+              "text": "Install a simulated persistence method [costs 4 min]",
+              "gotoPage": "oscmd_q12"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "follow_lead",
+              "text": "Follow the lead [costs 3 min]",
+              "gotoPage": "oscmd_q13"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q12",
+      "title": "OS Injection | Question 12",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q11_answer} = 'install_persistence'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q12_context",
+          "html": "<div class='orc-context'><strong>You decided to try to maintain access on this machine.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q12_answer",
+          "title": "What is your next move?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "follow_lead",
+              "text": "Follow the lead [costs 5 min]",
+              "gotoPage": "oscmd_q13"
+            },
+            {
+              "value": "apt_install_from_login",
+              "text": "Install tools from the login page [costs 3 min]",
+              "gotoPage": "oscmd_q12_1"
+            },
+            {
+              "value": "quit",
+              "text": "Quit the scenario [ends path]",
+              "gotoPage": "oscmd_q17"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q12_1",
+      "title": "OS Injection | Question 12.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q12_answer} = 'apt_install_from_login'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q12_1_context",
+          "html": "<div class='orc-context'><strong>You decide to maintain access. The machine blocks tool installation because elevated privileges are required.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q12_1_answer",
+          "title": "Your attempt to install persistence tools is blocked by permissions. What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "system_diagnostics",
+              "text": "Run system diagnostics [costs 3 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "change_local_config",
+              "text": "Try to change local config files with low privileges [costs 2 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "retry_package_manager",
+              "text": "Retry the package manager [costs 4 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "manual_webpage_install",
+              "text": "Manually create and install the files from the web page [costs 7 min]",
+              "gotoPage": "oscmd_q12_3"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q12_3"
+    },
+    {
+      "name": "oscmd_q12_2_1",
+      "title": "OS Injection | Question 12.2.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'system_diagnostics' or {oscmd_q12_1_answer} = 'change_local_config' or {oscmd_q12_1_answer} = 'retry_package_manager')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q12_2_1_context",
+          "html": "<div class='orc-context'><strong>Seems like it did not work.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q12_2_1_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "system_diagnostics_again",
+              "text": "Run system diagnostics again [costs 3 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "change_local_config_again",
+              "text": "Try to change local config files with low privileges [costs 2 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "retry_package_manager_again",
+              "text": "Retry the package manager [costs 4 min]",
+              "gotoPage": "oscmd_q12_2_1"
+            },
+            {
+              "value": "manual_webpage_install",
+              "text": "Manually create and install the files from the web page [costs 7 min]",
+              "gotoPage": "oscmd_q12_3"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q12_3"
+    },
+    {
+      "name": "oscmd_q12_3",
+      "title": "OS Injection | Question 12.3",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'manual_webpage_install' or {oscmd_q12_2_1_answer} = 'manual_webpage_install')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q12_3_context",
+          "html": "<div class='orc-context'><strong>It took a while, but the files ran properly. However, they will not connect back to your system.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q12_3_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "basic_network_troubleshoot",
+              "text": "Perform basic network troubleshooting [costs 3 min]",
+              "gotoPage": "oscmd_q12_3_1"
+            },
+            {
+              "value": "change_local_config",
+              "text": "Try to change local config files with low privileges [costs 2 min]",
+              "gotoPage": "oscmd_q12_3_1"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "compile_custom_programs",
+              "text": "Compile and run custom programs to establish persistence [costs 6 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q12_3_1",
+      "title": "OS Injection | Question 12.3.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_3_answer} = 'basic_network_troubleshoot' or {oscmd_q12_3_answer} = 'change_local_config')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q12_3_1_context",
+          "html": "<div class='orc-context'><strong>That did not work. It seems like your privileges are too low.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q12_3_1_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "extensive_network_troubleshoot",
+              "text": "Perform extensive network troubleshooting [costs 3 min]",
+              "gotoPage": "oscmd_q12_3_1"
+            },
+            {
+              "value": "change_local_config",
+              "text": "Try to change local config files with low privileges [costs 2 min]",
+              "gotoPage": "oscmd_q12_3_1"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "follow_admin_lead",
+              "text": "Follow the lead for an admin account [costs 6 min]",
+              "gotoPage": "oscmd_q13"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q13",
+      "title": "OS Injection | Question 13",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q13_context",
+          "html": "<div class='orc-context'><strong>Getting admin privileges may have a lot of benefits. You can print the shadow files, but the password hashes do not crack because they appear to be salted. Maybe you can figure out how the salt works.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q13_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "reset_password_observe",
+              "text": "Reset your password and observe what changes [costs 5 min]",
+              "gotoPage": "oscmd_q14"
+            },
+            {
+              "value": "compare_public_hash_examples",
+              "text": "Compare the hash output to common public hash examples [costs 4 min]"
+            },
+            {
+              "value": "search_config_salt",
+              "text": "Search local configuration files for a visible salt setting [costs 6 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q14",
+      "title": "OS Injection | Question 14",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q13_answer} = 'reset_password_observe'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q14_context",
+          "html": "<div class='orc-context'><strong>You reset your password on the website and printed the shadow files again. Your password hash changed.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q14_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "change_password_again",
+              "text": "Change your password again [costs 3 min]"
+            },
+            {
+              "value": "make_new_account",
+              "text": "Try making a new account [costs 4 min]"
+            },
+            {
+              "value": "reassess_machine_value",
+              "text": "Stop and reassess whether this machine is valuable [exits trap]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "compare_hash_pattern",
+              "text": "Compare the two new hashes to look for a repeatable pattern [costs 4 min]",
+              "gotoPage": "oscmd_q15"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q15",
+      "title": "OS Injection | Question 15",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q14_answer} = 'compare_hash_pattern'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q15_context",
+          "html": "<div class='orc-context'><strong>That's it. You found the value the password hashes were salted with.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q15_answer",
+          "title": "What is your next move?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "retry_cracking_salted",
+              "text": "Retry cracking the salted password hashes [costs 9 min]",
+              "gotoPage": "oscmd_q16"
+            },
+            {
+              "value": "stage_persistence",
+              "text": "Use the login portal to stage persistence [costs 15 min]",
+              "gotoPage": "oscmd_q16_2_1"
+            },
+            {
+              "value": "troubleshoot_failed_request",
+              "text": "Troubleshoot the failed request [costs 4 min]"
+            },
+            {
+              "value": "unrelated_system_checks",
+              "text": "Run unrelated system checks [costs 3 min]"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q16"
+    },
+    {
+      "name": "oscmd_q16",
+      "title": "OS Injection | Question 16",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q15_answer} = 'retry_cracking_salted'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_context",
+          "html": "<div class='orc-context'><strong>You cracked the hashes.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_answer",
+          "title": "What is your next course of action?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "recon_each_account",
+              "text": "Perform recon on each account [costs 9 min]",
+              "gotoPage": "oscmd_q16_1"
+            },
+            {
+              "value": "stage_persistence",
+              "text": "Use the login portal to stage persistence [costs 15 min]",
+              "gotoPage": "oscmd_q16_2_1"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
+              "gotoPage": "path_selection"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q16_1",
+      "title": "OS Injection | Question 16.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_answer} = 'recon_each_account'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_1_context",
+          "html": "<div class='orc-context'><strong>While doing recon, you come across a batch of odd files and directories.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_1_answer",
+          "title": "What should you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "analyze_files",
+              "text": "Analyze the files [costs 12 min]",
+              "gotoPage": "oscmd_q17"
+            },
+            {
+              "value": "stage_persistence",
+              "text": "Use the login portal to stage persistence [costs 15 min]",
+              "gotoPage": "oscmd_q16_2_1"
+            },
+            {
+              "value": "reassess_value",
+              "text": "Reassess whether this machine is valuable [costs 10 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later)",
+              "gotoPage": "path_selection"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q16_2_1",
+      "title": "OS Injection | Question 16.2.1",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_2_1_context",
+          "html": "<div class='orc-context'><strong>It seems like all the files ran properly, but they will not connect to your system. Something may be wrong with this machine.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_2_1_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "analyze_network",
+              "text": "Analyze the network [costs 9 min]",
+              "gotoPage": "oscmd_q16_2_2"
+            },
+            {
+              "value": "assess_files_dirs",
+              "text": "Assess this machine files and directories [costs 4 min]"
+            },
+            {
+              "value": "extensive_troubleshoot",
+              "text": "Perform extensive troubleshooting [costs 8 min]",
+              "gotoPage": "oscmd_q16_2_2"
+            },
+            {
+              "value": "retry_callback_name",
+              "text": "Retry the persistence connection with a different callback name [costs 6 min]",
+              "gotoPage": "oscmd_q16_2_2"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "oscmd_q16_2_2"
+    },
+    {
+      "name": "oscmd_q16_2_2",
+      "title": "OS Injection | Question 16.2.2",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_2_2_context",
+          "html": "<div class='orc-context'><strong>That did not work. There must still be an issue with this machine.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_2_2_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "analyze_network",
+              "text": "Analyze the network [costs 9 min]",
+              "gotoPage": "oscmd_q16_2_3"
+            },
+            {
+              "value": "assess_files_dirs",
+              "text": "Assess this machine files and directories [costs 8 min]",
+              "gotoPage": "oscmd_q17"
+            },
+            {
+              "value": "extensive_troubleshoot",
+              "text": "Perform extensive troubleshooting [costs 9 min]",
+              "gotoPage": "oscmd_q16_2_3"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later)",
+              "gotoPage": "path_selection"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q16_2_3",
+      "title": "OS Injection | Question 16.2.3",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_2_3_context",
+          "html": "<div class='orc-context'><strong>Analyzing the network and troubleshooting reveals network-level filtering. This host appears restricted and may be isolated from higher-value systems.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_2_3_answer",
+          "title": "Network filtering is confirmed. What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "bypass_filtering",
+              "text": "Try to bypass filtering [costs 8 min]",
+              "gotoPage": "oscmd_q16_2_3_1"
+            },
+            {
+              "value": "reassess_value",
+              "text": "Reassess whether this machine is valuable [costs 10 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "assess_files_dirs",
+              "text": "Assess this machine files and directories [costs 8 min]",
+              "gotoPage": "oscmd_q17"
+            },
+            {
+              "value": "pivot_csrf",
+              "text": "Pivot to the request-forgery path using the Finance Operations approval clue (Switch path to CSRF)[costs 5 min]",
+              "gotoPage": "csrf_1"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q16_2_3_1",
+      "title": "OS Injection | Question 16.2.3.1",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_2_3_answer} = 'bypass_filtering'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q16_2_3_1_context",
+          "html": "<div class='orc-context'><strong>It did not work. Filtering seems to be on the network level.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q16_2_3_1_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "reassess_value",
+              "text": "Reassess whether this machine is valuable [costs 10 min]",
+              "gotoPage": "path_selection"
+            },
+            {
+              "value": "assess_files_dirs",
+              "text": "Assess this machine files and directories [costs 8 min]",
+              "gotoPage": "oscmd_q17"
+            },
+            {
+              "value": "pivot_other_vuln",
+              "text": "Pivot to another vulnerability (may need to come back later)",
+              "gotoPage": "path_selection"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "path_selection"
+    },
+    {
+      "name": "oscmd_q17",
+      "title": "OS Injection | Question 17",
+      "visibleIf": "{chosen_path} = 'oscmd'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "oscmd_q17_context",
+          "html": "<div class='orc-context'><strong>It seems like these odd files and directories are showing something terrible. This machine is a honeypot. There are honeypots designed to waste your time, and you need to keep this in mind for the other systems.</strong></div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "oscmd_q17_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "back_to_vuln_selection",
+              "text": "Go back to vulnerability choice selection.",
+              "gotoPage": "path_selection"
+            }
+          ]
+        }
+      ],
+      "defaultNextPage": "questions_1"
     }
+  ],
+  "implementationNotes": [
+    "JSON does not support comments. For every answer that includes a Goto in the Word document, this file adds a goto field and a large DEVELOPER_NOTE field.",
+    "The visibleIf condition assumes the main path selector stores OS injection as chosen_path = 'oscmd'.",
+    "Loop questions such as 12.2.1 and 12.3.1 need custom handling so participants do not get stuck indefinitely.",
+    "Pivot/exit answers need custom navigation to vulnerability selection, CSRF/request-forgery, or a path summary page."
   ]
 }
