@@ -2,7 +2,7 @@
   "pages": [
     {
       "name": "csrf_1",
-      "title": "Path C — CSRF Attack | Step 1: Map the Target",
+      "title": "Path D — CSRF Attack | Step 1: Map the Target",
       "visibleIf": "{chosen_path} = 'csrf'",
       "elements": [
         {
@@ -16,18 +16,37 @@
           "title": "How do you investigate whether the portal is vulnerable?",
           "isRequired": true,
           "choices": [
-            { "value": "burp_csrf",     "text": "Intercept a legitimate transfer request and inspect every field it contains [costs 2 min]" },
-            { "value": "manual_review", "text": "Browse the portal manually and look at how forms are structured [costs 1 min]" },
-            { "value": "check_cookies", "text": "Examine the session cookies — check how they're scoped and whether they'd travel cross-origin [costs 1 min]" },
-            { "value": "owasp_zap",     "text": "Run an automated scanner to flag missing protections [costs 3 min]" }
+            {
+              "value": "burp_csrf",
+              "text": "Intercept a legitimate transfer request and inspect every field it contains [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "manual_review",
+              "text": "Browse the portal manually and look at how forms are structured [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "check_cookies",
+              "text": "Examine the session cookies — check how they're scoped and whether they'd travel cross-origin [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "owasp_zap",
+              "text": "Run an automated scanner to flag missing protections [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_1_cookie_branch",
-      "title": "Path C — CSRF Attack | Step 1.1: Cookie Analysis",
+      "title": "Path D — CSRF Attack | Step 1.1: Cookie Analysis",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_recon} = 'check_cookies'",
       "elements": [
         {
@@ -41,16 +60,25 @@
           "title": "Cookie analysis is promising. What do you do next?",
           "isRequired": true,
           "choices": [
-            { "value": "intercept_now",   "text": "Intercept a transfer request to check whether a token is included in the body [costs 1 min]" },
-            { "value": "skip_to_payload", "text": "You've seen enough — start building the payload now [costs 2 min]" }
+            {
+              "value": "intercept_now",
+              "text": "Intercept a transfer request to check whether a token is included in the body [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "skip_to_payload",
+              "text": "You've seen enough — start building the payload now [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_2",
-      "title": "Path C — CSRF Attack | Step 2: Build the Payload",
+      "title": "Path D — CSRF Attack | Step 2: Build the Payload",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_recon} = 'burp_csrf' or {csrf_recon} = 'manual_review' or {csrf_recon} = 'owasp_zap' or {csrf_cookie_choice} = 'intercept_now' or {csrf_cookie_choice} = 'skip_to_payload')",
       "elements": [
         {
@@ -64,18 +92,37 @@
           "title": "How do you build the forged request?",
           "isRequired": true,
           "choices": [
-            { "value": "auto_form",      "text": "Build a hidden form that submits automatically the moment a victim loads your page [costs 1 min]" },
-            { "value": "img_tag",        "text": "Embed the request inside an image tag — quick and easy to hide [costs 2 min]" },
-            { "value": "fetch_api",      "text": "Use a script to fire the request programmatically in the background [costs 2 min]" },
-            { "value": "xmlhttprequest", "text": "Use an older async request method for broader browser compatibility [costs 2 min]" }
+            {
+              "value": "auto_form",
+              "text": "Build a hidden form that submits automatically the moment a victim loads your page [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "img_tag",
+              "text": "Embed the request inside an image tag — quick and easy to hide [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "fetch_api",
+              "text": "Use a script to fire the request programmatically in the background [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "xmlhttprequest",
+              "text": "Use an older async request method for broader browser compatibility [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_branch_img",
-      "title": "Path C — CSRF Attack | Dead End: Image Tag",
+      "title": "Path D — CSRF Attack | Dead End: Image Tag",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag'",
       "elements": [
         {
@@ -89,16 +136,25 @@
           "title": "What do you switch to?",
           "isRequired": true,
           "choices": [
-            { "value": "fix_form",  "text": "Rebuild it as a hidden auto-submitting form [costs 2 min]" },
-            { "value": "fix_fetch", "text": "Rebuild it as a background script request [costs 2 min]" }
+            {
+              "value": "fix_form",
+              "text": "Rebuild it as a hidden auto-submitting form [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "fix_fetch",
+              "text": "Rebuild it as a background script request [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_2_fetch_dead",
-      "title": "Path C — CSRF Attack | Dead End: CORS Preflight",
+      "title": "Path D — CSRF Attack | Dead End: CORS Preflight",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'fetch_api' or {csrf_img_choice} = 'fix_fetch')",
       "elements": [
         {
@@ -112,16 +168,26 @@
           "title": "The fetch approach is blocked by CORS preflight. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "switch_to_form", "text": "Switch to a hidden auto-submit form — plain HTML forms don't trigger preflight [costs 1 min]" },
-            { "value": "switch_path",    "text": "Abandon CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+            {
+              "value": "switch_to_form",
+              "text": "Switch to a hidden auto-submit form — plain HTML forms don't trigger preflight [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abandon CSRF and switch to a different attack path [costs 5 min penalty]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_3",
-      "title": "Path C — CSRF Attack | Step 3: Deliver the Payload",
+      "title": "Path D — CSRF Attack | Step 3: Deliver the Payload",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_fetch_dead_choice} = 'switch_to_form')",
       "elements": [
         {
@@ -135,18 +201,37 @@
           "title": "How do you get an authenticated user to trigger it?",
           "isRequired": true,
           "choices": [
-            { "value": "phish_cfo",        "text": "Send a targeted message to the CFO with a convincing pretext [costs 2 min]" },
-            { "value": "phish_ops",        "text": "Target someone in finance operations — they're likely logged into the portal constantly [costs 2 min]" },
-            { "value": "internal_post",    "text": "Post the link to an internal message board where employees are active [costs 3 min]" },
-            { "value": "wait_and_monitor", "text": "Leave the payload hosted and wait for organic traffic [costs 5 min]" }
+            {
+              "value": "phish_cfo",
+              "text": "Send a targeted message to the CFO with a convincing pretext [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "phish_ops",
+              "text": "Target someone in finance operations — they're likely logged into the portal constantly [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "internal_post",
+              "text": "Post the link to an internal message board where employees are active [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "wait_and_monitor",
+              "text": "Leave the payload hosted and wait for organic traffic [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_delivery_cfo_dead",
-      "title": "Path C — CSRF Attack | Dead End: CFO Target",
+      "title": "Path D — CSRF Attack | Dead End: CFO Target",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'phish_cfo'",
       "elements": [
         {
@@ -160,16 +245,26 @@
           "title": "The CFO approach backfired. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_delivery", "text": "Switch delivery method — target finance operations instead [costs 2 min penalty]" },
-            { "value": "switch_path",    "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+            {
+              "value": "retry_delivery",
+              "text": "Switch delivery method — target finance operations instead [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_delivery_board_dead",
-      "title": "Path C — CSRF Attack | Dead End: Message Board",
+      "title": "Path D — CSRF Attack | Dead End: Message Board",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'internal_post'",
       "elements": [
         {
@@ -183,16 +278,26 @@
           "title": "The board approach was caught. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_delivery", "text": "Switch delivery method — target finance operations directly [costs 2 min penalty]" },
-            { "value": "switch_path",    "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+            {
+              "value": "retry_delivery",
+              "text": "Switch delivery method — target finance operations directly [costs 2 min penalty]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_4",
-      "title": "Path C — CSRF Attack | Step 4: Payload Triggered",
+      "title": "Path D — CSRF Attack | Step 4: Payload Triggered",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_delivery} = 'phish_ops' or {csrf_delivery} = 'wait_and_monitor' or {csrf_cfo_dead_choice} = 'retry_delivery' or {csrf_board_dead_choice} = 'retry_delivery')",
       "elements": [
         {
@@ -206,18 +311,37 @@
           "title": "The transfer is pending a second approval. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "second_csrf",    "text": "Craft a second payload targeting the approval endpoint and deliver it to a different employee [costs 2 min]" },
-            { "value": "session_hijack", "text": "Try to capture the session token from the employee who just fired your payload [costs 3 min]" },
-            { "value": "wait_auto",      "text": "Transfers auto-approve after a timeout — wait it out [costs 5 min]" },
-            { "value": "cancel_monitor", "text": "Monitor the queue and cancel the transfer if it looks like it'll get flagged [costs 4 min]" }
+            {
+              "value": "second_csrf",
+              "text": "Craft a second payload targeting the approval endpoint and deliver it to a different employee [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "session_hijack",
+              "text": "Try to capture the session token from the employee who just fired your payload [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "wait_auto",
+              "text": "Transfers auto-approve after a timeout — wait it out [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "cancel_monitor",
+              "text": "Monitor the queue and cancel the transfer if it looks like it'll get flagged [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_final_monitor_dead",
-      "title": "Path C — CSRF Attack | Dead End: Queue Monitoring",
+      "title": "Path D — CSRF Attack | Dead End: Queue Monitoring",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'cancel_monitor'",
       "elements": [
         {
@@ -231,16 +355,27 @@
           "title": "You can't see the queue. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_final", "text": "Go back and try a more active approach [costs 2 min penalty]", "gotoPage": "csrf_4" },
-            { "value": "switch_path", "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+            {
+              "value": "retry_final",
+              "text": "Go back and try a more active approach [costs 2 min penalty]",
+              "gotoPage": "csrf_4",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_final_hijack_dead",
-      "title": "Path C — CSRF Attack | Dead End: Session Hijack",
+      "title": "Path D — CSRF Attack | Dead End: Session Hijack",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'session_hijack'",
       "elements": [
         {
@@ -254,22 +389,33 @@
           "title": "Session hijack is not possible from here. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_final", "text": "Go back and try a different follow-through approach [costs 2 min penalty]", "gotoPage": "csrf_4" },
-            { "value": "switch_path", "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+            {
+              "value": "retry_final",
+              "text": "Go back and try a different follow-through approach [costs 2 min penalty]",
+              "gotoPage": "csrf_4",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true
+            },
+            {
+              "value": "switch_path",
+              "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true
+            }
           ]
         }
       ]
     },
-
     {
       "name": "csrf_success",
-      "title": "Path C — CSRF Attack | Complete",
+      "title": "Path D — CSRF Attack | Complete",
       "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'wait_auto' or {csrf_monitor_dead_choice} = 'retry_final' or {csrf_hijack_dead_choice} = 'retry_final')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_win",
-          "html": "<div class='orc-context orc-win'><strong>// TRANSFER COMPLETE</strong><br/><br/>An authenticated employee unknowingly submitted the transfer on your behalf. A second approval followed — either from another forged request or an automatic timeout. The transfer cleared.<br/><br/>Path C finished. Your time and decisions have been logged.</div>"
+          "html": "<div class='orc-context orc-win'><strong>// TRANSFER COMPLETE</strong><br/><br/>An authenticated employee unknowingly submitted the transfer on your behalf. A second approval followed — either from another forged request or an automatic timeout. The transfer cleared.<br/><br/>Path D finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

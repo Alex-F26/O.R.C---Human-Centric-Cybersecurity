@@ -5,7 +5,7 @@
   "pages": [
     {
       "name": "oscmd_q1",
-      "title": "OS Injection | Question 1",
+      "title": "Path B \u2014 OS Injection | Reconnaissance",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -21,19 +21,31 @@
           "choices": [
             {
               "value": "employee_lookup",
-              "text": "Inspect the employee lookup tool that searches internal user records [costs 2 min]"
+              "text": "Inspect the employee lookup tool that searches internal user records [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "report_export",
-              "text": "Inspect the report export page that creates downloadable files [costs 2 min]"
+              "text": "Inspect the report export page that creates downloadable files [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "login_portal",
-              "text": "Inspect the employee login portal and support login behavior [costs 1 min]"
+              "text": "Inspect the employee login portal and support login behavior [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "system_status",
-              "text": "Inspect the system status page that checks service availability [costs 2 min]"
+              "text": "Inspect the system status page that checks service availability [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -42,7 +54,7 @@
     },
     {
       "name": "oscmd_q2",
-      "title": "OS Injection | Question 2",
+      "title": "Path B \u2014 OS Injection | Login Behavior",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -58,19 +70,31 @@
           "choices": [
             {
               "value": "input_test",
-              "text": "Use an input test to see whether the backend response changes [costs 1 min]"
+              "text": "Use an input test to see whether the backend response changes [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "stage_persistence_post",
-              "text": "Send POST requests to stage a simulated persistence method on the server [costs 5 min]"
+              "text": "Send POST requests to stage a simulated persistence method on the server [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "manual_bruteforce",
-              "text": "Enter common employee usernames/passwords manually (bruteforce) [costs 4 min]"
+              "text": "Enter common employee usernames/passwords manually (bruteforce) [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "approve_transfer_login",
-              "text": "Try to approve a transfer from the login page [costs 4 min]"
+              "text": "Try to approve a transfer from the login page [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -79,7 +103,7 @@
     },
     {
       "name": "oscmd_q3",
-      "title": "OS Injection | Question 3",
+      "title": "Path B \u2014 OS Injection | Backend Review",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -95,19 +119,31 @@
           "choices": [
             {
               "value": "status_code_only",
-              "text": "Capture the failed login request and check only the HTTP status code [costs 1 min]"
+              "text": "Capture the failed login request and check only the HTTP status code [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "directory_scan_first",
-              "text": "Run a directory scan against the portal before testing the login input [costs 1 min]"
+              "text": "Run a directory scan against the portal before testing the login input [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "realistic_usernames",
-              "text": "Try several realistic usernames to see whether the error message changes [costs 1 min]"
+              "text": "Try several realistic usernames to see whether the error message changes [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "fuzz_backend_behavior",
-              "text": "Fuzz the login page to see whether the error exposes backend behavior [costs 1 min]"
+              "text": "Fuzz the login page to see whether the error exposes backend behavior [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -116,7 +152,7 @@
     },
     {
       "name": "oscmd_q4",
-      "title": "OS Injection | Question 4",
+      "title": "Path B \u2014 OS Injection | Response Testing",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -132,19 +168,31 @@
           "choices": [
             {
               "value": "check_transfer_before_confirming",
-              "text": "Check the transfer request page before confirming what the login error exposes [costs 4 min]"
+              "text": "Check the transfer request page before confirming what the login error exposes [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "compare_controlled_responses",
-              "text": "Compare controlled login responses to confirm backend behavior [costs 2 min]"
+              "text": "Compare controlled login responses to confirm backend behavior [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "install_tools_debug",
-              "text": "Try to install command-line tools through the debug output [costs 5 min]"
+              "text": "Try to install command-line tools through the debug output [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "bruteforce_and_tool",
-              "text": "Brute force the login page with usernames/passwords and check backend behavior with a security tool [costs 6 min]"
+              "text": "Brute force the login page with usernames/passwords and check backend behavior with a security tool [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -153,7 +201,7 @@
     },
     {
       "name": "oscmd_q5",
-      "title": "OS Injection | Question 5",
+      "title": "Path B \u2014 OS Injection | System Information",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -169,19 +217,31 @@
           "choices": [
             {
               "value": "fake_admin_profile",
-              "text": "Focus on the fake admin profile page [costs 3 min]"
+              "text": "Focus on the fake admin profile page [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "os_files",
-              "text": "Search for operating system files [costs 4 min]"
+              "text": "Search for operating system files [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "app_data_files",
-              "text": "Look for application-related folders or exposed data files [costs 2 min]"
+              "text": "Look for application-related folders or exposed data files [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "employee_bruteforce_info",
-              "text": "Look for useful employee info to use for a brute force [costs 2 min]"
+              "text": "Look for useful employee info to use for a brute force [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -190,7 +250,7 @@
     },
     {
       "name": "oscmd_q6",
-      "title": "OS Injection | Question 6",
+      "title": "Path B \u2014 OS Injection | Exposed Data",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -206,19 +266,31 @@
           "choices": [
             {
               "value": "support_notes",
-              "text": "Open recent support notes to look for employee troubleshooting details [costs 1 min]"
+              "text": "Open recent support notes to look for employee troubleshooting details [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "backup_config",
-              "text": "Open a portal backup configuration file to look for system hints [costs 1 min]"
+              "text": "Open a portal backup configuration file to look for system hints [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "public_policy",
-              "text": "Open the public policy document [costs 1 min]"
+              "text": "Open the public policy document [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "user_and_password_lists",
-              "text": "Open the user account list and compromised password list [costs 2 min]"
+              "text": "Open the user account list and compromised password list [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -227,7 +299,7 @@
     },
     {
       "name": "oscmd_q7",
-      "title": "OS Injection | Question 7",
+      "title": "Path B \u2014 OS Injection | Credential Preparation",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -244,19 +316,31 @@
             {
               "value": "create_wordlist",
               "text": "Create a wordlist with usernames and passwords [costs 4 min]",
-              "gotoPage": "oscmd_q7_1"
+              "gotoPage": "oscmd_q7_1",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "restart_recon",
-              "text": "Ignore the credentials and restart recon [costs 5 min]"
+              "text": "Ignore the credentials and restart recon [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "assume_admin",
-              "text": "Assume the admin account is the correct account [costs 5 min]"
+              "text": "Assume the admin account is the correct account [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "manual_try_all",
-              "text": "Try every username and password combination manually [costs 8 min]"
+              "text": "Try every username and password combination manually [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -265,7 +349,7 @@
     },
     {
       "name": "oscmd_q7_1",
-      "title": "OS Injection | Question 7.1",
+      "title": "Path B \u2014 OS Injection | Credential Testing",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q7_answer} = 'create_wordlist'",
       "elements": [
         {
@@ -281,19 +365,31 @@
           "choices": [
             {
               "value": "run_bruteforce_tooling",
-              "text": "Run bruteforce tooling with the new wordlist [costs 7 min]"
+              "text": "Run bruteforce tooling with the new wordlist [costs 7 min]",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "ignore_restart",
-              "text": "Ignore the credentials and restart recon [costs 5 min]"
+              "text": "Ignore the credentials and restart recon [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "admin_labeled_first",
-              "text": "Run the wordlist only against accounts labeled admin first [costs 5 min]"
+              "text": "Run the wordlist only against accounts labeled admin first [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "manual_first_pairs",
-              "text": "Test the first few credential pairs manually before using tooling [costs 8 min]"
+              "text": "Test the first few credential pairs manually before using tooling [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -302,7 +398,7 @@
     },
     {
       "name": "oscmd_q8",
-      "title": "OS Injection | Question 8",
+      "title": "Path B \u2014 OS Injection | Portal Access",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -318,19 +414,31 @@
           "choices": [
             {
               "value": "fake_admin_search",
-              "text": "Search for the fake admin account [costs 3 min]"
+              "text": "Search for the fake admin account [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "profile_picture",
-              "text": "Change the profile picture [costs 2 min]"
+              "text": "Change the profile picture [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "messages_permissions",
-              "text": "Check messages and account permissions [costs 2 min]"
+              "text": "Check messages and account permissions [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "wordlist_other_pages",
-              "text": "Run the wordlist against other company login pages identified in the scan [costs 6 min]"
+              "text": "Run the wordlist against other company login pages identified in the scan [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -339,7 +447,7 @@
     },
     {
       "name": "oscmd_q9",
-      "title": "OS Injection | Question 9",
+      "title": "Path B \u2014 OS Injection | Inbox Review",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -355,19 +463,31 @@
           "choices": [
             {
               "value": "office_memo",
-              "text": "Office memo [costs 1 min]"
+              "text": "Office memo [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "finance_routing",
-              "text": "Security message mentioning Finance Operations and transfer approval routing [costs 2 min]"
+              "text": "Security message mentioning Finance Operations and transfer approval routing [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "it_newsletter",
-              "text": "IT newsletter [costs 2 min]"
+              "text": "IT newsletter [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "logged_admin_alert",
-              "text": "Logged admin alert [costs 3 min]"
+              "text": "Logged admin alert [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -376,7 +496,7 @@
     },
     {
       "name": "oscmd_q10",
-      "title": "OS Injection | Question 10",
+      "title": "Path B \u2014 OS Injection | Low-Privilege Access",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -392,20 +512,32 @@
           "choices": [
             {
               "value": "chase_admin",
-              "text": "Keep chasing the admin account [costs 4 min]"
+              "text": "Keep chasing the admin account [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "restart_homepage",
-              "text": "Restart from the homepage [costs 3 min]"
+              "text": "Restart from the homepage [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "print_shadow_files",
               "text": "Print shadow files (password file on Linux) [costs 2 min]",
-              "gotoPage": "oscmd_q10_1"
+              "gotoPage": "oscmd_q10_1",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "check_inbox_permissions",
-              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -414,7 +546,7 @@
     },
     {
       "name": "oscmd_q10_1",
-      "title": "OS Injection | Question 10.1",
+      "title": "Path B \u2014 OS Injection | Shadow File Detour",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_answer} = 'print_shadow_files'",
       "elements": [
         {
@@ -430,20 +562,32 @@
           "choices": [
             {
               "value": "direct_login_spray_hashes",
-              "text": "Pair usernames with the hash output and try a direct login spray [costs 5 min]"
+              "text": "Pair usernames with the hash output and try a direct login spray [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "restart_homepage",
-              "text": "Restart from the homepage [costs 4 min]"
+              "text": "Restart from the homepage [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "john_wordlist",
               "text": "Create a wordlist to crack hashes [costs 9 min]",
-              "gotoPage": "oscmd_q10_2"
+              "gotoPage": "oscmd_q10_2",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "check_inbox_permissions",
-              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -452,7 +596,7 @@
     },
     {
       "name": "oscmd_q10_2",
-      "title": "OS Injection | Question 10.2",
+      "title": "Path B \u2014 OS Injection | Hash Detour",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_1_answer} = 'john_wordlist'",
       "elements": [
         {
@@ -469,19 +613,31 @@
             {
               "value": "hashcat_wordlist",
               "text": "Create a wordlist to crack with a different tool [costs 8 min]",
-              "gotoPage": "oscmd_q10_3"
+              "gotoPage": "oscmd_q10_3",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "restart_homepage",
-              "text": "Restart from the homepage [costs 4 min]"
+              "text": "Restart from the homepage [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "hashes_as_passwords",
-              "text": "Try the hashes as passwords in a new username list [costs 5 min]"
+              "text": "Try the hashes as passwords in a new username list [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "check_inbox_permissions",
-              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -490,7 +646,7 @@
     },
     {
       "name": "oscmd_q10_3",
-      "title": "OS Injection | Question 10.3",
+      "title": "Path B \u2014 OS Injection | Hash Detour",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_2_answer} = 'hashcat_wordlist'",
       "elements": [
         {
@@ -506,20 +662,32 @@
           "choices": [
             {
               "value": "wordlist_bruteforce",
-              "text": "Create a wordlist and run bruteforce with usernames and passwords [costs 8 min]"
+              "text": "Create a wordlist and run bruteforce with usernames and passwords [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "restart_homepage",
-              "text": "Restart from the homepage [costs 4 min]"
+              "text": "Restart from the homepage [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "different_hash_mode",
               "text": "Try a different hash mode and reuse the same username list [costs 5 min]",
-              "gotoPage": "oscmd_q10_4"
+              "gotoPage": "oscmd_q10_4",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "check_inbox_permissions",
-              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -528,7 +696,7 @@
     },
     {
       "name": "oscmd_q10_4",
-      "title": "OS Injection | Question 10.4",
+      "title": "Path B \u2014 OS Injection | Return to Portal Access",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_3_answer} = 'different_hash_mode'",
       "elements": [
         {
@@ -544,16 +712,25 @@
           "choices": [
             {
               "value": "restart_homepage",
-              "text": "Restart from the homepage [costs 4 min]"
+              "text": "Restart from the homepage [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "try_sql_injection",
               "text": "Try a different attack approach [costs 9 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "check_inbox_permissions",
-              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]"
+              "text": "Check the inbox and permissions for approval-routing clues [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -562,7 +739,7 @@
     },
     {
       "name": "oscmd_q11",
-      "title": "OS Injection | Question 11",
+      "title": "Path B \u2014 OS Injection | Persistence Decision",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -579,17 +756,26 @@
             {
               "value": "install_persistence",
               "text": "Install a simulated persistence method [costs 4 min]",
-              "gotoPage": "oscmd_q12"
+              "gotoPage": "oscmd_q12",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "follow_lead",
               "text": "Follow the lead [costs 3 min]",
-              "gotoPage": "oscmd_q13"
+              "gotoPage": "oscmd_q13",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -598,7 +784,7 @@
     },
     {
       "name": "oscmd_q12",
-      "title": "OS Injection | Question 12",
+      "title": "Path B \u2014 OS Injection | Persistence Attempt",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q11_answer} = 'install_persistence'",
       "elements": [
         {
@@ -615,22 +801,34 @@
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "follow_lead",
               "text": "Follow the lead [costs 5 min]",
-              "gotoPage": "oscmd_q13"
+              "gotoPage": "oscmd_q13",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "apt_install_from_login",
               "text": "Install tools from the login page [costs 3 min]",
-              "gotoPage": "oscmd_q12_1"
+              "gotoPage": "oscmd_q12_1",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "quit",
-              "text": "Quit the scenario [ends path]",
-              "gotoPage": "oscmd_q17"
+              "text": "Quit the scenario [costs 0 min]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -639,7 +837,7 @@
     },
     {
       "name": "oscmd_q12_1",
-      "title": "OS Injection | Question 12.1",
+      "title": "Path B \u2014 OS Injection | Permission Block",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q12_answer} = 'apt_install_from_login'",
       "elements": [
         {
@@ -656,22 +854,34 @@
             {
               "value": "system_diagnostics",
               "text": "Run system diagnostics [costs 3 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "change_local_config",
               "text": "Try to change local config files with low privileges [costs 2 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "retry_package_manager",
               "text": "Retry the package manager [costs 4 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "manual_webpage_install",
               "text": "Manually create and install the files from the web page [costs 7 min]",
-              "gotoPage": "oscmd_q12_3"
+              "gotoPage": "oscmd_q12_3",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -680,7 +890,7 @@
     },
     {
       "name": "oscmd_q12_2_1",
-      "title": "OS Injection | Question 12.2.1",
+      "title": "Path B \u2014 OS Injection | Repeated Persistence Attempt",
       "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'system_diagnostics' or {oscmd_q12_1_answer} = 'change_local_config' or {oscmd_q12_1_answer} = 'retry_package_manager')",
       "elements": [
         {
@@ -697,22 +907,34 @@
             {
               "value": "system_diagnostics_again",
               "text": "Run system diagnostics again [costs 3 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "change_local_config_again",
               "text": "Try to change local config files with low privileges [costs 2 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "retry_package_manager_again",
               "text": "Retry the package manager [costs 4 min]",
-              "gotoPage": "oscmd_q12_2_1"
+              "gotoPage": "oscmd_q12_2_1",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "manual_webpage_install",
               "text": "Manually create and install the files from the web page [costs 7 min]",
-              "gotoPage": "oscmd_q12_3"
+              "gotoPage": "oscmd_q12_3",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -721,7 +943,7 @@
     },
     {
       "name": "oscmd_q12_3",
-      "title": "OS Injection | Question 12.3",
+      "title": "Path B \u2014 OS Injection | Connection Failure",
       "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'manual_webpage_install' or {oscmd_q12_2_1_answer} = 'manual_webpage_install')",
       "elements": [
         {
@@ -738,21 +960,33 @@
             {
               "value": "basic_network_troubleshoot",
               "text": "Perform basic network troubleshooting [costs 3 min]",
-              "gotoPage": "oscmd_q12_3_1"
+              "gotoPage": "oscmd_q12_3_1",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "change_local_config",
               "text": "Try to change local config files with low privileges [costs 2 min]",
-              "gotoPage": "oscmd_q12_3_1"
+              "gotoPage": "oscmd_q12_3_1",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "compile_custom_programs",
-              "text": "Compile and run custom programs to establish persistence [costs 6 min]"
+              "text": "Compile and run custom programs to establish persistence [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -761,7 +995,7 @@
     },
     {
       "name": "oscmd_q12_3_1",
-      "title": "OS Injection | Question 12.3.1",
+      "title": "Path B \u2014 OS Injection | Low-Privilege Barrier",
       "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_3_answer} = 'basic_network_troubleshoot' or {oscmd_q12_3_answer} = 'change_local_config')",
       "elements": [
         {
@@ -778,22 +1012,34 @@
             {
               "value": "extensive_network_troubleshoot",
               "text": "Perform extensive network troubleshooting [costs 3 min]",
-              "gotoPage": "oscmd_q12_3_1"
+              "gotoPage": "oscmd_q12_3_1",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "change_local_config",
               "text": "Try to change local config files with low privileges [costs 2 min]",
-              "gotoPage": "oscmd_q12_3_1"
+              "gotoPage": "oscmd_q12_3_1",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "follow_admin_lead",
               "text": "Follow the lead for an admin account [costs 6 min]",
-              "gotoPage": "oscmd_q13"
+              "gotoPage": "oscmd_q13",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -802,7 +1048,7 @@
     },
     {
       "name": "oscmd_q13",
-      "title": "OS Injection | Question 13",
+      "title": "Path B \u2014 OS Injection | Admin Lead",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -819,20 +1065,32 @@
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 3 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "reset_password_observe",
               "text": "Reset your password and observe what changes [costs 5 min]",
-              "gotoPage": "oscmd_q14"
+              "gotoPage": "oscmd_q14",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "compare_public_hash_examples",
-              "text": "Compare the hash output to common public hash examples [costs 4 min]"
+              "text": "Compare the hash output to common public hash examples [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "search_config_salt",
-              "text": "Search local configuration files for a visible salt setting [costs 6 min]"
+              "text": "Search local configuration files for a visible salt setting [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -841,7 +1099,7 @@
     },
     {
       "name": "oscmd_q14",
-      "title": "OS Injection | Question 14",
+      "title": "Path B \u2014 OS Injection | Password Reset Review",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q13_answer} = 'reset_password_observe'",
       "elements": [
         {
@@ -857,21 +1115,33 @@
           "choices": [
             {
               "value": "change_password_again",
-              "text": "Change your password again [costs 3 min]"
+              "text": "Change your password again [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "make_new_account",
-              "text": "Try making a new account [costs 4 min]"
+              "text": "Try making a new account [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "reassess_machine_value",
-              "text": "Stop and reassess whether this machine is valuable [exits trap]",
-              "gotoPage": "path_selection"
+              "text": "Stop and reassess whether this machine is valuable [costs 2 min]",
+              "gotoPage": "oscmd_q17",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "compare_hash_pattern",
               "text": "Compare the two new hashes to look for a repeatable pattern [costs 4 min]",
-              "gotoPage": "oscmd_q15"
+              "gotoPage": "oscmd_q15",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -880,7 +1150,7 @@
     },
     {
       "name": "oscmd_q15",
-      "title": "OS Injection | Question 15",
+      "title": "Path B \u2014 OS Injection | Salt Discovery",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q14_answer} = 'compare_hash_pattern'",
       "elements": [
         {
@@ -897,20 +1167,32 @@
             {
               "value": "retry_cracking_salted",
               "text": "Retry cracking the salted password hashes [costs 9 min]",
-              "gotoPage": "oscmd_q16"
+              "gotoPage": "oscmd_q16",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "stage_persistence",
               "text": "Use the login portal to stage persistence [costs 15 min]",
-              "gotoPage": "oscmd_q16_2_1"
+              "gotoPage": "oscmd_q16_2_1",
+              "timeDeltaMinutes": -15,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "troubleshoot_failed_request",
-              "text": "Troubleshoot the failed request [costs 4 min]"
+              "text": "Troubleshoot the failed request [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "unrelated_system_checks",
-              "text": "Run unrelated system checks [costs 3 min]"
+              "text": "Run unrelated system checks [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -919,7 +1201,7 @@
     },
     {
       "name": "oscmd_q16",
-      "title": "OS Injection | Question 16",
+      "title": "Path B \u2014 OS Injection | Cracked Hashes",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q15_answer} = 'retry_cracking_salted'",
       "elements": [
         {
@@ -936,17 +1218,26 @@
             {
               "value": "recon_each_account",
               "text": "Perform recon on each account [costs 9 min]",
-              "gotoPage": "oscmd_q16_1"
+              "gotoPage": "oscmd_q16_1",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "stage_persistence",
               "text": "Use the login portal to stage persistence [costs 15 min]",
-              "gotoPage": "oscmd_q16_2_1"
+              "gotoPage": "oscmd_q16_2_1",
+              "timeDeltaMinutes": -15,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
               "text": "Pivot to another vulnerability (may need to come back later) [costs 5 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -955,7 +1246,7 @@
     },
     {
       "name": "oscmd_q16_1",
-      "title": "OS Injection | Question 16.1",
+      "title": "Path B \u2014 OS Injection | Odd Files Review",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_answer} = 'recon_each_account'",
       "elements": [
         {
@@ -972,22 +1263,34 @@
             {
               "value": "analyze_files",
               "text": "Analyze the files [costs 12 min]",
-              "gotoPage": "oscmd_q17"
+              "gotoPage": "oscmd_q17",
+              "timeDeltaMinutes": -12,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "stage_persistence",
               "text": "Use the login portal to stage persistence [costs 15 min]",
-              "gotoPage": "oscmd_q16_2_1"
+              "gotoPage": "oscmd_q16_2_1",
+              "timeDeltaMinutes": -15,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "reassess_value",
               "text": "Reassess whether this machine is valuable [costs 10 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
-              "text": "Pivot to another vulnerability (may need to come back later)",
-              "gotoPage": "path_selection"
+              "text": "Pivot to another vulnerability [costs 0 min]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -996,7 +1299,7 @@
     },
     {
       "name": "oscmd_q16_2_1",
-      "title": "OS Injection | Question 16.2.1",
+      "title": "Path B \u2014 OS Injection | Persistence Connection Issue",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -1013,21 +1316,33 @@
             {
               "value": "analyze_network",
               "text": "Analyze the network [costs 9 min]",
-              "gotoPage": "oscmd_q16_2_2"
+              "gotoPage": "oscmd_q16_2_2",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "assess_files_dirs",
-              "text": "Assess this machine files and directories [costs 4 min]"
+              "text": "Assess this machine files and directories [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "extensive_troubleshoot",
               "text": "Perform extensive troubleshooting [costs 8 min]",
-              "gotoPage": "oscmd_q16_2_2"
+              "gotoPage": "oscmd_q16_2_2",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "retry_callback_name",
               "text": "Retry the persistence connection with a different callback name [costs 6 min]",
-              "gotoPage": "oscmd_q16_2_2"
+              "gotoPage": "oscmd_q16_2_2",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -1036,7 +1351,7 @@
     },
     {
       "name": "oscmd_q16_2_2",
-      "title": "OS Injection | Question 16.2.2",
+      "title": "Path B \u2014 OS Injection | Machine Issue Review",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -1053,22 +1368,34 @@
             {
               "value": "analyze_network",
               "text": "Analyze the network [costs 9 min]",
-              "gotoPage": "oscmd_q16_2_3"
+              "gotoPage": "oscmd_q16_2_3",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "assess_files_dirs",
               "text": "Assess this machine files and directories [costs 8 min]",
-              "gotoPage": "oscmd_q17"
+              "gotoPage": "oscmd_q17",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "extensive_troubleshoot",
               "text": "Perform extensive troubleshooting [costs 9 min]",
-              "gotoPage": "oscmd_q16_2_3"
+              "gotoPage": "oscmd_q16_2_3",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
-              "text": "Pivot to another vulnerability (may need to come back later)",
-              "gotoPage": "path_selection"
+              "text": "Pivot to another vulnerability [costs 0 min]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -1077,7 +1404,7 @@
     },
     {
       "name": "oscmd_q16_2_3",
-      "title": "OS Injection | Question 16.2.3",
+      "title": "Path B \u2014 OS Injection | Network Filtering",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -1094,22 +1421,34 @@
             {
               "value": "bypass_filtering",
               "text": "Try to bypass filtering [costs 8 min]",
-              "gotoPage": "oscmd_q16_2_3_1"
+              "gotoPage": "oscmd_q16_2_3_1",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "reassess_value",
               "text": "Reassess whether this machine is valuable [costs 10 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "assess_files_dirs",
               "text": "Assess this machine files and directories [costs 8 min]",
-              "gotoPage": "oscmd_q17"
+              "gotoPage": "oscmd_q17",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_csrf",
               "text": "Pivot to the request-forgery path using the Finance Operations approval clue (Switch path to CSRF)[costs 5 min]",
-              "gotoPage": "csrf_1"
+              "gotoPage": "csrf_1",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -1118,7 +1457,7 @@
     },
     {
       "name": "oscmd_q16_2_3_1",
-      "title": "OS Injection | Question 16.2.3.1",
+      "title": "Path B \u2014 OS Injection | Network-Level Filtering",
       "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_2_3_answer} = 'bypass_filtering'",
       "elements": [
         {
@@ -1135,17 +1474,26 @@
             {
               "value": "reassess_value",
               "text": "Reassess whether this machine is valuable [costs 10 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "assess_files_dirs",
               "text": "Assess this machine files and directories [costs 8 min]",
-              "gotoPage": "oscmd_q17"
+              "gotoPage": "oscmd_q17",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "pivot_other_vuln",
-              "text": "Pivot to another vulnerability (may need to come back later)",
-              "gotoPage": "path_selection"
+              "text": "Pivot to another vulnerability [costs 0 min]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -1154,7 +1502,7 @@
     },
     {
       "name": "oscmd_q17",
-      "title": "OS Injection | Question 17",
+      "title": "Path B \u2014 OS Injection | Honeypot Discovery",
       "visibleIf": "{chosen_path} = 'oscmd'",
       "elements": [
         {
@@ -1170,8 +1518,11 @@
           "choices": [
             {
               "value": "back_to_vuln_selection",
-              "text": "Go back to vulnerability choice selection.",
-              "gotoPage": "path_selection"
+              "text": "Pivot to another vulnerability [costs 0 min]",
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }

@@ -19,15 +19,24 @@
           "choices": [
             {
               "value": "nmap_scan",
-              "text": "Run a network scan to see what other services are open [costs 8 min]"
+              "text": "Run a network scan to see what other services are open [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "search_cves",
-              "text": "Search for known vulnerabilities in the forum software [costs 18 min]"
+              "text": "Search for known vulnerabilities in the forum software [costs 18 min]",
+              "timeDeltaMinutes": -18,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "browse_manually",
-              "text": "Browse manually and note every place your input appears back on the page [costs 5 min]"
+              "text": "Browse manually and note every place your input appears back on the page [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -52,15 +61,24 @@
           "choices": [
             {
               "value": "log_surface",
-              "text": "Note it as a possible XSS surface and keep checking other inputs [costs 0 min]"
+              "text": "Note it as a possible XSS surface and keep checking other inputs [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "ignore_search",
-              "text": "Ignore the search bar and continue without documenting it [costs 5 min]"
+              "text": "Ignore the search bar and continue without documenting it [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "fingerprint_stack",
-              "text": "Use the URL structure to identify the backend framework [costs 6 min]"
+              "text": "Use the URL structure to identify the backend framework [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -85,19 +103,31 @@
           "choices": [
             {
               "value": "direct_script_test",
-              "text": "Jump straight to an active script test before checking how the page stores the comment [costs 15 min]"
+              "text": "Jump straight to an active script test before checking how the page stores the comment [costs 15 min]",
+              "timeDeltaMinutes": -15,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "intercept_request",
-              "text": "Capture the comment request and review the response details [costs 5 min]"
+              "text": "Capture the comment request and review the response details [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "benign_test",
-              "text": "Post a harmless formatting test and check how it appears in the page source [costs 1 min]"
+              "text": "Post a harmless formatting test and check how it appears in the page source [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "fuzz_length",
-              "text": "Paste a long block of text to test the character limit [costs 7 min]"
+              "text": "Paste a long block of text to test the character limit [costs 7 min]",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -122,19 +152,31 @@
           "choices": [
             {
               "value": "credential_payload_now",
-              "text": "Immediately switch to a simulated credential-capture payload [costs 12 min]"
+              "text": "Immediately switch to a simulated credential-capture payload [costs 12 min]",
+              "timeDeltaMinutes": -12,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "compare_search",
-              "text": "Test the same harmless marker in the search bar for comparison [costs 4 min]"
+              "text": "Test the same harmless marker in the search bar for comparison [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "confirm_active_behavior",
-              "text": "Confirm whether stored content can trigger active behavior before escalating [costs 1 min]"
+              "text": "Confirm whether stored content can trigger active behavior before escalating [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "document_only",
-              "text": "Document the finding and leave the path without testing impact [costs 9 min]"
+              "text": "Document the finding and leave the path without testing impact [costs 9 min]",
+              "timeDeltaMinutes": -9,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -159,19 +201,31 @@
           "choices": [
             {
               "value": "focus_comment_only",
-              "text": "Stay only with the comment box because it already showed signs [costs 8 min]"
+              "text": "Stay only with the comment box because it already showed signs [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "map_all_surfaces",
-              "text": "Map where user input appears: comment body, username display, and profile bio [costs 2 min]"
+              "text": "Map where user input appears: comment body, username display, and profile bio [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "stress_test",
-              "text": "Create several test accounts and flood the comment section [costs 20 min]"
+              "text": "Create several test accounts and flood the comment section [costs 20 min]",
+              "timeDeltaMinutes": -20,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "enumerate_dirs",
-              "text": "Check robots.txt and sitemap.xml for hidden pages [costs 6 min]"
+              "text": "Check robots.txt and sitemap.xml for hidden pages [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -196,15 +250,24 @@
           "choices": [
             {
               "value": "run_dirb",
-              "text": "Investigate unrelated website directories before continuing [costs 8 min]"
+              "text": "Investigate unrelated website directories before continuing [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "credential_capture_detour",
-              "text": "Try to turn the stored content into a simulated credential-capture setup [costs 0 min]"
+              "text": "Try to turn the stored content into a simulated credential-capture setup [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "retry_payload",
-              "text": "Keep changing tags until something else triggers [costs 12 min]"
+              "text": "Keep changing tags until something else triggers [costs 12 min]",
+              "timeDeltaMinutes": -12,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -229,15 +292,24 @@
           "choices": [
             {
               "value": "continue_exfil_attempt",
-              "text": "Keep trying to use the blocked session data anyway [costs 10 min]"
+              "text": "Keep trying to use the blocked session data anyway [costs 10 min]",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "decode_cookie",
-              "text": "Spend time trying to decode the protected session value [costs 8 min]"
+              "text": "Spend time trying to decode the protected session value [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "sim_phish_form",
-              "text": "Switch to a simulated session-expired prompt to collect test credentials [costs 0 min]"
+              "text": "Switch to a simulated session-expired prompt to collect test credentials [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -262,19 +334,31 @@
           "choices": [
             {
               "value": "build_reflected_link",
-              "text": "Build a reflected link and send it to a target [costs 8 min]"
+              "text": "Build a reflected link and send it to a target [costs 8 min]",
+              "timeDeltaMinutes": -8,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "inspect_dom",
-              "text": "Inspect the page to see where the stored content is being processed [costs 10 min]"
+              "text": "Inspect the page to see where the stored content is being processed [costs 10 min]",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "hunt_second_order",
-              "text": "Search the rest of the app for other places the stored content appears [costs 5 min]"
+              "text": "Search the rest of the app for other places the stored content appears [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "confirm_stored",
-              "text": "Confirm it is stored XSS because the saved content triggers for every visitor [costs 0 min]"
+              "text": "Confirm it is stored XSS because the saved content triggers for every visitor [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -299,19 +383,31 @@
           "choices": [
             {
               "value": "finance_channel",
-              "text": "Finance Team because approval-related users are more likely to see it [costs 6 min]"
+              "text": "Finance Team because approval-related users are more likely to see it [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "general_discussion",
-              "text": "General Discussion because it has the most traffic [costs 1 min]"
+              "text": "General Discussion because it has the most traffic [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "it_support",
-              "text": "IT Support because technical users may have more access [costs 4 min]"
+              "text": "IT Support because technical users may have more access [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "all_channels",
-              "text": "All channels at once for maximum reach [costs 14 min]"
+              "text": "All channels at once for maximum reach [costs 14 min]",
+              "timeDeltaMinutes": -14,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -336,19 +432,31 @@
           "choices": [
             {
               "value": "skip_pinned",
-              "text": "Skip the pinned post because it may be locked for comments [costs 5 min]"
+              "text": "Skip the pinned post because it may be locked for comments [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "post_elsewhere",
-              "text": "Avoid the pinned post because it may be moderated [costs 3 min]"
+              "text": "Avoid the pinned post because it may be moderated [costs 3 min]",
+              "timeDeltaMinutes": -3,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "inject_welcome",
-              "text": "Place it in the welcome post where many users will view it [costs 0 min]"
+              "text": "Place it in the welcome post where many users will view it [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "enumerate_links",
-              "text": "Check the pinned post for other links and input surfaces [costs 4 min]"
+              "text": "Check the pinned post for other links and input surfaces [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -373,19 +481,31 @@
           "choices": [
             {
               "value": "external_redirect",
-              "text": "Redirect users to an external fake login page [costs 16 min]"
+              "text": "Redirect users to an external fake login page [costs 16 min]",
+              "timeDeltaMinutes": -16,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "sim_session_prompt",
-              "text": "Add a simulated session-expired prompt inside the forum page [costs 1 min]"
+              "text": "Add a simulated session-expired prompt inside the forum page [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "key_capture",
-              "text": "Try broad keystroke collection across the page [costs 7 min]"
+              "text": "Try broad keystroke collection across the page [costs 7 min]",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "browser_hook",
-              "text": "Try an interactive browser-control framework [costs 10 min]"
+              "text": "Try an interactive browser-control framework [costs 10 min]",
+              "timeDeltaMinutes": -10,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             }
           ]
         }
@@ -410,19 +530,31 @@
           "choices": [
             {
               "value": "validate_forum",
-              "text": "Test it against the forum login to confirm it works [costs 6 min]"
+              "text": "Test it against the forum login to confirm it works [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "analyze_format",
-              "text": "Check whether the password format suggests a company-wide pattern [costs 0 min]"
+              "text": "Check whether the password format suggests a company-wide pattern [costs 0 min]",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "test_vpn",
-              "text": "Try the credential against the VPN portal immediately [costs 12 min]"
+              "text": "Try the credential against the VPN portal immediately [costs 12 min]",
+              "timeDeltaMinutes": -12,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "queue_harvest",
-              "text": "Add it to the harvest list and wait for more before acting [costs 4 min]"
+              "text": "Add it to the harvest list and wait for more before acting [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -447,19 +579,31 @@
           "choices": [
             {
               "value": "stuff_vpn",
-              "text": "Test all of them against the VPN immediately [costs 20 min]"
+              "text": "Test all of them against the VPN immediately [costs 20 min]",
+              "timeDeltaMinutes": -20,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "validate_forum_all",
-              "text": "Confirm which credentials still work on the forum first [costs 7 min]"
+              "text": "Confirm which credentials still work on the forum first [costs 7 min]",
+              "timeDeltaMinutes": -7,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "analyze_list",
-              "text": "Prioritize the list by role, department, and password pattern [costs 2 min]"
+              "text": "Prioritize the list by role, department, and password pattern [costs 2 min]",
+              "timeDeltaMinutes": -2,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "sort_reuse",
-              "text": "Sort by reused passwords first [costs 4 min]"
+              "text": "Sort by reused passwords first [costs 4 min]",
+              "timeDeltaMinutes": -4,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -484,19 +628,31 @@
           "choices": [
             {
               "value": "test_vpn_all",
-              "text": "Test all three against the VPN for broad access [costs 5 min]"
+              "text": "Test all three against the VPN for broad access [costs 5 min]",
+              "timeDeltaMinutes": -5,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "check_forum_perms",
-              "text": "Check whether any accounts have elevated forum permissions [costs 25 min]"
+              "text": "Check whether any accounts have elevated forum permissions [costs 25 min]",
+              "timeDeltaMinutes": -25,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "try_it_admin",
-              "text": "Test the IT-looking account against the email portal [costs 1 min]"
+              "text": "Test the IT-looking account against the email portal [costs 1 min]",
+              "timeDeltaMinutes": -1,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             },
             {
               "value": "try_hr_director",
-              "text": "Test the HR account against the HR self-service portal [costs 6 min]"
+              "text": "Test the HR account against the HR self-service portal [costs 6 min]",
+              "timeDeltaMinutes": -6,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -521,15 +677,24 @@
           "choices": [
             {
               "value": "redeploy_payload",
-              "text": "Plant a second stored payload and wait for a larger harvest [costs 28 min]"
+              "text": "Plant a second stored payload and wait for a larger harvest [costs 28 min]",
+              "timeDeltaMinutes": -28,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "bruteforce_vpn",
-              "text": "Brute force the VPN using the harvested usernames [costs 35 min]"
+              "text": "Brute force the VPN using the harvested usernames [costs 35 min]",
+              "timeDeltaMinutes": -35,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "expand_testing",
-              "text": "Try the credentials against every other service you can find [costs 12 min]"
+              "text": "Try the credentials against every other service you can find [costs 12 min]",
+              "timeDeltaMinutes": -12,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -554,15 +719,24 @@
           "choices": [
             {
               "value": "redeploy_second_payload",
-              "text": "Plant a second payload and try for a larger harvest [costs 20 min]"
+              "text": "Plant a second payload and try for a larger harvest [costs 20 min]",
+              "timeDeltaMinutes": -20,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "bruteforce_again",
-              "text": "Start brute forcing with the harvested usernames [costs 25 min]"
+              "text": "Start brute forcing with the harvested usernames [costs 25 min]",
+              "timeDeltaMinutes": -25,
+              "advanceOnSelect": false,
+              "developerNote": "WRONG ACTION: deduct time, stay on same question."
             },
             {
               "value": "keep_testing_services",
-              "text": "Keep testing credentials against every service you can find [costs 15 min]"
+              "text": "Keep testing credentials against every service you can find [costs 15 min]",
+              "timeDeltaMinutes": -15,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
@@ -587,7 +761,10 @@
             {
               "value": "return_path_select",
               "text": "Return to vulnerability choice selection [costs 0 min]",
-              "gotoPage": "path_selection"
+              "gotoPage": "path_selection",
+              "timeDeltaMinutes": 0,
+              "advanceOnSelect": true,
+              "developerNote": "VALID ACTION: deduct/apply time and advance or follow goto."
             }
           ]
         }
