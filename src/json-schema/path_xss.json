@@ -1,131 +1,595 @@
 {
   "pages": [
     {
-      "name": "xss_1",
-      "title": "Path D — XSS Attack | Step 1: Find an Injection Surface",
+      "name": "xss_q1",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Initial Review",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q3",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q1_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> You are reviewing a forum page with posts, comments, and a search bar. You have not tested anything yet. What do you do first?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q1_answer",
+          "title": "What do you do first?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "nmap_scan",
+              "text": "Run a network scan to see what other services are open [costs 8 min]"
+            },
+            {
+              "value": "search_cves",
+              "text": "Search for known vulnerabilities in the forum software [costs 18 min]"
+            },
+            {
+              "value": "browse_manually",
+              "text": "Browse manually and note every place your input appears back on the page [costs 5 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q2",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Input Surface Review",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q3",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q2_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The search bar displays your input back in the results heading. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q2_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "log_surface",
+              "text": "Note it as a possible XSS surface and keep checking other inputs [costs 0 min]"
+            },
+            {
+              "value": "ignore_search",
+              "text": "Ignore the search bar and continue without documenting it [costs 5 min]"
+            },
+            {
+              "value": "fingerprint_stack",
+              "text": "Use the URL structure to identify the backend framework [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q3",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Comment Testing",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q4",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q3_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> You find a comment box under each post. A test comment appears immediately. What is your next move?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q3_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "direct_script_test",
+              "text": "Jump straight to an active script test before checking how the page stores the comment [costs 15 min]"
+            },
+            {
+              "value": "intercept_request",
+              "text": "Capture the comment request and review the response details [costs 5 min]"
+            },
+            {
+              "value": "benign_test",
+              "text": "Post a harmless formatting test and check how it appears in the page source [costs 1 min]"
+            },
+            {
+              "value": "fuzz_length",
+              "text": "Paste a long block of text to test the character limit [costs 7 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q4",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Script Behavior Check",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q5",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q4_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> Your harmless formatting test appears as formatted content instead of plain text. What do you try next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q4_answer",
+          "title": "What do you try next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "credential_payload_now",
+              "text": "Immediately switch to a simulated credential-capture payload [costs 12 min]"
+            },
+            {
+              "value": "compare_search",
+              "text": "Test the same harmless marker in the search bar for comparison [costs 4 min]"
+            },
+            {
+              "value": "confirm_active_behavior",
+              "text": "Confirm whether stored content can trigger active behavior before escalating [costs 1 min]"
+            },
+            {
+              "value": "document_only",
+              "text": "Document the finding and leave the path without testing impact [costs 9 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q5",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Surface Mapping",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q6",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q5_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The comment box looks promising. The forum also displays usernames and profile bios. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q5_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "focus_comment_only",
+              "text": "Stay only with the comment box because it already showed signs [costs 8 min]"
+            },
+            {
+              "value": "map_all_surfaces",
+              "text": "Map where user input appears: comment body, username display, and profile bio [costs 2 min]"
+            },
+            {
+              "value": "stress_test",
+              "text": "Create several test accounts and flood the comment section [costs 20 min]"
+            },
+            {
+              "value": "enumerate_dirs",
+              "text": "Check robots.txt and sitemap.xml for hidden pages [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q6",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Stored Content Decision",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q8",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q6_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> You have signs that saved content may be unsafe. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q6_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "run_dirb",
+              "text": "Investigate unrelated website directories before continuing [costs 8 min]"
+            },
+            {
+              "value": "credential_capture_detour",
+              "text": "Try to turn the stored content into a simulated credential-capture setup [costs 0 min]"
+            },
+            {
+              "value": "retry_payload",
+              "text": "Keep changing tags until something else triggers [costs 12 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q7",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Browser Protection Detour",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q8",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q7_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The credential-capture idea runs into browser protections and does not give direct access. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q7_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "continue_exfil_attempt",
+              "text": "Keep trying to use the blocked session data anyway [costs 10 min]"
+            },
+            {
+              "value": "decode_cookie",
+              "text": "Spend time trying to decode the protected session value [costs 8 min]"
+            },
+            {
+              "value": "sim_phish_form",
+              "text": "Switch to a simulated session-expired prompt to collect test credentials [costs 0 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q8",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Stored Behavior Confirmation",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q9",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q8_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> You sign into a second test account and view the same forum post. The stored test still triggers for the new account. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q8_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "build_reflected_link",
+              "text": "Build a reflected link and send it to a target [costs 8 min]"
+            },
+            {
+              "value": "inspect_dom",
+              "text": "Inspect the page to see where the stored content is being processed [costs 10 min]"
+            },
+            {
+              "value": "hunt_second_order",
+              "text": "Search the rest of the app for other places the stored content appears [costs 5 min]"
+            },
+            {
+              "value": "confirm_stored",
+              "text": "Confirm it is stored XSS because the saved content triggers for every visitor [costs 0 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q9",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Target Audience",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q11",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q9_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The forum has four channels: General Discussion, IT Support, Finance Team, and HR Announcements. Where do you place the stored test next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q9_answer",
+          "title": "Where do you place the stored test next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "finance_channel",
+              "text": "Finance Team because approval-related users are more likely to see it [costs 6 min]"
+            },
+            {
+              "value": "general_discussion",
+              "text": "General Discussion because it has the most traffic [costs 1 min]"
+            },
+            {
+              "value": "it_support",
+              "text": "IT Support because technical users may have more access [costs 4 min]"
+            },
+            {
+              "value": "all_channels",
+              "text": "All channels at once for maximum reach [costs 14 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q10",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | High-Traffic Placement",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q11",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q10_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> General Discussion has a pinned welcome post that every new hire sees. Where do you place the stored test?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q10_answer",
+          "title": "Where do you place the stored test?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "skip_pinned",
+              "text": "Skip the pinned post because it may be locked for comments [costs 5 min]"
+            },
+            {
+              "value": "post_elsewhere",
+              "text": "Avoid the pinned post because it may be moderated [costs 3 min]"
+            },
+            {
+              "value": "inject_welcome",
+              "text": "Place it in the welcome post where many users will view it [costs 0 min]"
+            },
+            {
+              "value": "enumerate_links",
+              "text": "Check the pinned post for other links and input surfaces [costs 4 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q11",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Payload Choice",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q12",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q11_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The stored XSS is confirmed, but browser protections limit direct session theft. What simulated payload do you try next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q11_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "external_redirect",
+              "text": "Redirect users to an external fake login page [costs 16 min]"
+            },
+            {
+              "value": "sim_session_prompt",
+              "text": "Add a simulated session-expired prompt inside the forum page [costs 1 min]"
+            },
+            {
+              "value": "key_capture",
+              "text": "Try broad keystroke collection across the page [costs 7 min]"
+            },
+            {
+              "value": "browser_hook",
+              "text": "Try an interactive browser-control framework [costs 10 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q12",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Credential Lead",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q13",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q12_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The simulated prompt captures one low-level forum credential. What do you do next?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q12_answer",
+          "title": "What do you do next?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "validate_forum",
+              "text": "Test it against the forum login to confirm it works [costs 6 min]"
+            },
+            {
+              "value": "analyze_format",
+              "text": "Check whether the password format suggests a company-wide pattern [costs 0 min]"
+            },
+            {
+              "value": "test_vpn",
+              "text": "Try the credential against the VPN portal immediately [costs 12 min]"
+            },
+            {
+              "value": "queue_harvest",
+              "text": "Add it to the harvest list and wait for more before acting [costs 4 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q13",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Credential Review",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q14",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q13_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> After more activity, you have a list of captured low-level credentials. What do you do before trying them anywhere else?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q13_answer",
+          "title": "What do you do before trying them anywhere else?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "stuff_vpn",
+              "text": "Test all of them against the VPN immediately [costs 20 min]"
+            },
+            {
+              "value": "validate_forum_all",
+              "text": "Confirm which credentials still work on the forum first [costs 7 min]"
+            },
+            {
+              "value": "analyze_list",
+              "text": "Prioritize the list by role, department, and password pattern [costs 2 min]"
+            },
+            {
+              "value": "sort_reuse",
+              "text": "Sort by reused passwords first [costs 4 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q14",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Account Prioritization",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q16",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q14_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> Three accounts stand out: one Finance user, one IT admin-looking user, and one HR director. Where do you start?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q14_answer",
+          "title": "Where do you start?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "test_vpn_all",
+              "text": "Test all three against the VPN for broad access [costs 5 min]"
+            },
+            {
+              "value": "check_forum_perms",
+              "text": "Check whether any accounts have elevated forum permissions [costs 25 min]"
+            },
+            {
+              "value": "try_it_admin",
+              "text": "Test the IT-looking account against the email portal [costs 1 min]"
+            },
+            {
+              "value": "try_hr_director",
+              "text": "Test the HR account against the HR self-service portal [costs 6 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q15",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Access Roadblock",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_q16",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q15_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> The accounts fail against VPN, email, and HR services. A few forum logins work, but nothing gives real access. What do you do?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q15_answer",
+          "title": "What do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "redeploy_payload",
+              "text": "Plant a second stored payload and wait for a larger harvest [costs 28 min]"
+            },
+            {
+              "value": "bruteforce_vpn",
+              "text": "Brute force the VPN using the harvested usernames [costs 35 min]"
+            },
+            {
+              "value": "expand_testing",
+              "text": "Try the credentials against every other service you can find [costs 12 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_q16",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Path Decision",
+      "visibleIf": "{chosen_path} = 'xss'",
+      "defaultNextPage": "xss_result",
+      "elements": [
+        {
+          "type": "html",
+          "name": "xss_q16_context",
+          "html": "<div class='orc-context'><strong>Context:</strong> None of the harvested credentials gives a privileged account. The stored XSS is real, but it is not reaching the transfer objective. What do you do?</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "xss_q16_answer",
+          "title": "What do you do?",
+          "isRequired": true,
+          "choices": [
+            {
+              "value": "redeploy_second_payload",
+              "text": "Plant a second payload and try for a larger harvest [costs 20 min]"
+            },
+            {
+              "value": "bruteforce_again",
+              "text": "Start brute forcing with the harvested usernames [costs 25 min]"
+            },
+            {
+              "value": "keep_testing_services",
+              "text": "Keep testing credentials against every service you can find [costs 15 min]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "xss_result",
+      "title": "Path C \u2014 Stored Cross-Site Scripting | Path Result",
       "visibleIf": "{chosen_path} = 'xss'",
       "elements": [
         {
           "type": "html",
-          "name": "xss_context",
-          "html": "<div class='orc-context'>The internal portal at <code>192.168.1.55</code> has a forum-like section where employees post announcements and IT tickets. If any user input is reflected back onto the page without sanitization, you may be able to inject a script that runs in other users' browsers — including privileged ones.</div>"
+          "name": "xss_fail_context",
+          "html": "<div class='orc-context orc-fail'><strong>Dead End.</strong><br><br>The stored XSS path was real. You confirmed unsafe saved content and gathered low-level credentials, but this vector did not reach a privileged account or complete the transfer objective. The strongest clue points back to Finance Operations and the approval workflow.</div>"
         },
         {
           "type": "radiogroup",
-          "name": "xss_discover",
-          "title": "How do you look for an injectable input surface?",
+          "name": "xss_pivot_answer",
+          "title": "What do you do next?",
           "isRequired": true,
           "choices": [
-            { "value": "basic_alert",   "text": "Post a simple test payload into a comment field and see if it executes in the page [costs 1 min]" },
-            { "value": "dom_inspect",   "text": "Use browser dev tools to trace how input flows into the DOM before testing anything [costs 2 min]" },
-            { "value": "burp_xss",      "text": "Run an automated XSS scanner across all input fields [costs 3 min]" },
-            { "value": "event_handler", "text": "Try injecting into an attribute context instead of a tag context [costs 1 min]" }
+            {
+              "value": "return_path_select",
+              "text": "Return to vulnerability choice selection [costs 0 min]",
+              "gotoPage": "path_selection"
+            }
           ]
-        }
-      ]
-    },
-    {
-      "name": "xss_2",
-      "title": "Path D — XSS Attack | Step 2: Choose Your Payload",
-      "visibleIf": "{chosen_path} = 'xss'",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_confirmed",
-          "html": "<div class='orc-context'>Script injection is confirmed — input you post into the comment section executes in the browser of anyone who views the page. This includes employees who are logged into the portal. Now you need to decide what you want that script to do.</div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_payload",
-          "title": "What does your injected script do?",
-          "isRequired": true,
-          "choices": [
-            { "value": "cookie_steal", "text": "Silently capture the victim's session cookie and send it to a listener you control [costs 1 min]" },
-            { "value": "keylogger",    "text": "Record everything the victim types on the page and exfiltrate it [costs 4 min]" },
-            { "value": "beef_hook",    "text": "Hook the victim's browser into a remote control framework [costs 3 min]" },
-            { "value": "localstorage", "text": "Read tokens or credentials stored in the browser's local storage [costs 2 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_branch_keylogger",
-      "title": "Path D — XSS Attack | Dead End",
-      "visibleIf": "{chosen_path} = 'xss' and {xss_payload} = 'keylogger'",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_keylogger_result",
-          "html": "<div class='orc-context orc-error'>The keylogger is recording input, but most of what comes through is noise — form field text, search queries, nothing that gives you portal access. Employees aren't re-entering their passwords on this page. You've spent time waiting for data that isn't coming. You need a different payload strategy.</div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_keylogger_choice",
-          "title": "What do you switch to?",
-          "isRequired": true,
-          "choices": [
-            { "value": "switch_cookie",  "text": "Switch to capturing the session cookie instead [costs 2 min]" },
-            { "value": "switch_storage", "text": "Switch to reading tokens from browser storage [costs 2 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_3",
-      "title": "Path D — XSS Attack | Step 3: Get a Victim to Trigger It",
-      "visibleIf": "{chosen_path} = 'xss' and ({xss_payload} = 'cookie_steal' or {xss_payload} = 'beef_hook' or {xss_payload} = 'localstorage' or {xss_keylogger_choice} = 'switch_cookie' or {xss_keylogger_choice} = 'switch_storage')",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_exfil_setup",
-          "html": "<div class='orc-context'>Your payload is embedded in a post on the internal forum. Anyone who views it while logged in will trigger it. But you need a <em>privileged</em> user to view it — not just any employee. How do you get the right person to open the page?</div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_trigger",
-          "title": "How do you maximize your chances of hitting a privileged user?",
-          "isRequired": true,
-          "choices": [
-            { "value": "urgent_title",  "text": "Title the post something urgent — IT outage, security alert — to draw immediate attention [costs 1 min]" },
-            { "value": "email_notify",  "text": "Use another access you have to send a notification email pointing to your post [costs 2 min]" },
-            { "value": "mass_ticket",   "text": "Flood the IT board with tickets that all link back to your payload post [costs 3 min, raises noise]" },
-            { "value": "wait_organic",  "text": "Post it and wait — privileged users will eventually browse the board on their own [costs 4 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_4",
-      "title": "Path D — XSS Attack | Step 4: Use What You Captured",
-      "visibleIf": "{chosen_path} = 'xss'",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_token_received",
-          "html": "<div class='orc-context orc-success'>A session token just hit your listener. Based on the timing, it belongs to someone who was active in the finance section of the portal seconds before it fired. You have a live, authenticated session. How do you use it?</div>"
-        },
-        {
-          "type": "radiogroup",
-          "name": "xss_final",
-          "title": "How do you use the captured session?",
-          "isRequired": true,
-          "choices": [
-            { "value": "cookie_inject", "text": "Inject the token into your own browser and load the portal — take over the session directly [costs 1 min]" },
-            { "value": "curl_api",      "text": "Use the token to make authenticated API calls without touching the portal UI [costs 2 min]" },
-            { "value": "burp_replay",   "text": "Replay the token through an intercepting proxy to manually craft privileged requests [costs 2 min]" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "xss_fail",
-      "title": "Path D — XSS Attack | Complete",
-      "visibleIf": "{chosen_path} = 'xss' and ({xss_final} = 'cookie_inject' or {xss_final} = 'curl_api' or {xss_final} = 'burp_replay')",
-      "elements": [
-        {
-          "type": "html",
-          "name": "xss_win",
-          "html": "<div class='orc-context orc-win'><strong>// SESSION HIJACKED</strong><br/><br/>You are now operating as an authenticated finance employee. The transfer portal is open in front of you — from their account.<br/><br/>Path D finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

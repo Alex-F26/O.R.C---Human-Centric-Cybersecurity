@@ -1,8 +1,7 @@
 {
   "title": "O.R.C",
   "description": "You have 20 minutes. The clock starts tickin' when you begin.",
-  "showProgressBar": "top",
-  "progressBarType": "pages",
+  "showProgressBar": "off",
   "showTimerPanel": "none",
   "firstPageIsStarted": true,
   "startSurveyText": "Begin Operation",
@@ -13,13 +12,13 @@
         {
           "type": "html",
           "name": "intro",
-          "html": "<div class='orc-intro'><h2>BRIEFING</h2><p>You have infiltrated a bank's internal network and gained a foothold on a vulnerable workstation. Your objective: reach a high-privilege account and initiate an unauthorized transfer.</p><br/><p>You have <strong>20 minutes</strong>. Every action costs time. Switching paths will cost extra time. Choose wisely!</p><br/></div>"
+          "html": "<div class='orc-intro'><h2>BRIEFING</h2><p>You have infiltrated a bank's internal network and gained a foothold on a vulnerable workstation. Your objective: reach a high-privilege account and initiate an unauthorized transfer.</p><br/><p>You have <strong>20 minutes</strong>. Every action costs time. Switching paths will cost extra time, you are free to do so at any point during this process. Choose wisely!</p><br/></div>"
         }
       ]
     },
     {
       "name": "recon",
-      "title": "Phase 1 — Reconnaissance",
+      "title": "Phase 1 \u2014 Reconnaissance",
       "elements": [
         {
           "type": "radiogroup",
@@ -27,10 +26,26 @@
           "title": "You're on the internal network. You need to enumerate the environment. Which tool do you use for initial recon?",
           "isRequired": true,
           "choices": [
-            { "value": "nmap",        "text": "Nmap — Run a full port scan across the subnet [costs 3 min]" },
-            { "value": "netdiscover", "text": "Netdiscover — Passive ARP scan to find live hosts [costs 1 min]" },
-            { "value": "wireshark",   "text": "Wireshark — Capture live traffic and analyze passively [costs 4 min]" },
-            { "value": "manual",      "text": "Manual enumeration — Check local ARP table and routing [costs 2 min]" }
+            {
+              "value": "nmap",
+              "text": "Nmap \u2014 Run a full port scan across the subnet [costs 3 min]",
+              "timeDeltaMinutes": -3
+            },
+            {
+              "value": "netdiscover",
+              "text": "Netdiscover \u2014 Passive ARP scan to find live hosts [costs 1 min]",
+              "timeDeltaMinutes": -1
+            },
+            {
+              "value": "wireshark",
+              "text": "Wireshark \u2014 Capture live traffic and analyze passively [costs 4 min]",
+              "timeDeltaMinutes": -4
+            },
+            {
+              "value": "manual",
+              "text": "Manual enumeration \u2014 Check local ARP table and routing [costs 2 min]",
+              "timeDeltaMinutes": -2
+            }
           ]
         },
         {
@@ -40,17 +55,33 @@
           "isRequired": true,
           "visibleIf": "{recon_tool} notempty",
           "choices": [
-            { "value": "db_server",  "text": "192.168.1.42 — Port 3306 open (MySQL) [costs 1 min]" },
-            { "value": "ssh_server", "text": "192.168.1.17 — Port 22 open (SSH), banner shows Ubuntu 18.04 [costs 1 min]" },
-            { "value": "mail_server","text": "192.168.1.88 — Port 25/143 open, mail server [costs 1 min]" },
-            { "value": "web_server", "text": "192.168.1.55 — Port 80/443 open, internal web portal [costs 1 min]" }
+            {
+              "value": "db_server",
+              "text": "192.168.1.42 \u2014 Port 3306 open (MySQL) [costs 1 min]",
+              "timeDeltaMinutes": -1
+            },
+            {
+              "value": "ssh_server",
+              "text": "192.168.1.17 \u2014 Port 22 open (SSH), banner shows Ubuntu 18.04 [costs 1 min]",
+              "timeDeltaMinutes": -1
+            },
+            {
+              "value": "mail_server",
+              "text": "192.168.1.88 \u2014 Port 25/143 open, mail server [costs 1 min]",
+              "timeDeltaMinutes": -1
+            },
+            {
+              "value": "web_server",
+              "text": "192.168.1.55 \u2014 Port 80/443 open, internal web portal [costs 1 min]",
+              "timeDeltaMinutes": -1
+            }
           ]
         }
       ]
     },
     {
       "name": "path_selection",
-      "title": "Phase 2 — Path Selection",
+      "title": "Phase 2 \u2014 Path Selection",
       "elements": [
         {
           "type": "radiogroup",
@@ -58,10 +89,26 @@
           "title": "Based on your recon, which attack vector do you pursue?",
           "isRequired": true,
           "choices": [
-            { "value": "sqli",  "text": "Path A — SQL Injection via the internal web portal [costs 2 min]" },
-            { "value": "oscmd", "text": "Path B — OS Command Injection via the web app's diagnostic endpoint [costs 2 min]" },
-            { "value": "csrf",  "text": "Path C — CSRF attack against the transfer portal [costs 2 min]" },
-            { "value": "xss",   "text": "Path D — XSS to steal session tokens from privileged users [costs 2 min]" }
+            {
+              "value": "sqli",
+              "text": "Path A \u2014 SQL Injection via the internal web portal [costs 2 min]",
+              "timeDeltaMinutes": -2
+            },
+            {
+              "value": "oscmd",
+              "text": "Path B \u2014 OS Command Injection via the web app's diagnostic endpoint [costs 2 min]",
+              "timeDeltaMinutes": -2
+            },
+            {
+              "value": "xss",
+              "text": "Path C \u2014 Stored XSS through the internal forum [costs 2 min]",
+              "timeDeltaMinutes": -2
+            },
+            {
+              "value": "csrf",
+              "text": "Path D \u2014 CSRF/request forgery against the transfer portal [costs 2 min]",
+              "timeDeltaMinutes": -2
+            }
           ]
         }
       ]

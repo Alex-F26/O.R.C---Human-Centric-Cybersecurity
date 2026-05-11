@@ -24,10 +24,34 @@
         }
       ]
     },
+
+    {
+      "name": "csrf_1_cookie_branch",
+      "title": "Path C — CSRF Attack | Step 1.1: Cookie Analysis",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_recon} = 'check_cookies'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_cookie_html",
+          "html": "<div class='orc-context'>The session cookie is set without a <code>SameSite</code> attribute and without the <code>Secure</code> flag. This means it will be sent along with cross-origin requests automatically. That's a necessary condition for CSRF — but you still need to confirm there's no server-side token validation on the transfer endpoint.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_cookie_choice",
+          "title": "Cookie analysis is promising. What do you do next?",
+          "isRequired": true,
+          "choices": [
+            { "value": "intercept_now",   "text": "Intercept a transfer request to check whether a token is included in the body [costs 1 min]" },
+            { "value": "skip_to_payload", "text": "You've seen enough — start building the payload now [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+
     {
       "name": "csrf_2",
       "title": "Path C — CSRF Attack | Step 2: Build the Payload",
-      "visibleIf": "{chosen_path} = 'csrf'",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_recon} = 'burp_csrf' or {csrf_recon} = 'manual_review' or {csrf_recon} = 'owasp_zap' or {csrf_cookie_choice} = 'intercept_now' or {csrf_cookie_choice} = 'skip_to_payload')",
       "elements": [
         {
           "type": "html",
@@ -48,15 +72,16 @@
         }
       ]
     },
+
     {
       "name": "csrf_branch_img",
-      "title": "Path C — CSRF Attack | Dead End",
+      "title": "Path C — CSRF Attack | Dead End: Image Tag",
       "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag'",
       "elements": [
         {
           "type": "html",
           "name": "csrf_img_fail",
-          "html": "<div class='orc-context orc-error'>The transfer endpoint only accepts POST requests — the image tag approach only works with GET. The payload fires but the server rejects it. You've lost time. You'll need to switch to something that can send a proper POST.</div>"
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The transfer endpoint only accepts POST requests — the image tag approach only works with GET. The payload fires but the server rejects it with a 405 Method Not Allowed. You've lost time and potentially tipped off any passive monitoring. You'll need to rebuild with something that can send a proper POST.</div>"
         },
         {
           "type": "radiogroup",
@@ -70,15 +95,39 @@
         }
       ]
     },
+
+    {
+      "name": "csrf_2_fetch_dead",
+      "title": "Path C — CSRF Attack | Dead End: CORS Preflight",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'fetch_api' or {csrf_img_choice} = 'fix_fetch')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_fetch_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// SETBACK</strong><br/><br/>The fetch() approach with <code>credentials: 'include'</code> triggers a CORS preflight OPTIONS request before the actual POST. The server's CORS policy rejects the preflight — the cross-origin POST never fires. The browser blocks it entirely. You need a method that doesn't trigger a preflight.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_fetch_dead_choice",
+          "title": "The fetch approach is blocked by CORS preflight. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "switch_to_form", "text": "Switch to a hidden auto-submit form — plain HTML forms don't trigger preflight [costs 1 min]" },
+            { "value": "switch_path",    "text": "Abandon CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+          ]
+        }
+      ]
+    },
+
     {
       "name": "csrf_3",
       "title": "Path C — CSRF Attack | Step 3: Deliver the Payload",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'fetch_api' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_img_choice} = 'fix_fetch')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_fetch_dead_choice} = 'switch_to_form')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_payload_ready",
-          "html": "<div class='orc-context'>Your payload page is ready. When any authenticated employee loads it, a transfer will fire from their session without them knowing. Now you need to get the right person to open it.</div>"
+          "html": "<div class='orc-context'>Your payload page is ready. When any authenticated employee loads it, a transfer will fire from their session without them knowing. Now you need to get the right person to open it — ideally someone with transfer approval authority who is currently logged in.</div>"
         },
         {
           "type": "radiogroup",
@@ -86,46 +135,141 @@
           "title": "How do you get an authenticated user to trigger it?",
           "isRequired": true,
           "choices": [
-            { "value": "phish_cfo",        "text": "Send a targeted message to the CFO with a convincing pretext to click the link [costs 2 min]" },
+            { "value": "phish_cfo",        "text": "Send a targeted message to the CFO with a convincing pretext [costs 2 min]" },
             { "value": "phish_ops",        "text": "Target someone in finance operations — they're likely logged into the portal constantly [costs 2 min]" },
             { "value": "internal_post",    "text": "Post the link to an internal message board where employees are active [costs 3 min]" },
-            { "value": "wait_and_monitor", "text": "Leave the payload hosted and wait for organic traffic from someone already logged in [costs 5 min]" }
+            { "value": "wait_and_monitor", "text": "Leave the payload hosted and wait for organic traffic [costs 5 min]" }
           ]
         }
       ]
     },
+
+    {
+      "name": "csrf_delivery_cfo_dead",
+      "title": "Path C — CSRF Attack | Dead End: CFO Target",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'phish_cfo'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_cfo_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The CFO's email client renders messages in a sandboxed environment and strips external links before display. Your message arrived, but the link was replaced with a warning label. The CFO flagged it to IT security and your source address is now being investigated. You burned time and raised the alarm on the wrong target.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_cfo_dead_choice",
+          "title": "The CFO approach backfired. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_delivery", "text": "Switch delivery method — target finance operations instead [costs 2 min penalty]" },
+            { "value": "switch_path",    "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "csrf_delivery_board_dead",
+      "title": "Path C — CSRF Attack | Dead End: Message Board",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'internal_post'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_board_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The internal message board previews links before posting — your URL was crawled by the platform's link-preview bot, which fired your payload against its own unauthenticated session and returned nothing useful. The post was then auto-flagged by a content filter for containing an external URL from an unfamiliar domain. An admin removed it within minutes.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_board_dead_choice",
+          "title": "The board approach was caught. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_delivery", "text": "Switch delivery method — target finance operations directly [costs 2 min penalty]" },
+            { "value": "switch_path",    "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+          ]
+        }
+      ]
+    },
+
     {
       "name": "csrf_4",
-      "title": "Path C — CSRF Attack | Step 4: Follow Through",
-      "visibleIf": "{chosen_path} = 'csrf'",
+      "title": "Path C — CSRF Attack | Step 4: Payload Triggered",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_delivery} = 'phish_ops' or {csrf_delivery} = 'wait_and_monitor' or {csrf_cfo_dead_choice} = 'retry_delivery' or {csrf_board_dead_choice} = 'retry_delivery')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_triggered",
-          "html": "<div class='orc-context orc-success'>The payload fired. A transfer request was submitted from an authenticated employee session — they have no idea it happened. The amount went through. But one transfer may not be enough, and the window is closing. What do you do next?</div>"
+          "html": "<div class='orc-context orc-success'>A member of finance operations clicked the link while authenticated. The hidden form fired. A transfer request was submitted from their active session — they have no idea it happened. The amount is in the queue. But it requires a second approval before it clears. The window is narrow.</div>"
         },
         {
           "type": "radiogroup",
           "name": "csrf_final",
-          "title": "What is your next move?",
+          "title": "The transfer is pending a second approval. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "second_csrf",    "text": "Target a second employee to trigger another transfer before anyone notices [costs 2 min]" },
-            { "value": "session_hijack", "text": "Pivot — try to capture the session token and take over the account directly [costs 3 min]" },
-            { "value": "wait_auto",      "text": "Leave the payload running and collect whatever fires organically [costs 5 min]" }
+            { "value": "second_csrf",    "text": "Craft a second payload targeting the approval endpoint and deliver it to a different employee [costs 2 min]" },
+            { "value": "session_hijack", "text": "Try to capture the session token from the employee who just fired your payload [costs 3 min]" },
+            { "value": "wait_auto",      "text": "Transfers auto-approve after a timeout — wait it out [costs 5 min]" },
+            { "value": "cancel_monitor", "text": "Monitor the queue and cancel the transfer if it looks like it'll get flagged [costs 4 min]" }
           ]
         }
       ]
     },
+
+    {
+      "name": "csrf_final_monitor_dead",
+      "title": "Path C — CSRF Attack | Dead End: Queue Monitoring",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'cancel_monitor'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_monitor_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You don't have read access to the transfer queue — only the authenticated employee's session does, and that session has since expired. You have no visibility into whether the transfer is progressing or being reviewed. Monitoring passively from the outside yields nothing. Time passes. The transfer is flagged for manual review and frozen.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_monitor_dead_choice",
+          "title": "You can't see the queue. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_final", "text": "Go back and try a more active approach [costs 2 min penalty]", "gotoPage": "csrf_4" },
+            { "value": "switch_path", "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "csrf_final_hijack_dead",
+      "title": "Path C — CSRF Attack | Dead End: Session Hijack",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'session_hijack'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "csrf_hijack_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The session cookie is flagged <code>HttpOnly</code> — it cannot be read from JavaScript. Your CSRF payload already fired, but it had no mechanism to exfiltrate the cookie value. You have no way to reuse the session. The employee's session expired naturally a few minutes after they closed the tab. There is nothing to hijack.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "csrf_hijack_dead_choice",
+          "title": "Session hijack is not possible from here. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_final", "text": "Go back and try a different follow-through approach [costs 2 min penalty]", "gotoPage": "csrf_4" },
+            { "value": "switch_path", "text": "Abort CSRF and switch to a different attack path [costs 5 min penalty]", "gotoPage": "path_selection" }
+          ]
+        }
+      ]
+    },
+
     {
       "name": "csrf_success",
       "title": "Path C — CSRF Attack | Complete",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'session_hijack' or {csrf_final} = 'wait_auto')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'wait_auto' or {csrf_monitor_dead_choice} = 'retry_final' or {csrf_hijack_dead_choice} = 'retry_final')",
       "elements": [
         {
           "type": "html",
           "name": "csrf_win",
-          "html": "<div class='orc-context orc-win'><strong>// TRANSFER COMPLETE</strong><br/><br/>An authenticated employee unknowingly submitted the transfer on your behalf. They never saw it happen.<br/><br/>Path C finished. Your time and decisions have been logged.</div>"
+          "html": "<div class='orc-context orc-win'><strong>// TRANSFER COMPLETE</strong><br/><br/>An authenticated employee unknowingly submitted the transfer on your behalf. A second approval followed — either from another forged request or an automatic timeout. The transfer cleared.<br/><br/>Path C finished. Your time and decisions have been logged.</div>"
         }
       ]
     }

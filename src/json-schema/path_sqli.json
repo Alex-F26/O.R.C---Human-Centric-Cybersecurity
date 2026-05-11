@@ -16,47 +16,142 @@
           "title": "How do you probe the target for SQL injection?",
           "isRequired": true,
           "choices": [
-            { "value": "manual_quote",   "text": "Manually send unexpected input to a parameter and observe how the server responds [costs 1 min]" },
+            { "value": "manual_quote",   "text": "Manually send a single quote into a parameter and observe how the server responds [costs 1 min]" },
             { "value": "sqlmap_detect",  "text": "Run an automated detection scan against the login form [costs 2 min]" },
-            { "value": "burp_intercept", "text": "Intercept requests and review each parameter by hand [costs 3 min]" },
-            { "value": "source_view",    "text": "View the page source to look for hidden fields or hints about how queries are formed [costs 1 min]" }
+            { "value": "burp_intercept", "text": "Intercept requests in a proxy and review each parameter by hand [costs 3 min]" },
+            { "value": "source_view",    "text": "View the page source to look for hidden fields or clues about how queries are built [costs 1 min]" }
           ]
         }
       ]
     },
+
     {
-      "name": "sqli_2",
-      "title": "Path A — SQL Injection | Step 2: Exploit the Injection",
-      "visibleIf": "{chosen_path} = 'sqli'",
+      "name": "sqli_1_source_branch",
+      "title": "Path A — SQL Injection | Step 1.1: Source Review",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_fingerprint} = 'source_view'",
       "elements": [
         {
           "type": "html",
-          "name": "sqli_error",
-          "html": "<div class='orc-context'>The server is returning unexpected error output when you tamper with input — database internals are leaking into the response. Injection is confirmed. Now you need to turn that into something useful.</div>"
+          "name": "sqli_source_html",
+          "html": "<div class='orc-context'>The page source reveals a hidden field: <code>&lt;input type=\"hidden\" name=\"redirect\" value=\"/dashboard\"&gt;</code>. The login form posts to <code>/auth/login</code> with fields <code>username</code>, <code>password</code>, and <code>redirect</code>. No obvious client-side sanitization. The redirect parameter looks interesting — it may be passed directly to a query.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_source_choice",
+          "title": "You found a hidden redirect parameter. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "test_redirect",  "text": "Tamper with the redirect field — inject a quote and see if it causes an error [costs 1 min]" },
+            { "value": "test_username",  "text": "Ignore the redirect field and focus on the username/password fields instead [costs 1 min]" },
+            { "value": "run_sqlmap_now", "text": "Feed the full request to an automated scanner targeting all three parameters [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_2_redirect_branch",
+      "title": "Path A — SQL Injection | Step 2 (Redirect Field): Probe the Parameter",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_source_choice} = 'test_redirect'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_redirect_html",
+          "html": "<div class='orc-context'>You inject a single quote into the redirect field. The server throws a 500 error with no useful output — just a generic internal server error page. The redirect field may be injectable, but it produces no visible feedback. This is going to be slow.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_redirect_choice",
+          "title": "The redirect field errors silently. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "try_blind_redirect", "text": "Attempt time-based blind injection on the redirect field [costs 4 min]" },
+            { "value": "pivot_to_username",  "text": "Drop the redirect field and pivot to testing the username field instead [costs 1 min]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_2_blind_redirect_dead",
+      "title": "Path A — SQL Injection | Dead End: Redirect Parameter",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_redirect_choice} = 'try_blind_redirect'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_redirect_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>After several minutes of blind injection attempts on the redirect parameter, you confirm it is injectable — but the backend query it feeds into only writes to an access log table. There is no path from here to user credentials or the transfer system. You've burned time on a dead end.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_redirect_dead_choice",
+          "title": "The redirect parameter leads nowhere useful. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and try the username field instead [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_2",
+      "title": "Path A — SQL Injection | Step 2: Confirm the Vulnerability",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_fingerprint} = 'manual_quote' or {sqli_fingerprint} = 'sqlmap_detect' or {sqli_fingerprint} = 'burp_intercept' or {sqli_source_choice} = 'test_username' or {sqli_source_choice} = 'run_sqlmap_now' or {sqli_redirect_choice} = 'pivot_to_username' or {sqli_redirect_dead_choice} = 'retry_sqli')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_error_html",
+          "html": "<div class='orc-context'>The server is returning verbose error output when you tamper with input — database internals are leaking into the response. You can see fragments like <code>You have an error in your SQL syntax</code> and a partial query structure. Injection is confirmed on the <code>username</code> field.</div>"
         },
         {
           "type": "radiogroup",
           "name": "sqli_exploit",
-          "title": "What's your exploitation approach?",
+          "title": "Injection is confirmed. What is your exploitation approach?",
           "isRequired": true,
           "choices": [
-            { "value": "auth_bypass",  "text": "Inject a payload into the login form to authenticate without valid credentials [costs 1 min]" },
-            { "value": "union_select", "text": "Chain a secondary query to pull data from tables directly into the page response [costs 3 min]" },
-            { "value": "sqlmap_full",  "text": "Run a full automated dump of the entire database [costs 4 min]" },
-            { "value": "blind_sqli",   "text": "Use conditional server behavior to infer data one piece at a time [costs 5 min]" }
+            { "value": "auth_bypass",  "text": "Inject a classic bypass payload into the login form to authenticate without valid credentials [costs 1 min]" },
+            { "value": "union_select", "text": "Use a UNION-based payload to pull data from tables directly into the page response [costs 3 min]" },
+            { "value": "sqlmap_full",  "text": "Run a full automated database dump [costs 4 min]" },
+            { "value": "blind_sqli",   "text": "Use time-based blind injection to infer data without visible output [costs 5 min]" }
           ]
         }
       ]
     },
+
     {
-      "name": "sqli_3",
-      "title": "Path A — SQL Injection | Step 3: Choose Your Target Account",
-      "visibleIf": "{chosen_path} = 'sqli'",
+      "name": "sqli_3_blind_dead",
+      "title": "Path A — SQL Injection | Dead End: Blind Injection",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_exploit} = 'blind_sqli'",
       "elements": [
         {
           "type": "html",
-          "name": "sqli_dump",
-          "html": "<div class='orc-context'>You've pulled the user table. It contains usernames, hashed passwords, and role fields. You spot several accounts:<ul><li><code>admin</code> — role: admin</li><li><code>jsmith</code> — role: employee</li><li><code>svc_transfer_xk9</code> — role: transfer_approver</li><li><code>root</code> — role: superuser</li></ul>Which do you go after?</div>"
+          "name": "sqli_blind_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You begin issuing time-delay payloads. The server responds consistently at first, but the WAF begins throttling after several rounds — your delay measurements are no longer reliable. Extracting a full user table this way would take far longer than your remaining window. The approach is too slow to continue.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_blind_dead_choice",
+          "title": "Blind injection is throttled and too slow. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and try a different injection technique [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3",
+      "title": "Path A — SQL Injection | Step 3: Choose Your Target Account",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_exploit} = 'auth_bypass' or {sqli_exploit} = 'union_select' or {sqli_exploit} = 'sqlmap_full' or {sqli_blind_dead_choice} = 'retry_sqli')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_dump_html",
+          "html": "<div class='orc-context'>You've pulled data from the users table. It contains usernames, hashed passwords, and role fields. You spot several accounts:<ul><li><code>admin</code> — role: admin</li><li><code>jsmith</code> — role: employee</li><li><code>svc_transfer_xk9</code> — role: transfer_approver</li><li><code>root</code> — role: superuser</li><li><code>audit_log_svc</code> — role: read_only</li></ul>One of these might be the key. Choose wrong and you'll waste time — or trigger monitoring.</div>"
         },
         {
           "type": "radiogroup",
@@ -66,66 +161,360 @@
           "choices": [
             { "value": "admin",            "text": "admin — sounds like the most powerful account [costs 2 min]" },
             { "value": "jsmith",           "text": "jsmith — a real employee, low-profile, might have portal access [costs 2 min]" },
-            { "value": "svc_transfer_xk9", "text": "svc_transfer_xk9 — unusual name, but 'transfer_approver' is exactly what you need [costs 0 min]" },
-            { "value": "root",             "text": "root — if you can get in here, you own everything [costs 5 min]" }
+            { "value": "svc_transfer_xk9", "text": "svc_transfer_xk9 — unusual name, but 'transfer_approver' is exactly what you need [costs 1 min]" },
+            { "value": "root",             "text": "root — if you can get in here, you own everything [costs 5 min]" },
+            { "value": "audit_log_svc",    "text": "audit_log_svc — read-only access, but maybe you can escalate [costs 2 min]" }
           ]
         }
       ]
     },
+
     {
-      "name": "sqli_branch_dead",
-      "title": "Path A — SQL Injection | Dead End",
+      "name": "sqli_3_honeypot",
+      "title": "Path A — SQL Injection | Dead End: Honeypot Accounts",
       "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'admin' or {sqli_account} = 'root')",
       "elements": [
         {
           "type": "html",
-          "name": "sqli_dead_end",
-          "html": "<div class='orc-context orc-error'>These accounts are honeypots — they have no real transfer privileges and their activity is monitored. Accessing them triggered an alert. You've burned time and drawn attention. The real target was the service account all along.</div>"
+          "name": "sqli_honeypot_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END — HONEYPOT TRIGGERED</strong><br/><br/>These accounts are monitored traps. Accessing <code>admin</code> or <code>root</code> immediately flags your session. The portal logs your source IP and sends an alert to the security team. Neither account has transfer approval rights — they exist purely to catch attackers. You've burned time and exposed your presence on the network.</div>"
         },
         {
           "type": "radiogroup",
-          "name": "sqli_dead_end_choice",
-          "title": "What do you do?",
+          "name": "sqli_honeypot_choice",
+          "title": "You tripped a honeypot. What do you do?",
           "isRequired": true,
           "choices": [
-            { "value": "retry_svc",   "text": "Go back and target svc_transfer_xk9 instead [costs 3 min]" },
-            { "value": "switch_path", "text": "Cut your losses and switch to a different attack path entirely [costs 5 min]" }
+            { "value": "retry_sqli", "text": "Go back and target a different account [costs 3 min penalty]" },
+            { "value": "switch_path", "text": "Cut your losses and switch to a different attack path [costs 5 min penalty]" }
           ]
         }
       ]
     },
+
+    {
+      "name": "sqli_3_jsmith_branch",
+      "title": "Path A — SQL Injection | Step 3.1: Employee Account",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'jsmith'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_jsmith_html",
+          "html": "<div class='orc-context'>You authenticate as <code>jsmith</code>. The portal loads — employee dashboard with internal messaging, a document viewer, and a Finance Operations link that appears greyed out. jsmith doesn't have transfer approval rights, but there may be something useful here.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_jsmith_choice",
+          "title": "You're in as jsmith. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "read_messages",     "text": "Read jsmith's internal messages — there may be credentials or routing info [costs 1 min]" },
+            { "value": "test_finance_link", "text": "Try to access the greyed-out Finance Operations link [costs 1 min]" },
+            { "value": "look_for_privesc",  "text": "Poke around the portal for misconfigured access controls [costs 2 min]" },
+            { "value": "abandon_jsmith",    "text": "jsmith has no transfer rights — go back and target a different account [costs 2 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_jsmith_messages",
+      "title": "Path A — SQL Injection | Step 3.2: jsmith's Inbox",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'read_messages'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_jsmith_messages_html",
+          "html": "<div class='orc-context'>jsmith's inbox has three messages:<br/><br/>📧 <strong>IT Support:</strong> 'Your temporary password has been reset to <code>Temp#2024!</code> — please change it after login.'<br/>📧 <strong>Finance Ops:</strong> 'Reminder: all transfers above $10k must be approved through the <code>svc_transfer_xk9</code> service account dashboard.'<br/>📧 <strong>HR:</strong> 'Your annual review is scheduled for Friday.'<br/><br/>The Finance Ops message confirms the service account's purpose. The temporary password might have been reused somewhere.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_jsmith_messages_choice",
+          "title": "Useful intel in the inbox. What do you do with it?",
+          "isRequired": true,
+          "choices": [
+            { "value": "try_temp_password",   "text": "Try the temporary password against svc_transfer_xk9 directly [costs 1 min]" },
+            { "value": "go_back_svc",         "text": "Use the confirmed account name and target svc_transfer_xk9 through injection [costs 1 min]" },
+            { "value": "look_for_more_intel", "text": "Keep digging through jsmith's portal for more leads [costs 2 min]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_temp_password_dead",
+      "title": "Path A — SQL Injection | Dead End: Password Reuse",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'try_temp_password'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_temp_password_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You attempt to log in as <code>svc_transfer_xk9</code> with <code>Temp#2024!</code>. The portal rejects it — service accounts don't use the employee password policy and this password was never set on this account. After a few more guesses, the portal locks the service account for 5 minutes and logs the failed attempts. You've burned time and flagged the account.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_temp_password_choice",
+          "title": "The account is now locked out. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and approach svc_transfer_xk9 through SQL injection instead [costs 3 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_jsmith_finance_dead",
+      "title": "Path A — SQL Injection | Dead End: Finance Operations Link",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'test_finance_link'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_finance_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>Clicking the Finance Operations link redirects to <code>/finance/ops?user=jsmith&role=employee</code> and returns a 403 Forbidden. You try tampering with the role and user parameters in the URL — the server validates both against the database on every request and ignores whatever you pass in the URL. Client-side parameter tampering is not possible here. jsmith simply does not have access.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_finance_dead_choice",
+          "title": "URL tampering is blocked server-side. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and target a different account through SQL injection [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_jsmith_privesc_dead",
+      "title": "Path A — SQL Injection | Dead End: Privilege Escalation",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'look_for_privesc'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_privesc_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You spend time probing jsmith's portal session for misconfigured endpoints, IDOR opportunities, and role-check bypasses. The application enforces access control server-side consistently — every restricted page re-validates the session role against the database. There is no client-side bypass available from jsmith's session. This account is a dead end for privilege escalation.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_privesc_dead_choice",
+          "title": "No privilege escalation path from jsmith. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and target a different account through SQL injection [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_jsmith_more_intel_dead",
+      "title": "Path A — SQL Injection | Dead End: Further Recon",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'look_for_more_intel'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_more_intel_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You spend additional time browsing jsmith's portal — documents, settings, and shared files. Nothing useful surfaces. The only actionable intel was already in the inbox. You've wasted time digging through HR documents and internal memos.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_more_intel_choice",
+          "title": "Nothing else useful here. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and approach svc_transfer_xk9 through SQL injection [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_audit_branch",
+      "title": "Path A — SQL Injection | Step 3.3: Audit Log Account",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'audit_log_svc'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_audit_html",
+          "html": "<div class='orc-context'>You authenticate as <code>audit_log_svc</code>. The account has read-only access — you can browse transaction logs, user activity records, and system events, but cannot initiate or approve any actions. The logs are detailed though. You can see recent activity from every account, including <code>svc_transfer_xk9</code>.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_audit_choice",
+          "title": "You have read-only audit access. What do you look for?",
+          "isRequired": true,
+          "choices": [
+            { "value": "read_svc_activity",   "text": "Read svc_transfer_xk9's recent activity — look for session patterns or tokens [costs 1 min]" },
+            { "value": "read_all_transfers",  "text": "Pull all recent transfer records to understand the approval workflow [costs 2 min]" },
+            { "value": "abandon_audit",       "text": "Audit access is useless for your goal — go back and target a better account [costs 2 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_3_audit_svc_logs_dead",
+      "title": "Path A — SQL Injection | Dead End: Audit Log Analysis",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_audit_choice} = 'read_svc_activity' or {sqli_audit_choice} = 'read_all_transfers')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_audit_svc_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The activity logs show <code>svc_transfer_xk9</code> last authenticated 4 minutes ago. The log entries contain a partial session token fragment — but it's only the payload section of a signed JWT. Without the server's signing key, you cannot forge a valid token. The transfer records reveal the workflow but give you no credentials or exploitable access. Read-only is read-only.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_audit_dead_choice",
+          "title": "Audit access leads nowhere actionable. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and target svc_transfer_xk9 directly through SQL injection [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
     {
       "name": "sqli_4",
-      "title": "Path A — SQL Injection | Step 4: Execute the Transfer",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_account} = 'jsmith' or {sqli_dead_end_choice} = 'retry_svc')",
+      "title": "Path A — SQL Injection | Step 4: Access the Service Account",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_honeypot_choice} = 'retry_sqli' or {sqli_jsmith_messages_choice} = 'go_back_svc' or {sqli_jsmith_choice} = 'abandon_jsmith' or {sqli_finance_dead_choice} = 'retry_sqli' or {sqli_privesc_dead_choice} = 'retry_sqli' or {sqli_more_intel_choice} = 'retry_sqli' or {sqli_audit_choice} = 'abandon_audit' or {sqli_audit_dead_choice} = 'retry_sqli' or {sqli_temp_password_choice} = 'retry_sqli' or {sqli_blind_dead_choice} = 'retry_sqli')",
       "elements": [
         {
           "type": "html",
-          "name": "sqli_login_success",
-          "html": "<div class='orc-context orc-success'>You're in. The <code>svc_transfer_xk9</code> service account has transfer approval privileges and an active portal session. The transfer approval dashboard is in front of you. The clock is ticking — what do you do?</div>"
+          "name": "sqli_svc_access_html",
+          "html": "<div class='orc-context'>You target <code>svc_transfer_xk9</code> directly through the injection point. The account's password hash is in the users table — a bcrypt hash with cost factor 12. You could try cracking it offline, bypass authentication entirely, manipulate the session table, or reset the password through injection.</div>"
         },
         {
           "type": "radiogroup",
-          "name": "sqli_final",
-          "title": "What is your next move?",
+          "name": "sqli_svc_method",
+          "title": "How do you attempt to gain access to svc_transfer_xk9?",
           "isRequired": true,
           "choices": [
-            { "value": "immediate_transfer", "text": "Initiate the transfer immediately while the session is active [costs 1 min]" },
-            { "value": "recon_more",         "text": "Spend more time mapping the portal — there might be higher-value targets [costs 3 min]" },
-            { "value": "cover_tracks",       "text": "Clear logs and establish persistence before touching anything [costs 4 min]" }
+            { "value": "auth_bypass_svc",  "text": "Inject an auth bypass payload directly into the login query [costs 1 min]" },
+            { "value": "crack_hash",       "text": "Extract the bcrypt hash and attempt to crack it offline [costs 5 min]" },
+            { "value": "session_inject",   "text": "Inject a crafted session row into the sessions table to create an active session without logging in [costs 3 min]" },
+            { "value": "reset_password",   "text": "Use an UPDATE injection to overwrite the account's password hash [costs 2 min]" }
           ]
         }
       ]
     },
+
     {
-      "name": "sqli_fail",
-      "title": "Path A — SQL Injection | Complete",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_final} = 'immediate_transfer' or {sqli_final} = 'recon_more' or {sqli_final} = 'cover_tracks')",
+      "name": "sqli_4_crack_dead",
+      "title": "Path A — SQL Injection | Dead End: Hash Cracking",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'crack_hash'",
       "elements": [
         {
           "type": "html",
-          "name": "sqli_win",
-          "html": "<div class='orc-context orc-win'><strong>// TRANSFER INITIATED</strong><br/><br/>The unauthorized transfer was approved through the <code>svc_transfer_xk9</code> service account. The injection chain is complete.<br/><br/>Path A finished. Your time and decisions have been logged.</div>"
+          "name": "sqli_crack_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>The bcrypt hash has a cost factor of 12. At your available compute rate, cracking it would take several hours at minimum — far beyond your remaining time window. Service account passwords are typically long, randomly generated strings that won't appear in any wordlist. This approach is not viable.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_crack_dead_choice",
+          "title": "Cracking is not viable in your time window. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_4_session_inject_dead",
+      "title": "Path A — SQL Injection | Dead End: Session Table Injection",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'session_inject'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_session_inject_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You craft an INSERT statement targeting the sessions table with a UUID you generated and a future expiry timestamp. The injection executes — but when you load the portal with your crafted cookie, the server returns a 401. The application does not validate sessions from the database alone; it also checks a secondary in-memory token store that you have no access to. Your injected session row is ignored.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_session_inject_choice",
+          "title": "The session injection approach is blocked by in-memory validation. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_4_reset_dead",
+      "title": "Path A — SQL Injection | Dead End: Password Reset via Injection",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'reset_password'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_reset_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>You craft an UPDATE injection to overwrite the password hash for <code>svc_transfer_xk9</code> with a hash you generated. The injection appears to execute with no error — but when you try to log in with your new password, the portal rejects it. The application uses a secondary authentication factor for service accounts: a hardware-bound TOTP token tied to the account's registered device. A password alone is not sufficient. You cannot produce the second factor.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_reset_choice",
+          "title": "The service account requires a second factor you can't produce. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and try a different method to access the account [costs 2 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection and switch to a different attack path [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_4_auth_bypass_dead",
+      "title": "Path A — SQL Injection | Dead End: Auth Bypass",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'auth_bypass_svc'",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_auth_bypass_html",
+          "html": "<div class='orc-context orc-error'><strong>// DEAD END</strong><br/><br/>Your auth bypass payload authenticates you into a portal session as <code>svc_transfer_xk9</code> — but the transfer approval dashboard immediately prompts for a hardware TOTP code before displaying any transfer controls. The second factor is tied to a physical device registered to the service account. Without that device, the dashboard is inaccessible. The session is valid but useless. SQL injection got you through the front door — the vault has a second lock you cannot pick from here.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_auth_bypass_choice",
+          "title": "You're in the session but locked out of the transfer dashboard by MFA. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "retry_sqli", "text": "Go back and look for another angle within SQL Injection [costs 3 min penalty]" },
+            { "value": "switch_path", "text": "Abandon SQL Injection — this path cannot complete the transfer [costs 5 min penalty]" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "sqli_final_dead",
+      "title": "Path A — SQL Injection | Full Dead End",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_crack_dead_choice} = 'retry_sqli' or {sqli_session_inject_choice} = 'retry_sqli' or {sqli_reset_choice} = 'retry_sqli' or {sqli_auth_bypass_choice} = 'retry_sqli')",
+      "elements": [
+        {
+          "type": "html",
+          "name": "sqli_final_dead_html",
+          "html": "<div class='orc-context orc-error'><strong>// FULL DEAD END — PATH A EXHAUSTED</strong><br/><br/>You have now attempted every available method to leverage SQL Injection against this target:<ul><li>Hash cracking — blocked by bcrypt cost factor and time constraints</li><li>Session injection — blocked by in-memory secondary token validation</li><li>Password reset — blocked by hardware TOTP second factor</li><li>Auth bypass — blocked by hardware TOTP second factor on the transfer dashboard</li></ul>The SQL Injection path cannot complete the transfer. The target application's MFA design specifically prevents this attack chain from reaching the transfer controls. You must switch paths.</div>"
+        },
+        {
+          "type": "radiogroup",
+          "name": "sqli_final_dead_choice",
+          "title": "SQL Injection cannot complete the objective. What do you do?",
+          "isRequired": true,
+          "choices": [
+            { "value": "switch_path", "text": "Switch to a different attack path [costs 5 min penalty]" }
+          ]
         }
       ]
     }
