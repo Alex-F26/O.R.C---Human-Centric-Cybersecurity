@@ -111,7 +111,7 @@ const TIME_COSTS = {
 };
 
 // Constants
-const TOTAL_SECONDS = 30 * 60;
+const TOTAL_SECONDS = 60 * 60;
 const SUCCESS_PAGES = new Set(["csrf_success"]);
 const NO_SWITCH_PAGES = new Set([
   "start", "recon", "path_selection", "csrf_success",
@@ -198,6 +198,7 @@ export default function SurveyWrapper() {
   // Survey model
   const [survey] = useState(() => {
     const s = new Model(surveyJson);
+    s.surveyPostId = "b9a511dd-5934-42ff-acb0-574de416e0f1";
     surveyRef.current = s;
 
     s.onCurrentPageChanged.add((_, { oldCurrentPage, newCurrentPage }) => {
