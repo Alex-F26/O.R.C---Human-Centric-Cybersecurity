@@ -203,10 +203,10 @@ export default function SurveyWrapper() {
               survey.setVariable("timedone", true);
               survey.runConditions();
               // Force navigation bypassing all checks
-              const idx = survey.pages.findIndex(p => p.name === "timeout");
-              if (idx !== -1) {
+              const timeoutPage = survey.getPageByName("timeout");
+              if (timeoutPage) {
                 survey.ignoreValidation = true;
-                survey.setPropertyValue("currentPageNo", idx);
+                survey.currentPage = timeoutPage;
               }
             }
           }, 0);
