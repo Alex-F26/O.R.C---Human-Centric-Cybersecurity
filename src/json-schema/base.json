@@ -1,6 +1,6 @@
 {
   "title": "O.R.C",
-  "description": "You have 20 minutes. The clock starts tickin' when you begin.",
+  "description": "You have 1 hour. The clock starts tickin' when you begin.",
   "showProgressBar": "off",
   "showTimerPanel": "none",
   "firstPageIsStarted": true,
