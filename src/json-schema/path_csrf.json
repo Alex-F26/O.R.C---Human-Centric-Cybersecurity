@@ -3,7 +3,7 @@
     {
       "name": "csrf_1",
       "title": "Path D — CSRF Attack | Step 1: Map the Target",
-      "visibleIf": "{chosen_path} = 'csrf'",
+      "visibleIf": "{chosen_path} = 'csrf' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -47,7 +47,7 @@
     {
       "name": "csrf_1_cookie_branch",
       "title": "Path D — CSRF Attack | Step 1.1: Cookie Analysis",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_recon} = 'check_cookies'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_recon} = 'check_cookies' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -79,7 +79,7 @@
     {
       "name": "csrf_2",
       "title": "Path D — CSRF Attack | Step 2: Build the Payload",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_recon} = 'burp_csrf' or {csrf_recon} = 'manual_review' or {csrf_recon} = 'owasp_zap' or {csrf_cookie_choice} = 'intercept_now' or {csrf_cookie_choice} = 'skip_to_payload')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_recon} = 'burp_csrf' or {csrf_recon} = 'manual_review' or {csrf_recon} = 'owasp_zap' or {csrf_cookie_choice} = 'intercept_now' or {csrf_cookie_choice} = 'skip_to_payload') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -123,7 +123,7 @@
     {
       "name": "csrf_branch_img",
       "title": "Path D — CSRF Attack | Dead End: Image Tag",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_payload} = 'img_tag' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -155,7 +155,7 @@
     {
       "name": "csrf_2_fetch_dead",
       "title": "Path D — CSRF Attack | Dead End: CORS Preflight",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'fetch_api' or {csrf_img_choice} = 'fix_fetch')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'fetch_api' or {csrf_img_choice} = 'fix_fetch') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -188,7 +188,7 @@
     {
       "name": "csrf_3",
       "title": "Path D — CSRF Attack | Step 3: Deliver the Payload",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_fetch_dead_choice} = 'switch_to_form')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_payload} = 'auto_form' or {csrf_payload} = 'xmlhttprequest' or {csrf_img_choice} = 'fix_form' or {csrf_fetch_dead_choice} = 'switch_to_form') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -232,7 +232,7 @@
     {
       "name": "csrf_delivery_cfo_dead",
       "title": "Path D — CSRF Attack | Dead End: CFO Target",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'phish_cfo'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'phish_cfo' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -265,7 +265,7 @@
     {
       "name": "csrf_delivery_board_dead",
       "title": "Path D — CSRF Attack | Dead End: Message Board",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'internal_post'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_delivery} = 'internal_post' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -298,7 +298,7 @@
     {
       "name": "csrf_4",
       "title": "Path D — CSRF Attack | Step 4: Payload Triggered",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_delivery} = 'phish_ops' or {csrf_delivery} = 'wait_and_monitor' or {csrf_cfo_dead_choice} = 'retry_delivery' or {csrf_board_dead_choice} = 'retry_delivery')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_delivery} = 'phish_ops' or {csrf_delivery} = 'wait_and_monitor' or {csrf_cfo_dead_choice} = 'retry_delivery' or {csrf_board_dead_choice} = 'retry_delivery') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -342,7 +342,7 @@
     {
       "name": "csrf_final_monitor_dead",
       "title": "Path D — CSRF Attack | Dead End: Queue Monitoring",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'cancel_monitor'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'cancel_monitor' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -376,7 +376,7 @@
     {
       "name": "csrf_final_hijack_dead",
       "title": "Path D — CSRF Attack | Dead End: Session Hijack",
-      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'session_hijack'",
+      "visibleIf": "{chosen_path} = 'csrf' and {csrf_final} = 'session_hijack' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -410,7 +410,7 @@
     {
       "name": "csrf_success",
       "title": "Path D — CSRF Attack | Complete",
-      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'wait_auto' or {csrf_monitor_dead_choice} = 'retry_final' or {csrf_hijack_dead_choice} = 'retry_final')",
+      "visibleIf": "{chosen_path} = 'csrf' and ({csrf_final} = 'second_csrf' or {csrf_final} = 'wait_auto' or {csrf_monitor_dead_choice} = 'retry_final' or {csrf_hijack_dead_choice} = 'retry_final') and {timedone} <> true",
       "elements": [
         {
           "type": "html",

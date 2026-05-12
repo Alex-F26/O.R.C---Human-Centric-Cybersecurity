@@ -3,7 +3,7 @@
     {
       "name": "sqli_1",
       "title": "Path A — SQL Injection | Step 1: Fingerprint the Target",
-      "visibleIf": "{chosen_path} = 'sqli'",
+      "visibleIf": "{chosen_path} = 'sqli' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -47,7 +47,7 @@
     {
       "name": "sqli_1_source_branch",
       "title": "Path A — SQL Injection | Step 1.1: Source Review",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_fingerprint} = 'source_view'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_fingerprint} = 'source_view' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -85,7 +85,7 @@
     {
       "name": "sqli_2_redirect_branch",
       "title": "Path A — SQL Injection | Step 2 (Redirect Field): Probe the Parameter",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_source_choice} = 'test_redirect'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_source_choice} = 'test_redirect' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -117,7 +117,7 @@
     {
       "name": "sqli_2_blind_redirect_dead",
       "title": "Path A — SQL Injection | Dead End: Redirect Parameter",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_redirect_choice} = 'try_blind_redirect'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_redirect_choice} = 'try_blind_redirect' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -149,7 +149,7 @@
     {
       "name": "sqli_2",
       "title": "Path A — SQL Injection | Step 2: Confirm the Vulnerability",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_fingerprint} = 'manual_quote' or {sqli_fingerprint} = 'sqlmap_detect' or {sqli_fingerprint} = 'burp_intercept' or {sqli_source_choice} = 'test_username' or {sqli_source_choice} = 'run_sqlmap_now' or {sqli_redirect_choice} = 'pivot_to_username' or {sqli_redirect_dead_choice} = 'retry_sqli')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_fingerprint} = 'manual_quote' or {sqli_fingerprint} = 'sqlmap_detect' or {sqli_fingerprint} = 'burp_intercept' or {sqli_source_choice} = 'test_username' or {sqli_source_choice} = 'run_sqlmap_now' or {sqli_redirect_choice} = 'pivot_to_username' or {sqli_redirect_dead_choice} = 'retry_sqli') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -193,7 +193,7 @@
     {
       "name": "sqli_3_blind_dead",
       "title": "Path A — SQL Injection | Dead End: Blind Injection",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_exploit} = 'blind_sqli'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_exploit} = 'blind_sqli' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -225,7 +225,7 @@
     {
       "name": "sqli_3",
       "title": "Path A — SQL Injection | Step 3: Choose Your Target Account",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_exploit} = 'auth_bypass' or {sqli_exploit} = 'union_select' or {sqli_exploit} = 'sqlmap_full' or {sqli_blind_dead_choice} = 'retry_sqli')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_exploit} = 'auth_bypass' or {sqli_exploit} = 'union_select' or {sqli_exploit} = 'sqlmap_full' or {sqli_blind_dead_choice} = 'retry_sqli') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -275,7 +275,7 @@
     {
       "name": "sqli_3_honeypot",
       "title": "Path A — SQL Injection | Dead End: Honeypot Accounts",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'admin' or {sqli_account} = 'root')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'admin' or {sqli_account} = 'root') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -307,7 +307,7 @@
     {
       "name": "sqli_3_jsmith_branch",
       "title": "Path A — SQL Injection | Step 3.1: Employee Account",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'jsmith'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'jsmith' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -351,7 +351,7 @@
     {
       "name": "sqli_3_jsmith_messages",
       "title": "Path A — SQL Injection | Step 3.2: jsmith's Inbox",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'read_messages'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'read_messages' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -389,7 +389,7 @@
     {
       "name": "sqli_3_temp_password_dead",
       "title": "Path A — SQL Injection | Dead End: Password Reuse",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'try_temp_password'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'try_temp_password' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -421,7 +421,7 @@
     {
       "name": "sqli_3_jsmith_finance_dead",
       "title": "Path A — SQL Injection | Dead End: Finance Operations Link",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'test_finance_link'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'test_finance_link' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -453,7 +453,7 @@
     {
       "name": "sqli_3_jsmith_privesc_dead",
       "title": "Path A — SQL Injection | Dead End: Privilege Escalation",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'look_for_privesc'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_choice} = 'look_for_privesc' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -485,7 +485,7 @@
     {
       "name": "sqli_3_jsmith_more_intel_dead",
       "title": "Path A — SQL Injection | Dead End: Further Recon",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'look_for_more_intel'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_jsmith_messages_choice} = 'look_for_more_intel' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -517,7 +517,7 @@
     {
       "name": "sqli_3_audit_branch",
       "title": "Path A — SQL Injection | Step 3.3: Audit Log Account",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'audit_log_svc'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_account} = 'audit_log_svc' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -555,7 +555,7 @@
     {
       "name": "sqli_3_audit_svc_logs_dead",
       "title": "Path A — SQL Injection | Dead End: Audit Log Analysis",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_audit_choice} = 'read_svc_activity' or {sqli_audit_choice} = 'read_all_transfers')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_audit_choice} = 'read_svc_activity' or {sqli_audit_choice} = 'read_all_transfers') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -587,7 +587,7 @@
     {
       "name": "sqli_4",
       "title": "Path A — SQL Injection | Step 4: Access the Service Account",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_honeypot_choice} = 'retry_sqli' or {sqli_jsmith_messages_choice} = 'go_back_svc' or {sqli_jsmith_choice} = 'abandon_jsmith' or {sqli_finance_dead_choice} = 'retry_sqli' or {sqli_privesc_dead_choice} = 'retry_sqli' or {sqli_more_intel_choice} = 'retry_sqli' or {sqli_audit_choice} = 'abandon_audit' or {sqli_audit_dead_choice} = 'retry_sqli' or {sqli_temp_password_choice} = 'retry_sqli' or {sqli_blind_dead_choice} = 'retry_sqli')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_account} = 'svc_transfer_xk9' or {sqli_honeypot_choice} = 'retry_sqli' or {sqli_jsmith_messages_choice} = 'go_back_svc' or {sqli_jsmith_choice} = 'abandon_jsmith' or {sqli_finance_dead_choice} = 'retry_sqli' or {sqli_privesc_dead_choice} = 'retry_sqli' or {sqli_more_intel_choice} = 'retry_sqli' or {sqli_audit_choice} = 'abandon_audit' or {sqli_audit_dead_choice} = 'retry_sqli' or {sqli_temp_password_choice} = 'retry_sqli' or {sqli_blind_dead_choice} = 'retry_sqli') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -631,7 +631,7 @@
     {
       "name": "sqli_4_crack_dead",
       "title": "Path A — SQL Injection | Dead End: Hash Cracking",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'crack_hash'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'crack_hash' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -663,7 +663,7 @@
     {
       "name": "sqli_4_session_inject_dead",
       "title": "Path A — SQL Injection | Dead End: Session Table Injection",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'session_inject'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'session_inject' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -695,7 +695,7 @@
     {
       "name": "sqli_4_reset_dead",
       "title": "Path A — SQL Injection | Dead End: Password Reset via Injection",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'reset_password'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'reset_password' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -727,7 +727,7 @@
     {
       "name": "sqli_4_auth_bypass_dead",
       "title": "Path A — SQL Injection | Dead End: Auth Bypass",
-      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'auth_bypass_svc'",
+      "visibleIf": "{chosen_path} = 'sqli' and {sqli_svc_method} = 'auth_bypass_svc' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -759,7 +759,7 @@
     {
       "name": "sqli_final_dead",
       "title": "Path A — SQL Injection | Full Dead End",
-      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_crack_dead_choice} = 'retry_sqli' or {sqli_session_inject_choice} = 'retry_sqli' or {sqli_reset_choice} = 'retry_sqli' or {sqli_auth_bypass_choice} = 'retry_sqli')",
+      "visibleIf": "{chosen_path} = 'sqli' and ({sqli_crack_dead_choice} = 'retry_sqli' or {sqli_session_inject_choice} = 'retry_sqli' or {sqli_reset_choice} = 'retry_sqli' or {sqli_auth_bypass_choice} = 'retry_sqli') and {timedone} <> true",
       "elements": [
         {
           "type": "html",

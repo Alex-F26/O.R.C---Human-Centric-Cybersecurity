@@ -1,6 +1,17 @@
 {
   "pages": [
     {
+      "name": "timeout",
+      "title": "Time Expired",
+      "elements": [
+        {
+          "type": "html",
+          "name": "timeout_html",
+          "html": "<div class='orc-context orc-error'><div style='font-size:28px;margin-bottom:16px'>⛔</div><strong style='font-size:18px;letter-spacing:3px;display:block;margin-bottom:12px'>TIME EXPIRED</strong>Your time is up. The operation is over.<br/><br/>Please answer the following questions based on what you attempted.</div>"
+        }
+      ]
+    },
+    {
       "name": "questions_1",
       "title": "Post-Game Questions — Part 1",
       "elements": [

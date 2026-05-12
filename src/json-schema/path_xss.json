@@ -3,7 +3,7 @@
     {
       "name": "xss_q1",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Initial Review",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q3",
       "elements": [
         {
@@ -45,7 +45,7 @@
     {
       "name": "xss_q2",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Input Surface Review",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q3",
       "elements": [
         {
@@ -87,7 +87,7 @@
     {
       "name": "xss_q3",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Comment Testing",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q4",
       "elements": [
         {
@@ -136,7 +136,7 @@
     {
       "name": "xss_q4",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Script Behavior Check",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q5",
       "elements": [
         {
@@ -185,7 +185,7 @@
     {
       "name": "xss_q5",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Surface Mapping",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q6",
       "elements": [
         {
@@ -234,7 +234,7 @@
     {
       "name": "xss_q6",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Stored Content Decision",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q8",
       "elements": [
         {
@@ -276,7 +276,7 @@
     {
       "name": "xss_q7",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Browser Protection Detour",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q8",
       "elements": [
         {
@@ -318,7 +318,7 @@
     {
       "name": "xss_q8",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Stored Behavior Confirmation",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q9",
       "elements": [
         {
@@ -367,7 +367,7 @@
     {
       "name": "xss_q9",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Target Audience",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q11",
       "elements": [
         {
@@ -416,7 +416,7 @@
     {
       "name": "xss_q10",
       "title": "Path C \u2014 Stored Cross-Site Scripting | High-Traffic Placement",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q11",
       "elements": [
         {
@@ -465,7 +465,7 @@
     {
       "name": "xss_q11",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Payload Choice",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q12",
       "elements": [
         {
@@ -514,7 +514,7 @@
     {
       "name": "xss_q12",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Credential Lead",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q13",
       "elements": [
         {
@@ -563,7 +563,7 @@
     {
       "name": "xss_q13",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Credential Review",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q14",
       "elements": [
         {
@@ -612,7 +612,7 @@
     {
       "name": "xss_q14",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Account Prioritization",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q16",
       "elements": [
         {
@@ -661,7 +661,7 @@
     {
       "name": "xss_q15",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Access Roadblock",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_q16",
       "elements": [
         {
@@ -703,7 +703,7 @@
     {
       "name": "xss_q16",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Path Decision",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "defaultNextPage": "xss_result",
       "elements": [
         {
@@ -745,7 +745,7 @@
     {
       "name": "xss_result",
       "title": "Path C \u2014 Stored Cross-Site Scripting | Path Result",
-      "visibleIf": "{chosen_path} = 'xss'",
+      "visibleIf": "{chosen_path} = 'xss' and {timedone} <> true",
       "elements": [
         {
           "type": "html",

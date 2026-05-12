@@ -6,7 +6,7 @@
     {
       "name": "oscmd_q1",
       "title": "Path B \u2014 OS Injection | Reconnaissance",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -55,7 +55,7 @@
     {
       "name": "oscmd_q2",
       "title": "Path B \u2014 OS Injection | Login Behavior",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -104,7 +104,7 @@
     {
       "name": "oscmd_q3",
       "title": "Path B \u2014 OS Injection | Backend Review",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -153,7 +153,7 @@
     {
       "name": "oscmd_q4",
       "title": "Path B \u2014 OS Injection | Response Testing",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -202,7 +202,7 @@
     {
       "name": "oscmd_q5",
       "title": "Path B \u2014 OS Injection | System Information",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -251,7 +251,7 @@
     {
       "name": "oscmd_q6",
       "title": "Path B \u2014 OS Injection | Exposed Data",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -300,7 +300,7 @@
     {
       "name": "oscmd_q7",
       "title": "Path B \u2014 OS Injection | Credential Preparation",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -350,7 +350,7 @@
     {
       "name": "oscmd_q7_1",
       "title": "Path B \u2014 OS Injection | Credential Testing",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q7_answer} = 'create_wordlist'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q7_answer} = 'create_wordlist' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -399,7 +399,7 @@
     {
       "name": "oscmd_q8",
       "title": "Path B \u2014 OS Injection | Portal Access",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -448,7 +448,7 @@
     {
       "name": "oscmd_q9",
       "title": "Path B \u2014 OS Injection | Inbox Review",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -497,7 +497,7 @@
     {
       "name": "oscmd_q10",
       "title": "Path B \u2014 OS Injection | Low-Privilege Access",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -547,7 +547,7 @@
     {
       "name": "oscmd_q10_1",
       "title": "Path B \u2014 OS Injection | Shadow File Detour",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_answer} = 'print_shadow_files'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_answer} = 'print_shadow_files' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -597,7 +597,7 @@
     {
       "name": "oscmd_q10_2",
       "title": "Path B \u2014 OS Injection | Hash Detour",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_1_answer} = 'john_wordlist'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_1_answer} = 'john_wordlist' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -647,7 +647,7 @@
     {
       "name": "oscmd_q10_3",
       "title": "Path B \u2014 OS Injection | Hash Detour",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_2_answer} = 'hashcat_wordlist'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_2_answer} = 'hashcat_wordlist' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -697,7 +697,7 @@
     {
       "name": "oscmd_q10_4",
       "title": "Path B \u2014 OS Injection | Return to Portal Access",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_3_answer} = 'different_hash_mode'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q10_3_answer} = 'different_hash_mode' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -740,7 +740,7 @@
     {
       "name": "oscmd_q11",
       "title": "Path B \u2014 OS Injection | Persistence Decision",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -785,7 +785,7 @@
     {
       "name": "oscmd_q12",
       "title": "Path B \u2014 OS Injection | Persistence Attempt",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q11_answer} = 'install_persistence'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q11_answer} = 'install_persistence' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -838,7 +838,7 @@
     {
       "name": "oscmd_q12_1",
       "title": "Path B \u2014 OS Injection | Permission Block",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q12_answer} = 'apt_install_from_login'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q12_answer} = 'apt_install_from_login' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -891,7 +891,7 @@
     {
       "name": "oscmd_q12_2_1",
       "title": "Path B \u2014 OS Injection | Repeated Persistence Attempt",
-      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'system_diagnostics' or {oscmd_q12_1_answer} = 'change_local_config' or {oscmd_q12_1_answer} = 'retry_package_manager')",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'system_diagnostics' or {oscmd_q12_1_answer} = 'change_local_config' or {oscmd_q12_1_answer} = 'retry_package_manager') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -944,7 +944,7 @@
     {
       "name": "oscmd_q12_3",
       "title": "Path B \u2014 OS Injection | Connection Failure",
-      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'manual_webpage_install' or {oscmd_q12_2_1_answer} = 'manual_webpage_install')",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_1_answer} = 'manual_webpage_install' or {oscmd_q12_2_1_answer} = 'manual_webpage_install') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -996,7 +996,7 @@
     {
       "name": "oscmd_q12_3_1",
       "title": "Path B \u2014 OS Injection | Low-Privilege Barrier",
-      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_3_answer} = 'basic_network_troubleshoot' or {oscmd_q12_3_answer} = 'change_local_config')",
+      "visibleIf": "{chosen_path} = 'oscmd' and ({oscmd_q12_3_answer} = 'basic_network_troubleshoot' or {oscmd_q12_3_answer} = 'change_local_config') and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1049,7 +1049,7 @@
     {
       "name": "oscmd_q13",
       "title": "Path B \u2014 OS Injection | Admin Lead",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1100,7 +1100,7 @@
     {
       "name": "oscmd_q14",
       "title": "Path B \u2014 OS Injection | Password Reset Review",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q13_answer} = 'reset_password_observe'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q13_answer} = 'reset_password_observe' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1151,7 +1151,7 @@
     {
       "name": "oscmd_q15",
       "title": "Path B \u2014 OS Injection | Salt Discovery",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q14_answer} = 'compare_hash_pattern'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q14_answer} = 'compare_hash_pattern' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1202,7 +1202,7 @@
     {
       "name": "oscmd_q16",
       "title": "Path B \u2014 OS Injection | Cracked Hashes",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q15_answer} = 'retry_cracking_salted'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q15_answer} = 'retry_cracking_salted' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1247,7 +1247,7 @@
     {
       "name": "oscmd_q16_1",
       "title": "Path B \u2014 OS Injection | Odd Files Review",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_answer} = 'recon_each_account'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_answer} = 'recon_each_account' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1300,7 +1300,7 @@
     {
       "name": "oscmd_q16_2_1",
       "title": "Path B \u2014 OS Injection | Persistence Connection Issue",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1352,7 +1352,7 @@
     {
       "name": "oscmd_q16_2_2",
       "title": "Path B \u2014 OS Injection | Machine Issue Review",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1405,7 +1405,7 @@
     {
       "name": "oscmd_q16_2_3",
       "title": "Path B \u2014 OS Injection | Network Filtering",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1458,7 +1458,7 @@
     {
       "name": "oscmd_q16_2_3_1",
       "title": "Path B \u2014 OS Injection | Network-Level Filtering",
-      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_2_3_answer} = 'bypass_filtering'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {oscmd_q16_2_3_answer} = 'bypass_filtering' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
@@ -1503,7 +1503,7 @@
     {
       "name": "oscmd_q17",
       "title": "Path B \u2014 OS Injection | Honeypot Discovery",
-      "visibleIf": "{chosen_path} = 'oscmd'",
+      "visibleIf": "{chosen_path} = 'oscmd' and {timedone} <> true",
       "elements": [
         {
           "type": "html",
