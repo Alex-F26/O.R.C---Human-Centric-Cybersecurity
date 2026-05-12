@@ -111,11 +111,10 @@ const TIME_COSTS = {
 };
 
 // Constants
-const TOTAL_SECONDS = 60 * 60;
+const TOTAL_SECONDS = 20 * 60;
 const SUCCESS_PAGES = new Set(["csrf_success"]);
-const NO_SWITCH_PAGES = new Set([
-  "start", "recon", "path_selection", "csrf_success",
-]);
+const NO_SWITCH_PAGES = new Set(["start", "recon", "path_selection", "csrf_success"]);
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbwBGSAN8Ocvr7AvNZM6IIrteuUPnp0Py0_AuxyN2tZgScbejiKjoQkmJz04Ig6xZ7cw0A/exec";
 
 function fmt(secs) {
   const s = Math.max(0, secs);
@@ -126,25 +125,22 @@ let toastId = 0;
 
 // Component
 export default function SurveyWrapper() {
-  const [timeLeft, setTimeLeft]     = useState(TOTAL_SECONDS);
-  const [running, setRunning]       = useState(false);
-  const [done, setDone]             = useState(false);
-  const [timedOut, setTimedOut]     = useState(false);
-  const [showTimeout, setShowTimeout] = useState(false);
-  const [toasts, setToasts]         = useState([]);
-  const [history, setHistory]       = useState([]);
+  const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
+  const [running, setRunning]   = useState(false);
+  const [done, setDone]         = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+  const [toasts, setToasts]     = useState([]);
+  const [history, setHistory]   = useState([]);
 
-  const [, forceUpdate] = useState(0);
-
-  const intervalRef = useRef(null);
-  const timeLeftRef = useRef(TOTAL_SECONDS);
-  const deductRef   = useRef(null);
-  const surveyRef   = useRef(null);
+  const intervalRef     = useRef(null);
+  const timeLeftRef     = useRef(TOTAL_SECONDS);
+  const deductRef       = useRef(null);
+  const surveyRef       = useRef(null);
+  const timedOutRef     = useRef(false);
+  const startedRef      = useRef(false);
   const isSwitchingPath = useRef(false);
-  const startedRef = useRef(false);
 
-  const SHEETS_URL = "https://script.google.com/macros/s/AKfycbwBGSAN8Ocvr7AvNZM6IIrteuUPnp0Py0_AuxyN2tZgScbejiKjoQkmJz04Ig6xZ7cw0A/exec";
-
+  // Sheets submit
   async function submitToSheets(payload) {
     try {
       await fetch(SHEETS_URL, {
@@ -158,6 +154,7 @@ export default function SurveyWrapper() {
     }
   }
 
+  // Timer helpers
   function stopTimer() {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
@@ -167,6 +164,7 @@ export default function SurveyWrapper() {
   function deduct(seconds, label) {
     if (seconds <= 0) return;
     setTimeLeft(prev => Math.max(0, prev - seconds));
+    timeLeftRef.current = Math.max(0, timeLeftRef.current - seconds);
     const id = ++toastId;
     const mins = Math.round(seconds / 60);
     setToasts(prev => [...prev, { id, text: `-${mins} min — ${label}` }]);
@@ -176,9 +174,7 @@ export default function SurveyWrapper() {
 
   deductRef.current = deduct;
 
-  const timedOutRef = useRef(false);
-
-  // Countdown tick
+  // Countdown
   useEffect(() => {
     if (!running || done) return;
 
@@ -191,25 +187,9 @@ export default function SurveyWrapper() {
           timedOutRef.current = true;
           clearInterval(intervalRef.current);
           intervalRef.current = null;
-
           setRunning(false);
           setDone(true);
           setTimedOut(true);
-
-          // Schedule survey navigation outside the state updater
-          setTimeout(() => {
-            const survey = surveyRef.current;
-            if (survey) {
-              survey.setVariable("timedone", true);
-              survey.runConditions();
-              // Force navigation bypassing all checks
-              const idx = survey.pages.findIndex(p => p.name === "timeout");
-              if (idx !== -1) {
-                survey.ignoreValidation = true;
-                survey.setPropertyValue("currentPageNo", idx);
-              }
-            }
-          }, 0);
         }
 
         return next;
@@ -222,43 +202,39 @@ export default function SurveyWrapper() {
     };
   }, [running, done]);
 
-  // Survey model
+  // Survey model (stable — created once)
   const [survey] = useState(() => {
     const s = new Model(surveyJson);
     s.surveyPostId = "b9a511dd-5934-42ff-acb0-574de416e0f1";
     surveyRef.current = s;
 
-  s.onCurrentPageChanged.add((_, { oldCurrentPage, newCurrentPage }) => {
-    const name = newCurrentPage?.name;
+    // Page change
+    s.onCurrentPageChanged.add((_, { oldCurrentPage, newCurrentPage }) => {
+      const name = newCurrentPage?.name;
 
-    // If leaving timeout page via Next, force to questions_1
-    if (oldCurrentPage?.name === "timeout" && name !== "questions_1") {
-      setTimeout(() => {
-        s.currentPage = s.getPageByName("questions_1");
-      }, 0);
-      return;
-    }
+      if (name && name !== "start" && !startedRef.current) {
+        startedRef.current = true;
+        setRunning(true);
+      }
 
-    if (name && name !== "timeout" && name !== "start" && !startedRef.current) {
-      startedRef.current = true;
-      setRunning(true);
-    }
-    if (SUCCESS_PAGES.has(name)) {
-      stopTimer();
-      setDone(true);
-    }
+      if (SUCCESS_PAGES.has(name)) {
+        stopTimer();
+        setDone(true);
+      }
 
-    if (oldCurrentPage) {
-      oldCurrentPage.elements.forEach(el => {
-        const questionName = el.name;
-        const value = s.getValue(questionName);
-        if (value == null) return;
-        const cost = TIME_COSTS[questionName]?.[value];
-        if (cost > 0) deductRef.current(cost, `${questionName}: ${value}`);
-      });
-    }
-  });
+      // Deduct time for answers on the page we just left
+      if (oldCurrentPage) {
+        oldCurrentPage.elements.forEach(el => {
+          const questionName = el.name;
+          const value = s.getValue(questionName);
+          if (value == null) return;
+          const cost = TIME_COSTS[questionName]?.[value];
+          if (cost > 0) deductRef.current(cost, `${questionName}: ${value}`);
+        });
+      }
+    });
 
+    // Value change — handle special navigation values
     s.onValueChanged.add((_, { name, value }) => {
       if (value === "switch_path") {
         deductRef.current(300, "switch_path_penalty");
@@ -269,48 +245,37 @@ export default function SurveyWrapper() {
             if (key.startsWith(prefix)) s.clearValue(key);
           });
         }
-        isSwitchingPath.current = true; // set flag BEFORE navigating
+        isSwitchingPath.current = true;
         setTimeout(() => {
           s.currentPage = s.getPageByName("path_selection");
           setTimeout(() => {
             s.clearValue("chosen_path");
-            isSwitchingPath.current = false; // clear flag after settled
+            isSwitchingPath.current = false;
           }, 50);
         }, 100);
       }
 
       if (value === "retry_final") {
         deductRef.current(120, `${name}: retry_final`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("csrf_4");
-        }, 100);
+        setTimeout(() => { s.clearValue(name); s.currentPage = s.getPageByName("csrf_4"); }, 100);
       }
 
       if (value === "retry_delivery") {
         deductRef.current(120, `${name}: retry_delivery`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("csrf_3");
-        }, 100);
+        setTimeout(() => { s.clearValue(name); s.currentPage = s.getPageByName("csrf_3"); }, 100);
       }
 
       if (value === "retry_sqli") {
         deductRef.current(120, `${name}: retry_sqli`);
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("sqli_2");
-        }, 100);
+        setTimeout(() => { s.clearValue(name); s.currentPage = s.getPageByName("sqli_2"); }, 100);
       }
 
-      if (value === "return_path_select" || value === "back_to_vuln_selection" || value === "pivot_other_vuln" || value === "pivot_csrf") {
-        setTimeout(() => {
-          s.clearValue(name);
-          s.currentPage = s.getPageByName("path_selection");
-        }, 100);
+      if (["return_path_select", "back_to_vuln_selection", "pivot_other_vuln", "pivot_csrf"].includes(value)) {
+        setTimeout(() => { s.clearValue(name); s.currentPage = s.getPageByName("path_selection"); }, 100);
       }
     });
 
+    // Inject "Switch Path" button on game pages
     s.onAfterRenderPage.add((_, { htmlElement, page }) => {
       if (page.name.startsWith("questions")) return;
       if (!s.getValue("chosen_path")) return;
@@ -333,27 +298,7 @@ export default function SurveyWrapper() {
       htmlElement.insertBefore(btn, htmlElement.firstChild);
     });
 
-    s.onAfterRenderPage.add((_, { htmlElement, page }) => {
-      if (page.name !== "timeout") return;
-      if (htmlElement.querySelector(".orc-proceed-btn")) return;
-
-      const btn = document.createElement("button");
-      btn.className = "orc-proceed-btn orc-switch-btn";
-      btn.textContent = "→ Proceed to Questions";
-      btn.style.borderColor = "#c084fc";
-      btn.style.color = "#c084fc";
-      btn.onclick = () => {
-        s.setVariable("timedone", true);
-        s.runConditions();
-        const idx = s.pages.findIndex(p => p.name === "questions_1");
-        if (idx !== -1) {
-          s.ignoreValidation = true;
-          s.setPropertyValue("currentPageNo", idx);
-        }
-      };
-      htmlElement.insertBefore(btn, htmlElement.firstChild);
-    });
-
+    // Complete
     s.onComplete.add((sender) => {
       stopTimer();
       setDone(true);
@@ -374,18 +319,80 @@ export default function SurveyWrapper() {
     });
 
     return s;
-    });
+  });
 
-  
+  // Derived display values
   const pct   = (timeLeft / TOTAL_SECONDS) * 100;
   const color = timeLeft > 300 ? "#22c55e" : timeLeft > 120 ? "#eab308" : "#ef4444";
   const pulse = timeLeft <= 60 && running;
 
+  // Proceed to questions handler 
+  function proceedToQuestions() {
+    const qPage = surveyRef.current?.getPageByName("questions_1");
+    if (qPage) {
+      surveyRef.current.ignoreValidation = true;
+      surveyRef.current.currentPage = qPage;
+    }
+  }
 
+  // Render
   return (
     <div style={{ position: "relative" }}>
 
-      {/*Timer HUD*/}
+      {/* Timeout banner — shown above survey when time expires */}
+      {timedOut && (
+        <div style={{
+          background: "#1f2028",
+          border: "1px solid #ef4444",
+          borderRadius: 8,
+          padding: "24px 28px",
+          fontFamily: "ui-monospace, Consolas, monospace",
+          color: "#9ca3af",
+          marginBottom: 20,
+          lineHeight: 1.6,
+        }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>⛔</div>
+          <strong style={{
+            fontSize: 18,
+            letterSpacing: 3,
+            display: "block",
+            marginBottom: 12,
+            color: "#f3f4f6",
+            textTransform: "uppercase",
+          }}>
+            Time Expired
+          </strong>
+          Your time is up. The operation is over.
+          <br /><br />
+          Please answer the following debrief questions based on what you attempted during the simulation.
+          <br /><br />
+          <button
+            onClick={proceedToQuestions}
+            style={{
+              background: "transparent",
+              border: "1px solid #c084fc",
+              borderRadius: 6,
+              color: "#c084fc",
+              fontFamily: "ui-monospace, Consolas, monospace",
+              fontSize: 12,
+              letterSpacing: 2,
+              padding: "10px 20px",
+              cursor: "pointer",
+              textTransform: "uppercase",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={e => e.target.style.background = "rgba(192,132,252,0.1)"}
+            onMouseLeave={e => e.target.style.background = "transparent"}
+          >
+            → Proceed to Debrief Questions
+          </button>
+        </div>
+      )}
+
+      {/* Survey */}
+      <Survey model={survey} />
+
+      {/* Timer HUD */}
       <div style={{
         position: "fixed",
         top: 16,
@@ -402,7 +409,7 @@ export default function SurveyWrapper() {
         transition: "border-color 0.4s, box-shadow 0.4s",
       }}>
         <div style={{ fontSize: 10, color: "#6b7280", letterSpacing: 3, textTransform: "uppercase", marginBottom: 6 }}>
-          {timedOut ? "⛔ TIME EXPIRED" : done ? "✅ COMPLETE" : running ? "⏱ TIME REMAINING" : "STANDBY"}
+          {timedOut ? "⛔ Time Expired" : done ? "✅ Complete" : running ? "⏱ Time Remaining" : "Standby"}
         </div>
 
         <div style={{ fontSize: 42, fontWeight: 800, color, lineHeight: 1, letterSpacing: 3, transition: "color 0.4s" }}>
@@ -441,7 +448,7 @@ export default function SurveyWrapper() {
         )}
       </div>
 
-      {/*Toast popups*/}
+      {/* Toast popups */}
       <div style={{
         position: "fixed",
         top: 16,
@@ -470,9 +477,6 @@ export default function SurveyWrapper() {
         ))}
       </div>
 
-      {/*Survey*/}
-      <Survey model={survey} />
-
       <style>{`
         @keyframes hud-pulse {
           0%, 100% { box-shadow: 0 0 24px #ef444466; }
@@ -482,6 +486,7 @@ export default function SurveyWrapper() {
           from { opacity: 0; transform: translateX(20px); }
           to   { opacity: 1; transform: translateX(0); }
         }
+
         .orc-intro, .orc-context {
           padding: 16px 20px;
           border-radius: 6px;
@@ -492,24 +497,14 @@ export default function SurveyWrapper() {
           line-height: 1.6;
           color: #9ca3af;
         }
-
         .orc-intro h2 {
           color: #c084fc;
           font-size: 18px;
           margin: 0 0 12px;
           letter-spacing: 4px;
         }
-
-        /* Remove the separate background/border overrides on variants,
-          keep only the border-color tint so they still feel distinct */
-        .orc-context.orc-error {
-          border-color: #ef4444;
-        }
-
-        .orc-context.orc-success {
-          border-color: #22c55e;
-        }
-
+        .orc-context.orc-error  { border-color: #ef4444; }
+        .orc-context.orc-success { border-color: #22c55e; }
         .orc-context.orc-win {
           border-color: #c084fc;
           color: #f3f4f6;
@@ -525,6 +520,7 @@ export default function SurveyWrapper() {
           margin: 8px 0 0 16px;
           padding: 0;
         }
+
         .orc-switch-btn {
           display: inline-block;
           margin-bottom: 16px;
@@ -539,8 +535,17 @@ export default function SurveyWrapper() {
           cursor: pointer;
           transition: background 0.2s;
         }
-        .orc-switch-btn:hover {
-          background: rgba(239, 68, 68, 0.1);
+        .orc-switch-btn:hover { background: rgba(239, 68, 68, 0.1); }
+        }
+        .survey-timed-out .sd-navigation {
+          display: none !important;
+        }
+        .survey-timed-out .sd-page:not(.questions-page):not([data-name="timeout"]) {
+          display: none !important;
+        }
+        .survey-timed-out .questions-page ~ .sd-navigation,
+        .survey-timed-out .sd-body:has(.questions-page) .sd-navigation {
+          display: block !important;
         }
       `}</style>
     </div>
