@@ -43,3 +43,4 @@ For VScode:
 - If an error pops up after completing the steps above, type this command into the terminal:
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
