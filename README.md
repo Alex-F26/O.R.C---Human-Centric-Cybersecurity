@@ -4,6 +4,7 @@ Oatmeal Raisin Cookie
 - A research project for human-centric cybersecurity
 - This is a survey-style CTF used to gather information from participants that can be used to understand how we can leverage cognitive biases to improve cyber defenses
 - This research involved the study of the Sunk Cost Fallacy throughout our simulated pen-testing event
+- Refer to the PDF file linked below for the full report
 
 [ORC_Report.pdf](https://github.com/user-attachments/files/29272960/ORC_Report.pdf)
 
