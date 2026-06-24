@@ -5,6 +5,9 @@ Oatmeal Raisin Cookie
 - This is a survey-style CTF used to gather information from participants that can be used to understand how we can leverage cognitive biases to improve cyber defenses
 - This research involved the study of the Sunk Cost Fallacy throughout our simulated pen-testing event
 
+[ORC_Report.pdf](https://github.com/user-attachments/files/29272960/ORC_Report.pdf)
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
